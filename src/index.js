@@ -16,7 +16,7 @@ app.engine('.hbs', exphbs({extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 
@@ -58,6 +58,4 @@ app.use(function(err, req, res, next) {
 });
 
 
-app.listen(3000, function() {
-    console.info('started listening on port 3000')
-});
+app.listen(3000, function() {});
