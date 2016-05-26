@@ -19,13 +19,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
+app.use('/bs', express.static(path.resolve(__dirname, '..', 'node_modules', 'bootstrap/dist/')));
 
 app.get('/', function(req, res) {
     res.render('home');
-})
-
-app.get('/about', function(req, res) {
-    res.render('about');
 })
 
 // catch 404 and forward to error handler
