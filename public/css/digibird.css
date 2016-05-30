@@ -1,2 +1,11 @@
-#banner {
+/* Landing page */
+
+.marketing {
+    text-align: center;
+    padding: 30px;
+}
+
+.jumbo-icon {
+    font-size: 10em;
+    color: #68261a;
 }
