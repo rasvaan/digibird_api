@@ -6,23 +6,9 @@ body {
 Navbar
 *******************************************************************************/
 #navbarImgLogo {
-	height: 45px;
-  position: absolute;
-  top: 4px;
+	height: 33px;
+	padding-bottom: 5px;
 }
-
-.navbar {
-   background:rgba(0,0,0,0.5);   /* for latest browsers */
-   background: #000;  /* fallback for older browsers */
- }
-
- /*
- .navbar {
-    background-color: transparent;
-    background: transparent;
-    border-color: transparent;
-    padding-top: 0px;
- }*/
 
 /*******************************************************************************
 Landing page
@@ -59,7 +45,7 @@ Landing page
 
 .jumbo-icon {
     font-size: 10em;
-    color: #e00034;
+    color: #666666;
 }
 
 .vcenter {
