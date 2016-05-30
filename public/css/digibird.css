@@ -11,6 +11,12 @@ Navbar
   top: 4px;
 }
 
+.navbar {
+   background:rgba(0,0,0,0.5);   /* for latest browsers */
+   background: #000;  /* fallback for older browsers */
+ }
+
+
 /*******************************************************************************
 Landing page
 *******************************************************************************/
