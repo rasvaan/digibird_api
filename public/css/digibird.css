@@ -29,7 +29,7 @@ Landing page
     text-align: center;
 }
 
-.partner-logos {
+.partners .logo {
     padding-top: 30px;
     padding-bottom: 30px;
 }
@@ -40,6 +40,10 @@ Landing page
 
 .partners #naturalis-logo {
     max-width: 60%;
+}
+
+.partners #rijksmuseum-logo {
+    max-width: 90%;
 }
 
 .footer {
