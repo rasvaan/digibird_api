@@ -10,12 +10,16 @@
 }
 
 .partner-logos {
-    padding-top: 15px;
+    padding-top: 30px;
     padding-bottom: 30px;
 }
 
-.partners .logo {
-    height: 25px;
+.partners #vu-logo {
+    max-width: 80%;
+}
+
+.partners #naturalis-logo {
+    max-width: 60%;
 }
 
 .footer {
@@ -24,5 +28,11 @@
 
 .jumbo-icon {
     font-size: 10em;
-    color: #68261a;
+    color: #e00034;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
 }
