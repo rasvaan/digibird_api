@@ -16,6 +16,13 @@ Navbar
    background: #000;  /* fallback for older browsers */
  }
 
+ /*
+ .navbar {
+    background-color: transparent;
+    background: transparent;
+    border-color: transparent;
+    padding-top: 0px;
+ }*/
 
 /*******************************************************************************
 Landing page
