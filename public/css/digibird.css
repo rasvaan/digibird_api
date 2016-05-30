@@ -16,6 +16,23 @@ Landing page
     padding: 30px;
 }
 
+.partners {
+    text-align: center;
+}
+
+.partner-logos {
+    padding-top: 15px;
+    padding-bottom: 30px;
+}
+
+.partners .logo {
+    height: 25px;
+}
+
+.footer {
+    text-align: center;
+}
+
 .jumbo-icon {
     font-size: 10em;
     color: #68261a;
