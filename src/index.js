@@ -3,6 +3,7 @@ var exphbs  = require('express-handlebars');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var WP = require( 'wordpress-rest-api' );
 // var routes = require('./routes');
 //of
 //import * as routes from './routes';
