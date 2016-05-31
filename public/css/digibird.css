@@ -22,16 +22,19 @@ Landing page
 *******************************************************************************/
 .marketing {
     text-align: center;
-    padding: 30px;
+    margin-top: 50px;
+	margin-bottom: 25px;
 }
 
 .partners {
     text-align: center;
+	background-color: #dddddd;
+	width: 100%;
 }
 
 .partners .logo {
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding-top: 25px;
+    padding-bottom: 25px;
 }
 
 .partners #vu-logo {
@@ -47,17 +50,18 @@ Landing page
 }
 
 .footer {
-	padding-top: 30px;
+	padding-top: 10px;
     text-align: center;
 }
 
 .footer #commit-logo {
-	margin-left: 5px;
-	margin-bottom: 5px;
+	margin-left: 2px;
+	margin-bottom: 4px;
 	vertical-align: bottom;
-	width: 60px;
-	height: 20px;
+	width: 45px;
+	height: 15px;
 }
+
 .jumbo-icon {
     font-size: 10em;
     color: #666666;
