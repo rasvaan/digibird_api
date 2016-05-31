@@ -47,9 +47,17 @@ Landing page
 }
 
 .footer {
+	padding-top: 30px;
     text-align: center;
 }
 
+.footer #commit-logo {
+	margin-left: 5px;
+	margin-bottom: 5px;
+	vertical-align: bottom;
+	width: 60px;
+	height: 20px;
+}
 .jumbo-icon {
     font-size: 10em;
     color: #666666;
