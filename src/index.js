@@ -4,7 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var WP = require( 'wordpress-rest-api' );
-// var routes = require('./routes');
+
+var routes = require('./routes');
+
+//var routes = require('./routes');
 //of
 //import * as routes from './routes';
 //of als je maar 1 nodig hebt:
@@ -15,6 +18,7 @@ var app = express();
 
 app.engine('.hbs', exphbs({extname: '.hbs'}));
 app.set('view engine', '.hbs');
+routes.set(app);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -22,13 +26,13 @@ app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 app.use('/bs', express.static(path.resolve(__dirname, '..', 'node_modules', 'bootstrap/dist/')));
 
-app.get('/', function(req, res) {
-    res.render('home');
-})
-
-app.get('/blog', function(req, res) {
-    res.render('blog');
-})
+// app.get('/', function(req, res) {
+//     res.render('home');
+// })
+//
+// app.get('/blog', function(req, res) {
+//     res.render('blog');
+// });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
