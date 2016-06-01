@@ -48,7 +48,7 @@ Landing page
 	font-size: 10px; /* legacy support */
 	font-size: 2vw;
 	margin-top: 5px;
-	color: #bbbbbb;
+	color: #aaaaaa;
 }
 
 @media all and (max-width: 992px) and (min-width: 600px) {
@@ -71,7 +71,7 @@ Landing page
 	right: 1em;
 	font-size: 0.8em; /* legacy support */
 	font-size: 1vw;
-	color: #aaaaaa;
+	color: #666666;
 	display: block;
 }
 
