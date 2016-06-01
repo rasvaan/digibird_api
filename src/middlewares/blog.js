@@ -11,35 +11,35 @@ var WP = require('wordpress-rest-api');
 var date = new Date();
 var logFile = fs.createWriteStream(path.resolve(__dirname, '..', 'debug.log'),
                 {flags: 'w'});
-var wp = new WP({ endpoint: 'https://sealincmedia.wordpress.com/' });
+var wp = new WP({
+  endpoint: 'https://sealincmedia.wordpress.com/',
+  username: 'replaceUsernameHere',
+  password: 'replacePassHere'
+});
 
 console.log("wp:\n", wp);
 console.log('--------------------\n');
 
 var users = wp.users().then(function(data) {
   console.log('users in!');
-  console.log = function(data) {
-    logFile.write('--------------------\n');
-    logFile.write('USERS, ', date.getFullYear(), '-',
-      date.getMonth(), '-', date.getDate(), ' ', date.getHours(), ':',
-      date.getMinutes(), ':', date.getSeconds(),'\n');
-    logFile.write('--------------------\n');
-    logFile.write(util.format(data) + '\n');
-    logFile.write('--------------------\n');
-  }
+  logFile.write('-------------------------\n');
+  logFile.write(' USERS, ' + date.getFullYear() + '-' +
+    date.getMonth() + '-' + date.getDate() + ' ' + date.getHours() + ':' +
+    date.getMinutes() + ':' + date.getSeconds() + '\n');
+  logFile.write('-------------------------\n');
+  logFile.write(util.format(data));
+  logFile.write('\n-------------------------\n');
 }).catch(function(err) {
-    //handle error
-    console.log('error!!!');
-    console.log = function(err) {
-      logFile.write('--------------------\n');
-      logFile.write('ERROR, ', date.getFullYear(), '-',
-        date.getMonth(), '-', date.getDate(), ' ', date.getHours(), ':',
-        date.getMinutes(), ':', date.getSeconds(),'\n');
-      logFile.write('--------------------\n');
-      logFile.write('err \n');
-      logFile.write('--------------------\n');
-    }
-  });
+  //handle error
+  console.log('error!!!');
+  logFile.write('-------------------------\n');
+  logFile.write(' ERROR, ' + date.getFullYear() + '-' +
+    date.getMonth() + '-' + date.getDate() + ' ' + date.getHours() + ':' +
+    date.getMinutes() + ':' + date.getSeconds() + '\n');
+  logFile.write('-------------------------\n');
+  //logFile.write(err);
+  logFile.write('\n-------------------------\n');
+});
 
   // //VERSION 1: with callbacks
   // wp.posts()
