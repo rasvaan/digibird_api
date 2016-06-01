@@ -26,6 +26,19 @@ Landing page
 	margin-bottom: 25px;
 }
 
+.banner {
+	position: relative;
+}
+
+.copyright {
+	position: absolute;
+	bottom: 0.5em;
+	right: 1em;
+	font-size: 0.8em;
+	color: #cccccc;
+	display: block;
+}
+
 .partners {
     text-align: center;
 	background-color: #dddddd;
