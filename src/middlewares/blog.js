@@ -1,6 +1,12 @@
-//here server backend to collect blog posts
+// server backend to collect blog posts
+// OPTION 1: works for wordpress self-hosted websites. For websites hosted on wordpress.com, you cannot add the WP-API v2 plugin, so the Wordpress REST API cannot be used.
 
-//run with the following command:
+// a client for the WordPress REST API
+// source: https://github.com/kadamwhite/wordpress-rest-api
+// designed to work with WP-API v2 or higher
+// source: https://github.com/WP-API/WP-API
+
+// run with the following command:
 //node ./src/middlewares/blog.js
 
 var fs = require('fs');
@@ -42,23 +48,23 @@ wp.users().then(function(users) {
 });
 
 //retrieve blog posts
-wp.posts().then(function(posts) {
-  // do something with all the returned posts
-  console.log('posts in!');
-  logFile.write('-------------------------\n');
-  logFile.write(' POSTS, ' + harvestDate + '\n');
-  logFile.write('-------------------------\n');
-  logFile.write(util.format(posts));
-  logFile.write('\n-------------------------\n');
-}).catch(function(err) {
-  // handle error
-  console.log('Error retrieving posts! Check log file for more info');
-  logFile.write('-------------------------\n');
-  logFile.write(' ERROR: posts, ' + harvestDate + '\n');
-  logFile.write('-------------------------\n');
-  logFile.write(err);
-  logFile.write('\n-------------------------\n');
-});
+// wp.posts().then(function(posts) {
+//   // do something with all the returned posts
+//   console.log('posts in!');
+//   logFile.write('-------------------------\n');
+//   logFile.write(' POSTS, ' + harvestDate + '\n');
+//   logFile.write('-------------------------\n');
+//   logFile.write(util.format(posts));
+//   logFile.write('\n-------------------------\n');
+// }).catch(function(err) {
+//   // handle error
+//   console.log('Error retrieving posts! Check log file for more info');
+//   logFile.write('-------------------------\n');
+//   logFile.write(' ERROR: posts, ' + harvestDate + '\n');
+//   logFile.write('-------------------------\n');
+//   logFile.write(err);
+//   logFile.write('\n-------------------------\n');
+// });
 
 //retrieve filtered blog posts: by user, by tag, etc.
 var user = 'cristina';
