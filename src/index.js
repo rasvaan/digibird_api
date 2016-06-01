@@ -3,7 +3,7 @@ var exphbs  = require('express-handlebars');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var WP = require( 'wordpress-rest-api' );
+
 var routes = require('./routes');
 
 var app = express();
@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 app.use('/bs', express.static(path.resolve(__dirname, '..', 'node_modules', 'bootstrap/dist/')));
+//app.use('/mws', express.static(path.resolve(__dirname, '..', 'src', 'middlewares/')));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -48,3 +49,13 @@ app.use(function(err, req, res, next) {
 
 
 app.listen(3000, function() {});
+
+
+// var server = app.listen(3000, function() {
+//
+//   var host = server.address().address;
+//   var port = server.address().port;
+//
+//   console.log("Example app listening at http://%s:%s", host, port)
+//
+// });
