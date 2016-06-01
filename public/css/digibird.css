@@ -33,8 +33,22 @@ Landing page
 .banner-text {
 	position: absolute;
 	color: #ffffff;
-	bottom: 25px;
+	top: 0px;
 	left: 25px;
+	display: block;
+}
+
+.banner .banner-title {
+	font-size: 40px;
+	margin-top: 30px;
+	color: rgba(255, 255, 255, 1);
+}
+
+.banner .banner-sub-title {
+	font-style: italic;
+	font-size: 24px;
+	margin-top: 10px;
+	color: rgba(235, 235, 235, 0.9);
 }
 
 .banner .copyright {
