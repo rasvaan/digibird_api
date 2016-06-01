@@ -15,8 +15,8 @@ Run with the following command:
 node ./src/middlewares/blog1.js
 *******************************************************************************/
 
-var utils = require('../helpers/blog');
 var WP = require('wordpress-rest-api');
+var utils = require('../helpers/blog');
 
 var user = 'replaceWithUsername';
 

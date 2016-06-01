@@ -13,19 +13,22 @@ node ./src/middlewares/blog2.js
 *******************************************************************************/
 
 var wordpress = require('wordpress');
+var utils = require('../helpers/blog');
 
 var user = 'replaceWithUsername';
 
 var client = wordpress.createClient({
-    //both websites work!
+    // both websites work!
     url: 'https://sealincmedia.wordpress.com/',
-    //url: 'http://invenit.wmprojects.nl',
+    // url: 'http://invenit.wmprojects.nl',
     username: user,
     password: 'replaceWithPassword'
 });
 
 client.getPosts(function(error, posts) {
     console.log("Found " + posts.length + " posts!");
-    console.log("_____________________________");
-    console.log(posts);
+    // utils.writeOutputToFile('debug2.log', "POSTS", posts);
+    utils.dumpToFile('debug2.log', "POSTS", posts);
+
+    // error handling
 });
