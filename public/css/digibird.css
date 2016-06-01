@@ -46,9 +46,9 @@ Landing page
 
 .banner .banner-sub-title {
 	font-size: 10px; /* legacy support */
-	font-size: 1.5vw;
+	font-size: 2vw;
 	margin-top: 5px;
-	color: rgba(255, 255, 255, 1);
+	color: #bbbbbb;
 }
 
 @media all and (max-width: 992px) and (min-width: 600px) {
