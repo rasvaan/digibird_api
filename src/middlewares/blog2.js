@@ -10,6 +10,7 @@
 var wordpress = require('wordpress');
 
 var client = wordpress.createClient({
+    //both websites work!
     url: 'https://sealincmedia.wordpress.com/',
     //url: 'http://invenit.wmprojects.nl',
     username: 'replaceWithUsername',
@@ -17,7 +18,7 @@ var client = wordpress.createClient({
 });
 
 client.getPosts(function(error, posts) {
-    console.log('Found ' + posts.length + ' posts!' );
-    console.log('_____________________________');
+    console.log("Found " + posts.length + " posts!");
+    console.log("_____________________________");
     console.log(posts);
 });

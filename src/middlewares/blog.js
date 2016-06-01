@@ -17,53 +17,53 @@ var WP = require('wordpress-rest-api');
 var logFile = fs.createWriteStream(path.resolve(__dirname, '..', 'debug.log'),
                 {flags: 'w'});
 var wp = new WP({
-  //endpoint: 'https://sealincmedia.wordpress.com/wp-json',
+  //endpoint: 'https://sealincmedia.wordpress.com/wp-json', //does not work here
   endpoint: 'http://invenit.wmprojects.nl/wp-json',
   username: 'replaceWithUsername',
   password: 'replaceWithPassword'
 });
 
 var date = new Date();
-var harvestDate = date.getFullYear() + '-' + date.getMonth() + '-' +
-                    date.getDate() + ' ' + date.getHours() + ':' +
-                    date.getMinutes() + ':' + date.getSeconds();
+var harvestDate = date.getFullYear() + "-" + date.getMonth() + "-" +
+                    date.getDate() + " " + date.getHours() + ":" +
+                    date.getMinutes() + ":" + date.getSeconds();
 
 //get info about users
 wp.users().then(function(users) {
   // do something with the returned users
-  console.log('users in!');
-  logFile.write('-------------------------\n');
-  logFile.write(' USERS, ' + harvestDate + '\n');
-  logFile.write('-------------------------\n');
+  console.log("users in!");
+  logFile.write("-------------------------\n");
+  logFile.write("USERS, " + harvestDate + "\n");
+  logFile.write("-------------------------\n");
   logFile.write(util.format(users));
-  logFile.write('\n-------------------------\n');
+  logFile.write("\n-------------------------\n");
 }).catch(function(err) {
   // handle error
-  console.log('Error retrieving users! Check log file for more info.');
-  logFile.write('-------------------------\n');
-  logFile.write(' ERROR: users, ' + harvestDate + '\n');
+  console.log("Error retrieving users! Check log file for more info.");
+  logFile.write("-------------------------\n");
+  logFile.write("ERROR: users, " + harvestDate + "\n");
   logFile.write('-------------------------\n');
   logFile.write(err);
-  logFile.write('\n-------------------------\n');
+  logFile.write("\n-------------------------\n");
 });
 
 //retrieve blog posts
 // wp.posts().then(function(posts) {
 //   // do something with all the returned posts
-//   console.log('posts in!');
-//   logFile.write('-------------------------\n');
-//   logFile.write(' POSTS, ' + harvestDate + '\n');
-//   logFile.write('-------------------------\n');
+//   console.log("posts in!");
+//   logFile.write("-------------------------\n");
+//   logFile.write("POSTS, " + harvestDate + "\n");
+//   logFile.write("-------------------------\n");
 //   logFile.write(util.format(posts));
-//   logFile.write('\n-------------------------\n');
+//   logFile.write("\n-------------------------\n");
 // }).catch(function(err) {
 //   // handle error
-//   console.log('Error retrieving posts! Check log file for more info');
-//   logFile.write('-------------------------\n');
-//   logFile.write(' ERROR: posts, ' + harvestDate + '\n');
-//   logFile.write('-------------------------\n');
+//   console.log("Error retrieving posts! Check log file for more info");
+//   logFile.write("-------------------------\n");
+//   logFile.write("ERROR: posts, " + harvestDate + "\n");
+//   logFile.write("-------------------------\n");
 //   logFile.write(err);
-//   logFile.write('\n-------------------------\n');
+//   logFile.write("\n-------------------------\n");
 // });
 
 //retrieve filtered blog posts: by user, by tag, etc.
@@ -73,21 +73,21 @@ wp.posts().filter({
   author_name: user
 }).then(function(posts) {
   // do something with the returned filtered posts
-  console.log('filtered posts in!');
-  logFile.write('-------------------------\n');
-  logFile.write('FILTERED POSTS BY USER ' +
-    user + ' ' + harvestDate + '\n');
-  logFile.write('-------------------------\n');
+  console.log("filtered posts in!");
+  logFile.write("-------------------------\n");
+  logFile.write("FILTERED POSTS BY USER " +
+    user + " " + harvestDate + "\n");
+  logFile.write("-------------------------\n");
   logFile.write(util.format(posts));
-  logFile.write('\n-------------------------\n');
+  logFile.write("\n-------------------------\n");
 }).catch(function(err) {
   // handle error
-  console.log('Error retrieving posts! Check log file for more info');
-  logFile.write('-------------------------\n');
-  logFile.write(' ERROR: filtered posts, ' + harvestDate + '\n');
-  logFile.write('-------------------------\n');
+  console.log("Error retrieving posts! Check log file for more info");
+  logFile.write("-------------------------\n");
+  logFile.write("ERROR: filtered posts, " + harvestDate + "\n");
+  logFile.write("-------------------------\n");
   logFile.write(err);
-  logFile.write('\n-------------------------\n');
+  logFile.write("\n-------------------------\n");
 });
 
 
