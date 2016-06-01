@@ -28,11 +28,25 @@ Landing page
 
 .banner {
 	position: relative;
+	background-image: url('../img/hondecoeter.jpg');
+	background-size: contain;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 0;
+    padding-top: 32.25%; /*http://stackoverflow.com/questions/600743/how-to-get-div-height-to-auto-adjust-to-background-size*/*/
 }
 
-.copyright {
+.banner-container {
 	position: absolute;
-	bottom: 0.5em;
+	width: 100%;
+	top: 2em;
+	color: #ffffff;
+	display: block;
+}
+
+.banner .copyright {
+	position: absolute;
+	bottom: 1.5em;
 	right: 1em;
 	font-size: 0.8em;
 	color: #cccccc;
