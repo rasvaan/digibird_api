@@ -3,11 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>DigiBird blog</title>
+    <link rel="shortcut icon" href="img/favicon.ico">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="bs/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/digibird.css" rel="stylesheet">
-    <link rel="shortcut icon" href="img/favicon.ico">
-    <script type="text/javascript" src="js/blog.js"></script>
 </head>
 
 <body class="home">
@@ -19,7 +18,7 @@
     </img>
 
     <!-- blog posts -->
-    <div class="container blog">
+    <div class="container blog" id="posts">
       <h1>Blog posts here!</h1>
     </div>
 
@@ -32,6 +31,8 @@
         </div>
     </div>
 
-
+    <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="js/blog.js"></script>
+    <script>getBlogPosts()</script>
 </body>
 </html>
