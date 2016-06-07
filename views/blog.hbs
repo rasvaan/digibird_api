@@ -18,14 +18,14 @@
     </img>
 
     <!-- blog posts -->
-    <div class="container blog" id="posts">
-      <h1>Blog posts here!</h1>
-        {{#each blogPosts}}
-        Title: {{this.title}} </br>
-        Link: {{this.link}} </br>
-        Data: {{this.date}} </br>
-        Content: {{{this.content}}}
-        {{/each}}
+    <div class="container blog">
+      {{#each posts}}
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <h2>{{this.title}}</h2>
+          </div>
+      {{/each}}
+      </div>
     </div>
 
     <!-- commit -->
