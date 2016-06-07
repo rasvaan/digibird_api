@@ -3,6 +3,7 @@ var exphbs  = require('express-handlebars');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var winston = require('winston');
 
 var blog = require('./middlewares/blog');
 var routes = require('./routes');
@@ -19,11 +20,12 @@ app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 app.use('/bs', express.static(path.resolve(__dirname, '..', 'node_modules', 'bootstrap/dist/')));
 
+// logging to file
+winston.add(winston.transports.File, {filename: 'digibird.log'});
+
 // scheduled tasks
 setInterval(function() {
-    // cache digibird blogposts
     blog.getPosts();
-
     // 1 hour delay
 }, 3600000);
 
@@ -39,7 +41,7 @@ app.use(function(req, res, next) {
 // development error handler, will print stacktrace
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
-        console.log(err);
+        winston.log(err);
         res.status(err.status || 500);
         res.render('error', {
             message: err.message
@@ -56,4 +58,6 @@ app.use(function(err, req, res, next) {
 });
 
 
-app.listen(3000, function() {});
+app.listen(3000, function() {
+    winston.log('info', 'Started server on 3000.');
+});

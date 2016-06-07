@@ -4,10 +4,12 @@ DigiBird Blog
 Functions used by multiple javascript files. These are used throughout the
 application as helper tools.
 *******************************************************************************/
+var winston = require('winston');
+var fs = require('fs');
+
 
 module.exports = {
     dumpToFile: function (debugFile, dataInfo, data) {
-        var fs = require('fs');
         var util = require('util');
         var path = require('path');
 
@@ -27,14 +29,23 @@ module.exports = {
     },
 
     writeCacheJson: function (data) {
-        var fs = require('fs');
-        fs.writeFileSync('./src/helpers/posts.json', JSON.stringify(data, null, 2), 'utf-8');
+        try {
+            fs.writeFileSync('./src/helpers/posts.json', JSON.stringify(data, null, 2), 'utf-8');
+        } catch (error) {
+            winston.log('error', error);
+        }
     },
 
     readCacheJson: function () {
-        var fs = require('fs');
-        var contents = fs.readFileSync('./src/helpers/posts.json', 'utf-8');
+        try {
+            // read contents
+            var contents = fs.readFileSync('./src/helpers/posts.json', 'utf-8');
+            // parse
+            var parsed = JSON.parse(contents);
+        } catch (error) {
+            winston.log('error', error);
+        }
 
-        return JSON.parse(contents);
+        return parsed;
     }
 };
