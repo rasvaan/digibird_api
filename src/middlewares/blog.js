@@ -25,22 +25,28 @@ var client = wordpress.createClient({
 
 var digibirdPosts = [];
 
-client.getPosts(function(error, posts) {
-    // go through all the posts
-    for (var i = 0; i < posts.length; i++) {
-        // go through the possible taxonomy terms
-        for (var j = 0; j < posts[i].terms.length; j++) {
-            // check if a post with a 'digibird' tag is found
-            if (posts[i].terms[j].taxonomy === 'post_tag' &&
-            posts[i].terms[j].name.toLowerCase() === 'digibird') {
-                // if yes, add it to the list of blog posts
-                digibirdPosts.push(posts[i]);
-                break;
+module.exports = {
+    getPosts: function() {
+        console.log("retrieving posts from module");
+        client.getPosts(function(error, posts) {
+            console.log("retrieved posts: ", posts);
+            // go through all the posts
+            for (var i = 0; i < posts.length; i++) {
+                // go through the possible taxonomy terms
+                for (var j = 0; j < posts[i].terms.length; j++) {
+                    // check if a post with a 'digibird' tag is found
+                    if (posts[i].terms[j].taxonomy === 'post_tag' &&
+                    posts[i].terms[j].name.toLowerCase() === 'digibird') {
+                        // if yes, add it to the list of blog posts
+                        digibirdPosts.push(posts[i]);
+                        break;
+                    }
+                }
             }
-        }
+            // write digibird blog posts to cache file
+            if (digibirdPosts.length != 0) {
+                blogUtils.writeCacheJson(digibirdPosts);
+            }
+        });
     }
-    // write digibird blog posts to cache file
-    if (digibirdPosts.length != 0) {
-        blogUtils.writeCacheJson(digibirdPosts);
-    }
-});
+}

@@ -6,6 +6,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var blog = require('./middlewares/blog');
 var routes = require('./routes');
 
 var app = express();
@@ -19,6 +20,14 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 app.use('/bs', express.static(path.resolve(__dirname, '..', 'node_modules', 'bootstrap/dist/')));
+
+// scheduled tasks
+setInterval(function() {
+    // cache digibird blogposts
+    blog.getPosts();
+
+    // 1 hour delay
+}, 3600000);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
