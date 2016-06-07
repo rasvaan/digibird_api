@@ -41,7 +41,6 @@ client.getPosts(function(error, posts) {
     }
     // write digibird blog posts to cache file
     if (digibirdPosts.length != 0) {
-        blogUtils.cacheJson(digibirdPosts);
+        blogUtils.writeCacheJson(digibirdPosts);
     }
-    // TODO: error handling
 });
