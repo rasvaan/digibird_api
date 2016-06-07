@@ -17,7 +17,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 app.use('/bs', express.static(path.resolve(__dirname, '..', 'node_modules', 'bootstrap/dist/')));
-//app.use('/mws', express.static(path.resolve(__dirname, '..', 'src', 'middlewares/')));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
