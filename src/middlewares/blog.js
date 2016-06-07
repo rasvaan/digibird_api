@@ -14,34 +14,33 @@ node ./src/middlewares/blog.js
 *******************************************************************************/
 
 var wordpress = require('wordpress');
-var utils = require('../helpers/blog');
-
-var user = 'replaceWithUsername';
+var blogUtils = require('../helpers/blog');
+var credentials = require('./wordpress_credentials');
 
 var client = wordpress.createClient({
     url: 'https://sealincmedia.wordpress.com/',
-    // username: user,
-    // password: 'replaceWithPassword'
+    username: credentials.USERNAME,
+    password: credentials.PASSWORD
 });
 
 var digibirdPosts = [];
 
 client.getPosts(function(error, posts) {
-  // go through all the posts
-  for (var i = 0; i < posts.length; i++)
-    // go through the possible taxonomy terms
-    for (var j = 0; j < posts[i].terms.length; j++) {
-      // check if a post with a 'digibird' tag is found
-      if (posts[i].terms[j].taxonomy === 'post_tag' &&
-          posts[i].terms[j].name.toLowerCase() === 'digibird')
-        // if yes, add it to the list of blog posts
-        digibirdPosts.push(posts[i]);
-        break;
-      }
+    // go through all the posts
+    for (var i = 0; i < posts.length; i++) {
+        // go through the possible taxonomy terms
+        for (var j = 0; j < posts[i].terms.length; j++) {
+            // check if a post with a 'digibird' tag is found
+            if (posts[i].terms[j].taxonomy === 'post_tag' &&
+            posts[i].terms[j].name.toLowerCase() === 'digibird') {
+                // if yes, add it to the list of blog posts
+                digibirdPosts.push(posts[i]);
+                break;
+            }
+        }
+    }
     // write digibird blog posts to cache file
     if (digibirdPosts.length != 0) {
-      // utils.writeOutputToFile('debug1.log', "FILTERED POSTS BY USER " + user, posts);
-      utils.dumpToFile('debug.log', "DIGIBIRD POSTS ", digibirdPosts);
+        blogUtils.writeCacheJson(digibirdPosts);
     }
-    // TODO: error handling
 });
