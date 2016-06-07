@@ -24,8 +24,10 @@ module.exports = {
         logFile.write("-------------------------\n");
         logFile.write(util.format(data));
         logFile.write("\n-------------------------\n");
+    },
 
-        // this closes to soon, why is the write async?
-        // logFile.close();
+    cacheJson: function (data) {
+        var fs = require('fs');
+        fs.writeFileSync('./src/helpers/posts.json', JSON.stringify(data, null, 2), 'utf-8');
     }
 };
