@@ -20,14 +20,15 @@
     <!-- blog posts -->
     <div class="container blog" id="posts">
       <h1>Blog posts here!</h1>
-      Title: {{title}}
-      <!--<script id="post-template" type="text/x-handlebars-template">
-        <ul>
-          {{#each items}}
-            <li>{{agree_button}}</li>
-          {{/each}}
+      Title: {{samplePost.title}} </br>
+      Message: {{samplePost.post.message}} </br>
+      Signature: {{samplePost.post.signature}}
+      Contributors:
+      <ul>
+        {{#each contributors}}
+        <li>{{this.name}} is affiliated with {{this.institution}}</li>
+        {{/each}}
       </ul>
-    </script>-->
     </div>
 
     <!-- commit -->
@@ -40,6 +41,5 @@
     </div>
 
     <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
-    <!--<script type="text/javascript" src="js/blog.js"></script>-->
 </body>
 </html>

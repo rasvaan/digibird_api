@@ -7,26 +7,24 @@ module.exports.set = function(app) {
     app.get('/blog', function(req, res) {
         //   getCachedPosts
         //   populateBlogs
-        var contextTitle = {title: "My New Post"};
-        // var html    = template(context);
+        var samplePost = {
+          title: "My new post",
+          post: {
+            message: "Hello world!!!",
+            signature: "C.B."
+          }
+        };
 
-        // var context = {
-        //   items: [
-        //     {name: "Handlebars", emotion: "love"},
-        //     {name: "Mustache", emotion: "enjoy"},
-        //     {name: "Ember", emotion: "want to learn"}
-        //   ]
-        // };
-        //
-        // Handlebars.registerHelper('agree_button', function() {
-        //   var emotion = Handlebars.escapeExpression(this.emotion),
-        //       name = Handlebars.escapeExpression(this.name);
-        //
-        //   return new Handlebars.SafeString(
-        //     "<button>I agree. I " + emotion + " " + name + "</button>"
-        //   );
-        // });
+        var contributors = [
+          {name: 'larahack', institution: 'VU'},
+          {name: 'rasvaan', institution: 'VU'}
+        ];
 
-        res.render('blog', contextTitle);
-    });
-}
+        var data = {
+          samplePost: samplePost,
+          contributors: contributors
+        };
+
+        res.render('blog', data);
+      });
+};
