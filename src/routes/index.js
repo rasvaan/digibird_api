@@ -1,3 +1,5 @@
+var blogUtils = require('../helpers/blog');
+
 module.exports.set = function(app) {
 
     app.get('/', function(req, res) {
@@ -5,26 +7,14 @@ module.exports.set = function(app) {
     });
 
     app.get('/blog', function(req, res) {
-        //   getCachedPosts
-        //   populateBlogs
-        var samplePost = {
-          title: "My new post",
-          post: {
-            message: "Hello world!!!",
-            signature: "C.B."
-          }
-        };
-
-        var contributors = [
-          {name: 'larahack', institution: 'VU'},
-          {name: 'rasvaan', institution: 'VU'}
-        ];
+        //   get cached blog posts
+        var blogPosts = blogUtils.readCacheJson();
 
         var data = {
-          samplePost: samplePost,
-          contributors: contributors
+          blogPosts: blogPosts
         };
 
+        // send the blog posts to the client 'blog' page
         res.render('blog', data);
       });
 };

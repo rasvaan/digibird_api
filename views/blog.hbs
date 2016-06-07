@@ -20,15 +20,12 @@
     <!-- blog posts -->
     <div class="container blog" id="posts">
       <h1>Blog posts here!</h1>
-      Title: {{samplePost.title}} </br>
-      Message: {{samplePost.post.message}} </br>
-      Signature: {{samplePost.post.signature}}
-      Contributors:
-      <ul>
-        {{#each contributors}}
-        <li>{{this.name}} is affiliated with {{this.institution}}</li>
+        {{#each blogPosts}}
+        Title: {{this.title}} </br>
+        Link: {{this.link}} </br>
+        Data: {{this.date}} </br>
+        Content: {{{this.content}}}
         {{/each}}
-      </ul>
     </div>
 
     <!-- commit -->
