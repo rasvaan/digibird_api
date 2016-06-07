@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var $ = require('jquery');
+
 var routes = require('./routes');
 
 var app = express();
