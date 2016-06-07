@@ -16,20 +16,24 @@ node ./src/middlewares/blog.js
 var wordpress = require('wordpress');
 var blogUtils = require('../helpers/blog');
 var credentials = require('./wordpress_credentials');
-
-var client = wordpress.createClient({
-    url: 'https://sealincmedia.wordpress.com/',
-    username: credentials.USERNAME,
-    password: credentials.PASSWORD
-});
-
-var digibirdPosts = [];
+var winston = require('winston');
 
 module.exports = {
     getPosts: function() {
-        console.log("retrieving posts from module");
+        var digibirdPosts = [];
+
+        var client = wordpress.createClient({
+            url: 'https://sealincmedia.wordpress.com/',
+            username: credentials.USERNAME,
+            password: credentials.PASSWORD
+        });
+
         client.getPosts(function(error, posts) {
-            console.log("retrieved posts: ", posts);
+            if (error) {
+                winston.log('error', "Error retrieving posts.");
+                return;
+            };
+
             // go through all the posts
             for (var i = 0; i < posts.length; i++) {
                 // go through the possible taxonomy terms
@@ -46,6 +50,8 @@ module.exports = {
             // write digibird blog posts to cache file
             if (digibirdPosts.length != 0) {
                 blogUtils.writeCacheJson(digibirdPosts);
+            } else {
+                winston.log('warning', "No posts found with DigBird tag.");
             }
         });
     }
