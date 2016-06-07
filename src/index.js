@@ -4,8 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var $ = require('jquery');
-
 var routes = require('./routes');
 
 var app = express();
@@ -22,9 +20,9 @@ app.use('/bs', express.static(path.resolve(__dirname, '..', 'node_modules', 'boo
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handlers

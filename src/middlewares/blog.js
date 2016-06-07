@@ -20,8 +20,8 @@ var user = 'replaceWithUsername';
 
 var client = wordpress.createClient({
     url: 'https://sealincmedia.wordpress.com/',
-    username: user,
-    password: 'replaceWithPassword'
+    // username: user,
+    // password: 'replaceWithPassword'
 });
 
 var digibirdPosts = [];
