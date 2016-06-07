@@ -9,25 +9,6 @@ var fs = require('fs');
 
 
 module.exports = {
-    dumpToFile: function (debugFile, dataInfo, data) {
-        var util = require('util');
-        var path = require('path');
-
-        var logFile = fs.createWriteStream(path.resolve(__dirname, '..', debugFile),
-                    {flags: 'w'});
-
-        var date = new Date();
-        var harvestDate = date.getFullYear() + "-" + date.getMonth() + "-" +
-            date.getDate() + " " + date.getHours() + ":" +
-            date.getMinutes() + ":" + date.getSeconds();
-
-        logFile.write("-------------------------\n");
-        logFile.write(dataInfo + " " + harvestDate + "\n");
-        logFile.write("-------------------------\n");
-        logFile.write(util.format(data));
-        logFile.write("\n-------------------------\n");
-    },
-
     writeCacheJson: function (data) {
         try {
             fs.writeFileSync('./src/helpers/posts.json', JSON.stringify(data, null, 2), 'utf-8');
