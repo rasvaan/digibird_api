@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DigiBird</title>
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="bs/css/bootstrap.min.css" rel="stylesheet">
@@ -14,10 +16,16 @@
     {{>navbar}}
 
     <!-- banner -->
-    <img src="img/hondecoeter.jpg" class="img-responsive">
-    </img>
+    <div class="banner">
+        <div class="banner-text">
+            <img class="banner-title" src="img/banner.png">
+            <p class="banner-sub-title">On the fly collection integration by the crowd</p>
+        </div>
+        <div class="copyright">De menagerie, Melchior d' Hondecoeter, Rijksmuseum</div>
+        <img class="img-responsive" src="img/hondecoeter.jpg">
+    </div>
 
-    <!-- icons -->
+    <!-- main points -->
     <div class="container marketing">
         <div class="row">
             <div class="col-md-3">
@@ -33,7 +41,7 @@
             <div class="col-md-3">
                 <i class="fa fa-align-center jumbo-icon"></i>
                 <h2>Alignment</h2>
-                <p>Cultural heritage data does not always work well together. One collection can be described in a completely different way as another. They might need some conunseling, which we call alignment. We align it on the fly. </p>
+                <p>Cultural heritage data does not always work well together. One collection can be described in a completely different way as another. They might need some counseling, which we call alignment. We align it on the fly.</p>
             </div>
             <div class="col-md-3">
                 <i class="fa fa-rocket jumbo-icon"></i>
@@ -47,7 +55,7 @@
     <div class="container partners">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <h2>Partners</h2>
+                <h3>Partners</h3>
             </div>
         </div>
 
@@ -66,7 +74,7 @@
             </div>
             <div class="col-xs-6 col-md-offset-0 col-md-2 vcenter">
                 <a href="http://www.naturalis.nl/en/">
-                    <img src="img/logos/naturalis.jpg" class="img-responsive center-block logo" id="naturalis-logo">
+                    <img src="img/logos/naturalis.png" class="img-responsive center-block logo" id="naturalis-logo">
                     </img>
                 </a>
             </div>
@@ -89,7 +97,7 @@
     <div class="container footer">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <p>DigiBird is a valorisation project funded by the Dutch national program <a href="http://www.commit-nl.nl">COMMIT/</a>.</p>
+                <p>DigiBird is a valorisation project funded by the Dutch national program <a href="http://www.commit-nl.nl"><img src="img/logos/commit.png" id="commit-logo"></img></a></p>
             </div>
         </div>
     </div>
