@@ -53,3 +53,17 @@ Landing page
     vertical-align: middle;
     float: none;
 }
+
+/*******************************************************************************
+Blog page
+*******************************************************************************/
+.blog {
+	padding-top: 30px;
+}
+
+p.pblog {
+	line-height: 3.5;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	text-align: justify;
+}

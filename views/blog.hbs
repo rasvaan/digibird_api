@@ -21,12 +21,30 @@
     <div class="container blog">
       {{#each posts}}
         <div class="row">
-          <div class="col-md-8 col-md-offset-2">
-            <h2>{{this.title}}</h2>
-            <h6><i class="fa fa-clock-o"></i> {{this.date}}</h6>
+         <div class="col-sm-6 col-sm-offset-3">
+           <h2>{{this.title}}</h2>
+           <div class="row">
+             <div class="col-sm-4">
+               <h6>
+                 <i class="fa fa-clock-o"></i>
+                 {{this.date}}
+               </h6>
+             </div>
+             <div class="col-sm-4">
+               <h6>
+                 <i class="fa fa-wordpress"></i>
+                 Link to post <a href={{this.link}}>here</a>
+               </h6>
+             </div>
+              <div class="row">
+			            <div class="col-sm-12">
+                    <p class="pblog" id="blogPost">{{{this.content}}}</p>
+			           </div>
+              </div>
+            </div>
           </div>
+		    </div>
       {{/each}}
-      </div>
     </div>
 
     <!-- commit -->
