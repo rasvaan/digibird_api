@@ -13,5 +13,5 @@ module.exports.set = function(app) {
 
         // send the blog posts to the client 'blog' page
         res.render('blog', data);
-      });
+    });
 };

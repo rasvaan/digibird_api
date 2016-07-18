@@ -39,30 +39,10 @@ Landing page
 }
 
 .banner .banner-title {
-	width: 200px; /* legacy support */
-	width: 15vw;
-	margin-top: 30px;
-}
-
-.banner .banner-sub-title {
-	font-size: 10px; /* legacy support */
-	font-size: 2vw;
+	font-size: 15px; /* legacy support */
+	font-size: 4vw;
 	margin-top: 5px;
-	color: #aaaaaa;
-}
-
-@media all and (max-width: 992px) and (min-width: 600px) {
-	.banner-text { bottom: 10px; }
-	.banner .banner-title {	width: 25vw; }
-    .banner .banner-sub-title { font-size: 2.5vw; }
-	.banner .copyright {visibility: hidden; }
-}
-
-@media all and (max-width: 599px) and (min-width: 320px) {
-	.banner-text { bottom: 5px; }
-	.banner .banner-title {	width: 40vw; }
-	.banner .banner-sub-title {	font-size: 4vw; }
-	.banner .copyright {visibility: hidden; }
+	color: #ffffff;
 }
 
 .banner .copyright {
@@ -73,6 +53,17 @@ Landing page
 	font-size: 1vw;
 	color: #666666;
 	display: block;
+}
+
+@media all and (max-width: 992px) and (min-width: 600px) {
+	.banner-text { bottom: 10px; }
+	.banner .copyright {visibility: hidden; }
+}
+
+@media all and (max-width: 599px) and (min-width: 320px) {
+	.banner-text { bottom: 5px; }
+	.banner .banner-title {	font-size: 8vw; }
+	.banner .copyright {visibility: hidden; }
 }
 
 .partners {
