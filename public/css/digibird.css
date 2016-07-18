@@ -26,9 +26,9 @@ Landing page
 }
 
 .container-tagline .tagline {
-	color: #444444;
 	font-size: 46px;
 }
+
 .marketing {
     text-align: center;
     margin-top: 50px;
@@ -37,7 +37,6 @@ Landing page
 
 .banner {
 	position: relative;
-	font-style: italic;
 }
 
 .banner-text {
