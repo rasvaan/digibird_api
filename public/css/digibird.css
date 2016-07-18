@@ -158,6 +158,11 @@ People page
 	width: 50%;
 }
 
+.logo-container {
+	padding-top: 5px;
+	height: 50px;
+}
+
 #person-naturalis-logo {
 	width: 40%;
 }
