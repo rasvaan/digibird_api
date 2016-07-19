@@ -6,6 +6,10 @@ module.exports.set = function(app) {
         res.render('home');
     });
 
+    app.get('/people', function(req, res) {
+        res.render('people');
+    });
+
     app.get('/blog', function(req, res) {
         //   get cached blog posts
         var blogPosts = blogUtils.readCacheJson();
