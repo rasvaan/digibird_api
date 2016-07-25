@@ -16,7 +16,7 @@ module.exports.set = function(app) {
 
         // replace content between [ ]
         for (var i=0; i<blogPosts.length; i++)
-            blogPosts[i].content = blogPosts[i].content.replace(/\s*\[.*?\]\s*/g, '');;
+            blogPosts[i].content = blogPosts[i].content.replace(/\s*\[.*?\]\s*/g, '');
 
         var data = { posts: blogPosts };
 
