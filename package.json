@@ -21,6 +21,9 @@
     "wordpress": "^1.2.1"
   },
   "devDependencies": {
-    "nodemon": "^1.9.2"
+    "node-sass": "^3.8.0",
+    "nodemon": "^1.9.2",
+    "sass-loader": "^4.0.0",
+    "webpack": "^1.13.1"
   }
 }
