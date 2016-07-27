@@ -22,32 +22,25 @@
 
     <!-- blog posts -->
     <div class="container blog">
-      {{#each posts}}
-        <div class="row">
-         <div class="col-sm-6 col-sm-offset-3">
-           <h2>{{this.title}}</h2>
-           <div class="row">
-             <div class="col-sm-4">
-               <h6>
-                 <i class="fa fa-clock-o"></i>
-                 {{this.date}}
-               </h6>
-             </div>
-             <div class="col-sm-4">
-               <h6>
-                 <i class="fa fa-wordpress"></i>
-                 Link to post <a href={{this.link}}>here</a>
-               </h6>
-             </div>
-              <div class="row">
-			            <div class="col-sm-12">
-                    <p class="pblog" id="blogPost">{{{this.content}}}</p>
-			           </div>
-              </div>
+        {{#each posts}}
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="col-sm-12">
+                        <h2>{{this.title}}</h2>
+                    </div>
+                    <div class="col-sm-12">
+                        <h6>
+                            <i class="fa fa-clock-o"></i>
+                            {{this.date}}
+                            <a class="blog-link" href={{this.link}}><i class="fa fa-wordpress"></i> Link to post</a>
+                        </h6>
+                    </div>
+                    <div class="col-sm-12 blog-posts">
+                        {{{this.content}}}
+                    </div>
+                </div>
             </div>
-          </div>
-		    </div>
-      {{/each}}
+        {{/each}}
     </div>
 
     <!-- commit footer -->
