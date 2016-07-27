@@ -1,16 +1,18 @@
 module.exports = {
-    entry: './src/index.js',
+    entry: "./src/index.js",
+    output: {
+        path: __dirname,
+        filename: "bundle.js"
+    },
     module: {
         loaders: [
-            {
-                test: /\.scss$/,
-                loader: ["style", "css", "sass"],
-                exclude: /node_modules/
-            }
+            { test: /\.css$/, loader: "style!css" },
+            { test: /\.json$/, loader: "json-loader" },
+            { test: /\.hbs$/, loader: "handlebars-loader" }
         ]
     },
-    output: {
-        path: './bin',
-        filename: 'index.bundle.js'
-    },
+    node: {
+        fs: 'empty',
+        net: 'empty'
+    }
 };
