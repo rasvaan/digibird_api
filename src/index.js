@@ -6,9 +6,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var winston = require('winston');
+var routes = require('./routes');
 
 var blog = require('./middlewares/blog');
-var routes = require('./routes');
+var BenG = require('./middlewares/natuurbeelden');
 
 var app = express();
 
@@ -30,6 +31,8 @@ setInterval(function() {
     blog.getPosts();
     // 1 hour delay
 }, 3600000);
+
+BenG.getBenGMetadata();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -9,8 +9,10 @@ The WordPress XML-RPC API was included in Wordpress version 3.4 and higher.
 Requires WordPress 3.4 or newer and uses the WordPress XML-RPC API
 (source: https://github.com/scottgonzalez/node-wordpress).
 
-Run with the following command (should be scheduled in the end):
+The script can be run individually with the following command, although this is
+not necessary as the run of this script is scheduled:
 node ./src/middlewares/blog.js
+
 *******************************************************************************/
 
 var wordpress = require('wordpress');
