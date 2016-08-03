@@ -1,8 +1,19 @@
+var path = require('path')
 module.exports = {
-    entry: "./src/index.js",
+    entry: {
+        "home": [
+            "./client/js/home.js"
+        ],
+        "people": [
+            "./client/js/people.js"
+        ],
+        "blog": [
+            "./client/js/blog.js"
+        ]
+    },
     output: {
-        path: __dirname,
-        filename: "bundle.js"
+        path: path.resolve(__dirname, 'assets', 'js'),
+        filename: "digibird-[name].js"
     },
     module: {
         loaders: [
@@ -10,9 +21,5 @@ module.exports = {
             { test: /\.json$/, loader: "json-loader" },
             { test: /\.hbs$/, loader: "handlebars-loader" }
         ]
-    },
-    node: {
-        fs: 'empty',
-        net: 'empty'
     }
 };
