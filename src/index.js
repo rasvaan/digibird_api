@@ -19,9 +19,9 @@ routes.set(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+
+app.use(express.static(path.resolve(__dirname, '..', 'static')));
 app.use(express.static(path.resolve(__dirname, '..', 'assets')));
-app.use(express.static(path.resolve(__dirname, '..', 'public')));
-app.use('/bs', express.static(path.resolve(__dirname, '..', 'node_modules', 'bootstrap/dist/')));
 
 // logging to file
 winston.add(winston.transports.File, {filename: 'digibird.log'});
