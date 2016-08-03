@@ -16,9 +16,9 @@ node ./src/middlewares/blog.js
 *******************************************************************************/
 
 var wordpress = require('wordpress');
+var winston = require('winston');
 var blogUtils = require('../helpers/blog');
 var credentials = require('./wordpress_credentials');
-var winston = require('winston');
 
 module.exports = {
     getPosts: function() {

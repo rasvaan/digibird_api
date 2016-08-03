@@ -9,33 +9,45 @@ node ./src/middlewares/natuurbeelden.js
 
 *******************************************************************************/
 
-var elasticsearch = require('elasticsearch');
+var http = require('http');
+var winston = require('winston');
 var natuurbeeldenUtils = require('../helpers/natuurbeelden');
 var credentials = require('./natuurbeelden_credentials');
-var winston = require('winston');
 
 module.exports = {
     getBenGMetadata: function() {
 
-        var client = new elasticsearch.Client({
-            protocol: '',
-            host: 'lbes1.beeldengeluid.nl',
-            port: '9200',
-            auth: credentials.AUTH
+        // the post string for the request
+        var postData = JSON.stringify({
+          "phrase":"bird","page":"1","numkeyframes":5,"sorting":"SORT-DEF",
+          "mediaType":"ALL_MEDIA","pagesize":12,"startdate":null,"enddate":null,
+          "publiclyViewableResultsOnly":"true","digitalViewableResultsOnly":"false",
+          "termFilters":"{}"
+        });
+        console.log('postData ok' );
+        // options to indicate where the post request is made
+        var postOptions = {
+          host: 'in.beeldengeluid.nl',
+          port: 80,
+          path: '/collectie/search/?q=&publiclyViewableResultsOnly=true',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'Content-Length': Buffer.byteLength(postData)
+          }
+        }
+
+        // set up the POST request
+        var postRequest = http.request(postOptions, function(response) {
+           response.setEncoding('application/json');
+           response.on('postData', function (chunk) {
+               console.log('Response: ' + chunk);
+           });
         });
 
-        client.ping({
-          requestTimeout: 30000,
+         // post the data
+         postRequest.write(postData);
+         postRequest.end();
 
-          // undocumented params are appended to the query string
-          hello: "elasticsearch!"
-        }, function (error) {
-            if (error) {
-            winston.log('error', "Error connecting to the elasticsearch server.");
-            return;
-            } else {
-              console.log('All is well');
-            }
-        });
     }
 }
