@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./src",
-    "startDev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --progress --colors",
-    "build": "./node_modules/webpack/bin/webpack.js --progress --colors",
+    "startDev": "concurrent --kill-others \"npm run nodemon\" \"npm run devServer\"",
+    "build": "webpack --progress --colors",
+    "nodemon": "nodemon ./src/index.js",
+    "devServer": "webpack-dev-server --progress --colors",
     "test": "return 1"
   },
   "repository": {
@@ -18,10 +20,12 @@
     "cookie-parser": "~1.3.5",
     "express": "~4.13.1",
     "express-handlebars": "^3.0.0",
+    "jquery": "^3.1.0",
     "winston": "^2.2.0",
     "wordpress": "^1.2.1"
   },
   "devDependencies": {
+    "concurrently": "^2.2.0",
     "css-loader": "^0.23.1",
     "handlebars-loader": "^1.3.0",
     "json-loader": "^0.5.4",
