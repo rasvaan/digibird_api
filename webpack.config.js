@@ -14,16 +14,18 @@ module.exports = {
         ]
     },
     output: {
-        path: path.resolve(__dirname, 'assets', 'js'),
-        filename: "digibird-[name].js"
+        path: path.resolve(__dirname, 'assets'),
+        filename: "js/digibird-[name].js"
     },
     module: {
         loaders: [
-            { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") }
+            { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") },
+            { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
+            { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" }
         ]
     },
     plugins: [
         // css files from the extract-text-plugin loader
-        new ExtractTextPlugin("../css/digibird-[name].css")
+        new ExtractTextPlugin("css/digibird-[name].css")
     ]
 };
