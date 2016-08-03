@@ -1,0 +1,51 @@
+/*******************************************************************************
+CSS Styling for Landing page
+*******************************************************************************/
+.container-tagline {
+	padding-top: 20px;
+    text-align: center;
+}
+
+.container-tagline .tagline {
+	font-size: 46px;
+}
+
+.marketing {
+    text-align: center;
+    margin-top: 50px;
+	margin-bottom: 25px;
+}
+
+.partners {
+    text-align: center;
+	background-color: #dddddd;
+	width: 100%;
+}
+
+.partners .logo {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.partners #vu-logo {
+    max-width: 80%;
+}
+
+.partners #naturalis-logo {
+    max-width: 60%;
+}
+
+.partners #rijksmuseum-logo {
+    max-width: 90%;
+}
+
+.jumbo-icon {
+    font-size: 10em;
+    color: #666666;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}

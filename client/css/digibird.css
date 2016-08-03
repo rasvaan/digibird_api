@@ -1,4 +1,8 @@
 /*******************************************************************************
+CSS styling used on multiple digibird pages.
+*******************************************************************************/
+
+/*******************************************************************************
 Navbar
 *******************************************************************************/
 #navbarImgLogo {
@@ -18,23 +22,8 @@ Navbar
 }
 
 /*******************************************************************************
-Landing page
+Banner
 *******************************************************************************/
-.container-tagline {
-	padding-top: 20px;
-    text-align: center;
-}
-
-.container-tagline .tagline {
-	font-size: 46px;
-}
-
-.marketing {
-    text-align: center;
-    margin-top: 50px;
-	margin-bottom: 25px;
-}
-
 .banner {
 	position: relative;
 }
@@ -75,29 +64,9 @@ Landing page
 	.banner .copyright {visibility: hidden; }
 }
 
-.partners {
-    text-align: center;
-	background-color: #dddddd;
-	width: 100%;
-}
-
-.partners .logo {
-    padding-top: 25px;
-    padding-bottom: 25px;
-}
-
-.partners #vu-logo {
-    max-width: 80%;
-}
-
-.partners #naturalis-logo {
-    max-width: 60%;
-}
-
-.partners #rijksmuseum-logo {
-    max-width: 90%;
-}
-
+/*******************************************************************************
+Footer
+*******************************************************************************/
 .footer {
 	padding-top: 10px;
     text-align: center;
@@ -109,60 +78,4 @@ Landing page
 	vertical-align: bottom;
 	width: 45px;
 	height: 15px;
-}
-
-.jumbo-icon {
-    font-size: 10em;
-    color: #666666;
-}
-
-.vcenter {
-    display: inline-block;
-    vertical-align: middle;
-    float: none;
-}
-
-/*******************************************************************************
-Blog page
-*******************************************************************************/
-.blog {
-	padding-top: 30px;
-}
-
-p.pblog {
-	line-height: 3.5;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 16px;
-	text-align: justify;
-}
-
-/*******************************************************************************
-People page
-*******************************************************************************/
-.persons {
-	margin-top: 25px;
-}
-
-.person-center {
-	height: auto;
-}
-
-.person-picture {
-	width: 80%;
-	display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.person-logo {
-	width: 50%;
-}
-
-.logo-container {
-	padding-top: 5px;
-	height: 50px;
-}
-
-#person-naturalis-logo {
-	width: 40%;
 }
