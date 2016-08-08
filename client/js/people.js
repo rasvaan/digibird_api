@@ -1,2 +1,1 @@
-require("../css/digibird.css");
-require("../css/digibird-people.css");
+require('../css/digibird-people.scss');

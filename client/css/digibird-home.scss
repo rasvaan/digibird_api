@@ -1,16 +1,18 @@
 /*******************************************************************************
 CSS Styling for Landing page
 *******************************************************************************/
-#tagline.container {
+@import "./digibird.scss";
+
+.container.tagline {
 	margin-top: 20px;
     text-align: center;
 }
 
-#tagline #tagline-text {
+.tagline .tagline-text {
 	font-size: 46px;
 }
 
-#marketing.container {
+.container.marketing {
 	margin-top: 20px;
     text-align: center;
 }
@@ -20,32 +22,32 @@ i.jumbo-icon {
     color: #666666;
 }
 
-#partners.container {
+.container.partners {
 	margin-top: 20px;
     text-align: center;
 	background-color: #dddddd;
 	width: 100%;
 }
 
-#partners #logos {
+.partners .logos {
 	padding-top: 25px;
     padding-bottom: 25px;
 }
 
-#logos .logo {
+.logos .logo {
 	display: inline-block;
 	vertical-align: middle;
 	float: none;
 }
 
-#partners #vu-logo {
+.partners #vu-logo {
     max-width: 80%;
 }
 
-#partners #naturalis-logo {
+.partners #naturalis-logo {
     max-width: 60%;
 }
 
-#partners #rijksmuseum-logo {
+.partners #rijksmuseum-logo {
     max-width: 90%;
 }
