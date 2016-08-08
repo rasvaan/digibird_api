@@ -1,4 +1,8 @@
-module.exports = {
+{
+    "bootstrapVersion": 3,
+    "useCustomIconFontPath": false,
+    "styleLoaders": ["style", "css", "sass"],
+    "extractStyles": false,
     "styles": {
         // Mixins
         "mixins": true,

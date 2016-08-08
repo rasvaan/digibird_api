@@ -5,17 +5,17 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
     entry: {
         "home": [
-            "bootstrap-loader?configFilePath=./src/theme/bootstrap.config.js",
+            "bootstrap-loader",
             "font-awesome-sass-loader!./src/theme/font-awesome-sass.config.js",
             "./client/js/home.js"
         ],
         "people": [
-            "bootstrap-loader?configFilePath=./src/theme/bootstrap.config.js",
+            "bootstrap-loader",
             "font-awesome-sass-loader!./src/theme/font-awesome-sass.config.js",
             "./client/js/people.js"
         ],
         "blog": [
-            "bootstrap-loader?configFilePath=./src/theme/bootstrap.config.js",
+            "bootstrap-loader",
             "font-awesome-sass-loader!./src/theme/font-awesome-sass.config.js",
             "./client/js/blog.js"
         ]
