@@ -38,7 +38,7 @@ module.exports = {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
-        }
+        },
         body: requestBody,//JSON.stringify(requestBody), // body of the request
         json: true // json serialization on the body = stringifies body to JSON
       };
