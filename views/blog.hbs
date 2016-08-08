@@ -18,7 +18,7 @@
     {{>banner banner="blog" title="Blog"}}
 
     <!-- blog posts -->
-    <div class="container blog">
+    <div class="container" id="blog">
         {{#each posts}}
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2">
@@ -32,7 +32,7 @@
                             <a class="blog-link" href={{this.link}}><i class="fa fa-wordpress"></i> Link to post</a>
                         </h6>
                     </div>
-                    <div class="col-sm-12 blog-posts">
+                    <div class="col-sm-12">
                         {{{this.content}}}
                     </div>
                 </div>

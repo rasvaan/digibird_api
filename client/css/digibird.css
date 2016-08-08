@@ -5,12 +5,12 @@ CSS styling used on multiple digibird pages.
 /*******************************************************************************
 Navbar
 *******************************************************************************/
-#navbarImgLogo {
+nav #navbarImgLogo {
 	height: 33px;
 	padding-bottom: 5px;
 }
 
-.navbar {
+nav.navbar {
 	background-color: rgba(30, 30, 30, 0.85);
 }
 

@@ -1,30 +1,26 @@
 /*******************************************************************************
 CSS styling for People page
 *******************************************************************************/
-.persons {
+#persons.container {
 	margin-top: 25px;
 }
 
-.person-center {
-	height: auto;
-}
-
-.person-picture {
+.person .picture {
 	width: 80%;
 	display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
-.person-logo {
+.person .logo {
 	width: 50%;
 }
 
-.logo-container {
+.person .logo-container {
 	padding-top: 5px;
 	height: 50px;
 }
 
-#person-naturalis-logo {
+.person #naturalis-logo {
 	width: 40%;
 }
