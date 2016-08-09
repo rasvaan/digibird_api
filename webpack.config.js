@@ -1,23 +1,22 @@
 var path = require('path');
-var webpack = require("webpack");
+var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     entry: {
         "home": [
-            "bootstrap-loader",
-            "font-awesome-sass-loader!./src/theme/font-awesome-sass.config.js",
             "./client/js/home.js"
         ],
         "people": [
-            "bootstrap-loader",
-            "font-awesome-sass-loader!./src/theme/font-awesome-sass.config.js",
             "./client/js/people.js"
         ],
         "blog": [
-            "bootstrap-loader",
-            "font-awesome-sass-loader!./src/theme/font-awesome-sass.config.js",
             "./client/js/blog.js"
+        ],
+        "vendor": [
+            "jquery",
+            "bootstrap-loader",
+            "font-awesome-sass-loader!./src/theme/font-awesome-sass.config.js"
         ]
     },
     output: {
@@ -35,6 +34,9 @@ module.exports = {
     plugins: [
         // css files from the extract-text-plugin loader
         new ExtractTextPlugin("css/digibird-[name].css"),
+        // split vendor files from app files
+        new webpack.optimize.CommonsChunkPlugin("vendor", "js/digibird-vendor.js"),
+        // add jquery to the global window
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"

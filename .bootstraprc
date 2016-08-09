@@ -2,7 +2,7 @@
     "bootstrapVersion": 3,
     "useCustomIconFontPath": false,
     "styleLoaders": ["style", "css", "sass"],
-    "extractStyles": false,
+    "extractStyles": true,
     "styles": {
         // Mixins
         "mixins": true,
