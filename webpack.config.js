@@ -16,7 +16,8 @@ module.exports = {
         "vendor": [
             "jquery",
             "bootstrap-loader",
-            "font-awesome-sass-loader!./src/theme/font-awesome-sass.config.js"
+            "font-awesome-sass-loader!./src/theme/font-awesome.config.js"
+            // "font-awesome-sass-loader"
         ]
     },
     output: {
