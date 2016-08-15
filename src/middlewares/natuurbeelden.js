@@ -21,10 +21,11 @@ module.exports = {
       var requestBody = {
         phrase:searchPhrase,
         page:'1',
+        name: 'StatusCodeError',
         numkeyframes:5,
         sorting:'SORT-DEF',
         mediaType:'ALL_MEDIA',
-        pagesize:12,
+        pagesize:2,
         startdate:null,
         enddate:null,
         publiclyViewableResultsOnly:'true',
@@ -39,7 +40,7 @@ module.exports = {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: requestBody,//JSON.stringify(requestBody), // body of the request
+        body: requestBody, // body of the request
         json: true // json serialization on the body = stringifies body to JSON
       };
 
@@ -50,8 +51,9 @@ module.exports = {
         console.log("PARSED BODY!!! end /n ========================= /n");
 
       })
-      .catch(function (error) {
-        console.log("ERROR!!! start /n ========================= end /n", error);
+      .catch(function (e) {
+        winston.log('error', e.response.request.uri.href, //same as e.options.uri,
+                    e.name, e.statusCode, e.error.systemerror);
       });
     }
 }
