@@ -17,7 +17,8 @@ node ./src/middlewares/blog.js
 
 var wordpress = require('wordpress');
 var winston = require('winston');
-var blogUtils = require('../helpers/blog');
+var path = require('path');
+var utils = require('../helpers/utils');
 var credentials = require('./wordpress_credentials');
 
 module.exports = {
@@ -51,7 +52,9 @@ module.exports = {
             }
             // write digibird blog posts to cache file
             if (digibirdPosts.length != 0) {
-                blogUtils.writeCacheJson(digibirdPosts);
+                var pathBlogFile = path.resolve(__dirname, '..', 'helpers/posts.json');
+
+                utils.writeJsonFile(pathBlogFile, digibirdPosts);
             } else {
                 winston.log('warning', "No posts found with DigBird tag.");
             }

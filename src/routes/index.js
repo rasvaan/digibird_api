@@ -1,4 +1,5 @@
-var blogUtils = require('../helpers/blog');
+var utils = require('../helpers/utils');
+//var blogCacheFile = require('../helpers/posts.json');
 
 module.exports.set = function(app) {
 
@@ -11,11 +12,14 @@ module.exports.set = function(app) {
     });
 
     app.get('/blog', function(req, res) {
-        //   get cached blog posts
-        var blogPosts = blogUtils.readCacheJson();
+        // get absolute path to blog file
+        var pathBlogFile = path.resolve(__dirname, '..', 'helpers/posts.json');
+
+        // get cached blog posts
+        var blogPosts = utils.readJsonFile(pathBlogFile);
 
         // replace content between [ ]
-        for (var i=0; i<blogPosts.length; i++)
+        for (var i = 0; i < blogPosts.length; i++)
             blogPosts[i].content = blogPosts[i].content.replace(/\s*\[.*?\]\s*/g, '');
 
         var data = { posts: blogPosts };

@@ -32,8 +32,8 @@ setInterval(function() {
     // 1 hour delay
 }, 3600000);
 
-var searchPhrase = 'kip';
-BenG.searchBenGMetadata(searchPhrase);
+var guciID = '8016TSCHORREN-NAT00Z023FS';
+var video = BenG.getVideoUrls(guciID);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
