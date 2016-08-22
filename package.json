@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./src",
-    "startDev": "nodemon ./src/index.js",
+    "dev": "nodemon ./src/index.js",
     "test": "return 1"
   },
   "repository": {

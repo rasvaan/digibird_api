@@ -26,14 +26,16 @@ setInterval(function() {
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
+    var err = new Error('Not found');
     err.status = 404;
-    next(err);
+    winston.log('error', err);
+    res.status(404).send('Not found');
 });
 
 // error handlers
 app.use(function(err, req, res, next) {
-    winston.log(err);
+    winston.log('error', err);
+    res.status(500).send('Internal server error');
 });
 
 
