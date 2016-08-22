@@ -4,40 +4,21 @@
   "private": true,
   "scripts": {
     "start": "node ./src",
-    "startDev": "concurrently --kill-others \"npm run nodemon\" \"npm run webpackWatch\"",
-    "build": "webpack --progress --colors",
-    "nodemon": "nodemon ./src/index.js",
-    "webpackWatch": "webpack --progress --colors --watch",
+    "startDev": "nodemon ./src/index.js",
     "test": "return 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rasvaan/digibird"
+    "url": "https://github.com/rasvaan/digibird_api"
   },
   "dependencies": {
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",
     "express": "~4.14.0",
-    "express-handlebars": "^3.0.0",
-    "font-awesome": "^4.6.3",
-    "jquery": "^3.1.0",
     "winston": "^2.2.0",
     "wordpress": "^1.2.1"
   },
   "devDependencies": {
-    "bootstrap-loader": "^1.1.0",
-    "bootstrap-sass": "^3.3.7",
-    "concurrently": "^2.2.0",
-    "css-loader": "^0.23.1",
-    "extract-text-webpack-plugin": "^1.0.1",
-    "file-loader": "^0.9.0",
-    "font-awesome-sass-loader": "^1.0.1",
-    "node-sass": "^3.8.0",
-    "nodemon": "^1.9.2",
-    "resolve-url-loader": "^1.6.0",
-    "sass-loader": "^4.0.0",
-    "style-loader": "^0.13.1",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.13.1"
+    "nodemon": "^1.9.2"
   }
 }

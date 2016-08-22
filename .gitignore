@@ -1,5 +1,4 @@
 node_modules
-npm-debug.log
-posts.json
+*.log
 *_credentials.js
-digibird.log
+posts.json
