@@ -35,6 +35,7 @@ setInterval(function() {
     // 1 hour delay
 }, 3600000);
 
+//test
 BenG.getMetadataVideos();
 
 // catch 404 and forward to error handler
