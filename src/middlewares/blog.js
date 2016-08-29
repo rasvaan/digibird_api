@@ -14,7 +14,6 @@ not necessary as the run of this script is scheduled:
 node ./src/middlewares/blog.js
 
 *******************************************************************************/
-
 var wordpress = require('wordpress');
 var winston = require('winston');
 var path = require('path');

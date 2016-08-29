@@ -10,6 +10,9 @@ var routes = require('./routes');
 
 var blog = require('./middlewares/blog');
 var BenG = require('./middlewares/natuurbeelden');
+var utils = require('./helpers/natuurbeelden');
+
+var request = require('request-promise-native');
 
 var app = express();
 
@@ -32,8 +35,7 @@ setInterval(function() {
     // 1 hour delay
 }, 3600000);
 
-var guciID = '8016TSCHORREN-NAT00Z023FS';
-var video = BenG.getVideoUrls(guciID);
+BenG.getMetadataVideos();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
