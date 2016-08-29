@@ -20,10 +20,7 @@ module.exports.set = function(app) {
     var platformId = req.query.platform;
 
     if(!platformId) {
-      var platformInfo = platforms.platforms();
-
-      // no specific platform specified, reply available platforms
-      res.json({platforms: platformInfo});
+      res.status(400).send('No platfom parameter provided');
     } else {
       var platform = platforms.platform(platformId);
 
@@ -31,13 +28,14 @@ module.exports.set = function(app) {
       .then(function(statistics) {
           res.json({ "platform": platform.name, "statistics": statistics });
       }, function(error) {
-          winston.log('error', "Error connecting to " + platform.name + ":", error);
-
-          res.json({
-              "platorm": platform.name,
-              "statistics": [{ "type": "Not available", "value":"" }]
-          });
+          winston.log('error', `Error connecting to ${platform.name}: ${error}`);
+          res.status(404).send(`Statistics for ${platform.name} are not available at this moment`);
       });
     }
+  });
+
+  app.get('/platforms', function(req, res) {
+    var platformInfo = platforms.platforms();
+    res.json({platforms: platformInfo});
   });
 };
