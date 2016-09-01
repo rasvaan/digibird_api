@@ -6,13 +6,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var winston = require('winston');
+
 var routes = require('./routes');
 
 var blog = require('./middlewares/blog');
 var BenG = require('./middlewares/natuurbeelden');
-var utils = require('./helpers/natuurbeelden');
-
-var request = require('request-promise-native');
+var utilsBenG = require('./helpers/natuurbeelden');
 
 var app = express();
 
@@ -35,8 +34,9 @@ setInterval(function() {
     // 1 hour delay
 }, 3600000);
 
-//test
-BenG.getMetadataVideos();
+// test
+//BenG.getMetadataVideos();
+utilsBenG.insertVideo();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

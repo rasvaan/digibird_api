@@ -62,6 +62,10 @@ module.exports = {
         if (data.hasOwnProperty(key)) {
           // get the guci ID for the current video record
           var guciID = data[key].details.guci;
+
+          // console.log('guciID:', guciID);
+          // console.log('details:', data[key].details);
+
           // add a new property in the data object named video, that contains
           // information about the video (like imageURL and videoURL). Initially,
           // this property has value null
@@ -72,8 +76,13 @@ module.exports = {
           .then(function(videoUrls) {
             if (videoUrls != null) {
                 // add image and video URL for the video
-                data[key].video.imageUrl = videoUrls.imageUrl;
-                data[key].video.videoUrl = videoUrls.videoUrl;
+                // data[key].video.imageUrl = videoUrls.imageUrl;
+                // data[key].video.videoUrl = videoUrls.videoUrl;
+                data[key].video = videoUrls;
+
+                //console.log(data[key].details.guci, ' -> ', data[key].video);
+                //console.log(guciID, ' -> ', data[key].video);
+                // console.log(data[key]);
             }
           });
         }
