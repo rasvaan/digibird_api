@@ -31,7 +31,7 @@ module.exports = {
     return { "url":url, "qs": query };
   },
   species: function(parameters) {
-    const platform = platforms.platform("naturalis");
+    const platform = platforms.platform("soortenregister");
     const query = { "genus": parameters.genus, "species": parameters.species };
     const url = `${platform.endpoint_location}/taxon/search/`;
 

@@ -20,6 +20,7 @@ module.exports = {
   objectsApi: function(platformId, parameters) {
     switch (platformId) {
       case 'soortenregister': return soortenRegister.request(parameters);
+      case 'xeno-canto': return xenoCanto.request(parameters);
     }
   }
 }

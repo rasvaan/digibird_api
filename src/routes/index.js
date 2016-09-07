@@ -2,17 +2,19 @@ var winston = require('winston');
 var blogUtils = require('../helpers/blog');
 var platformStatistics = require('../helpers/statistics');
 var platforms = require('../helpers/platforms');
+var objects = require('../helpers/objects');
 
 function objectParameters(query) {
   let parameters = {};
   const platformInput = query.platform;
   const genusInput = query.genus;
+  const speciesInput = query.species;
 
   if (!platformInput) {
     parameters.platform = 'all';
   } else {
     if (platforms.exists(platformInput)) {
-        parameters.platform = platformInput;
+      parameters.platform = platformInput;
     } else {
       throw new Error(`${platformInput} platform parameter is unknown.`);
     }
@@ -21,6 +23,12 @@ function objectParameters(query) {
   if (genusInput) {
     // TODO: match the input with loaded list
     parameters.genus = genusInput.toLowerCase();
+    parameters.request = 'genus';
+  }
+  if (speciesInput) {
+    // TODO: match the input with loaded list
+    parameters.species = speciesInput.toLowerCase();
+    parameters.request = 'species'; // make the request type more specific
   }
 
   return parameters;
@@ -65,7 +73,11 @@ module.exports.set = function(app) {
   app.get('/objects', function(req, res) {
     try {
       var parameters = objectParameters(req.query);
-      res.json(parameters);
+
+      objects.objects(parameters)
+      .then(function(data) {
+        res.json(data);
+      });
     } catch (error) {
       res.status(400).send(error.message);
     }
