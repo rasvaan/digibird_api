@@ -14,16 +14,16 @@ module.exports = {
       case 'genus': {
         options = this.genus(parameters);
 
-        return request(options).then((json) =>
-          JSON.parse(json)
-        );
+        return request(options).then((data) => {
+          return _this.processObjects(data);
+        });
       }
       case 'species': {
         options = this.species(parameters);
 
-        return request(options).then((json) =>
-          JSON.parse(json)
-        );
+        return request(options).then((data) => {
+          return _this.processObjects(data);
+        });
       }
       case 'metadata': {
         options = this.metadataOptions();
@@ -45,6 +45,16 @@ module.exports = {
     const query = { "query": `${parameters.genus} ${parameters.species}`};
 
     return { "url":url, "qs": query };
+  },
+  processObjects: function(string) {
+    const data = JSON.parse(string);
+    let sounds = [];
+
+    for (let i=0; i<data.recordings.length; i++) {
+      sounds[sounds.length] = data.recordings[i].file;
+    }
+
+    return sounds;
   },
   metadataOptions: function() {
     const url = platforms.platform("xeno-canto").endpoint_location;
