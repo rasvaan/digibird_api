@@ -8,33 +8,55 @@ var winston = require('winston');
 module.exports = {
   request: function(parameters) {
     let options;
+    let _this = this;
 
     switch(parameters.request) {
       case 'genus': {
         options = this.genus(parameters);
-        break;
+
+        return request(options).then((json) =>
+          JSON.parse(json)
+        );
       }
       case 'species': {
         options = this.species(parameters);
-        break;
+
+        return request(options).then((json) =>
+          JSON.parse(json)
+        );
+      }
+      case 'metadata': {
+        options = this.metadataOptions();
+
+        return request(options).then((data) => {
+          return _this.processMetadata(data);
+        });
       }
     }
-
-    return request(options)
-    .then((json) => JSON.parse(json));
   },
   genus: function(parameters) {
-    const platform = platforms.platform('xeno-canto');
+    const url = platforms.platform('xeno-canto').endpoint_location;
     const query = { "query": `gen:${parameters.genus}` };
-    const url = platform.endpoint_location;
 
     return { "url":url, "qs": query };
   },
   species: function(parameters) {
-    const platform = platforms.platform("xeno-canto");
+    const url = platforms.platform("xeno-canto").endpoint_location;
     const query = { "query": `${parameters.genus} ${parameters.species}`};
-    const url = platform.endpoint_location;
 
     return { "url":url, "qs": query };
+  },
+  metadataOptions: function() {
+    const url = platforms.platform("xeno-canto").endpoint_location;
+
+    return { "url":url, "qs": { "query": 'cnt:netherlands' } };
+  },
+  processMetadata: function(data) {
+    const metadata = JSON.parse(data);
+
+    return [{
+      "type": 'Dutch contributions',
+      "value": metadata.numRecordings
+    }];
   }
 }

@@ -15,12 +15,22 @@ module.exports = {
 
     switch(platform.endpoint_type) {
       case 'json-api': return this.objectsApi(platform.id, parameters);
+      default: {
+        return new Promise(function(resolve, reject) {
+          resolve({ "error": "Not yet available" });
+        });
+      }
     }
   },
   objectsApi: function(platformId, parameters) {
     switch (platformId) {
       case 'soortenregister': return soortenRegister.request(parameters);
       case 'xeno-canto': return xenoCanto.request(parameters);
+      default: {
+        return new Promise(function(resolve, reject) {
+          resolve({ "error": "Not yet available" });
+        });
+      }
     }
   }
 }

@@ -12,16 +12,19 @@ module.exports = {
     switch(parameters.request) {
       case 'genus': {
         options = this.genus(parameters);
-        break;
+
+        return request(options).then((json) =>
+          JSON.parse(json)
+        );
       }
       case 'species': {
         options = this.species(parameters);
-        break;
+
+        return request(options).then((json) =>
+          JSON.parse(json)
+        );
       }
     }
-
-    return request(options)
-    .then((json) => JSON.parse(json));
   },
   genus: function(parameters) {
     const platform = platforms.platform('soortenregister');

@@ -34,6 +34,22 @@ function objectParameters(query) {
   return parameters;
 }
 
+function statisticsParameters(query, res) {
+  const platformInput = query.platform;
+
+  if(!platformInput) {
+    res.status(400).send('No platfom parameter provided');
+    return false;
+  }  else {
+    if (platforms.exists(platformInput)) {
+      return platformInput;
+    } else {
+      res.status(404).send(`${platformInput} platform parameter is unknown.`);
+      return false;
+    }
+  }
+}
+
 module.exports.set = function(app) {
   app.get('/blog', function(req, res) {
     //   get cached blog posts
@@ -48,13 +64,10 @@ module.exports.set = function(app) {
   });
 
   app.get('/statistics', function(req, res) {
-    var platformId = req.query.platform;
+    const platformId = statisticsParameters(req.query, res);
+    const platform = platforms.platform(platformId);
 
-    if(!platformId) {
-      res.status(400).send('No platfom parameter provided');
-    } else {
-      var platform = platforms.platform(platformId);
-
+    if (platformId) {
       platformStatistics.statistics(platformId)
       .then(function(statistics) {
           res.json({ "platform": platform.name, "statistics": statistics });
