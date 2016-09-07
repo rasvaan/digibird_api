@@ -3,6 +3,29 @@ var blogUtils = require('../helpers/blog');
 var platformStatistics = require('../helpers/statistics');
 var platforms = require('../helpers/platforms');
 
+function objectParameters(query) {
+  let parameters = {};
+  const platformInput = query.platform;
+  const genusInput = query.genus;
+
+  if (!platformInput) {
+    parameters.platform = 'all';
+  } else {
+    if (platforms.exists(platformInput)) {
+        parameters.platform = platformInput;
+    } else {
+      throw new Error(`${platformInput} platform parameter is unknown.`);
+    }
+  }
+
+  if (genusInput) {
+    // TODO: match the input with loaded list
+    parameters.genus = genusInput.toLowerCase();
+  }
+
+  return parameters;
+}
+
 module.exports.set = function(app) {
   app.get('/blog', function(req, res) {
     //   get cached blog posts
@@ -37,5 +60,14 @@ module.exports.set = function(app) {
   app.get('/platforms', function(req, res) {
     var platformInfo = platforms.platforms();
     res.json({platforms: platformInfo});
+  });
+
+  app.get('/objects', function(req, res) {
+    try {
+      var parameters = objectParameters(req.query);
+      res.json(parameters);
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
   });
 };
