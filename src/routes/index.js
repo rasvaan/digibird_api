@@ -3,76 +3,32 @@ var blogUtils = require('../helpers/blog');
 var platformStatistics = require('../helpers/statistics');
 var platforms = require('../helpers/platforms');
 var objects = require('../helpers/objects');
-
-function objectParameters(query) {
-  let parameters = {};
-  const platformInput = query.platform;
-  const genusInput = query.genus;
-  const speciesInput = query.species;
-
-  if (!platformInput) {
-    parameters.platform = 'all';
-  } else {
-    if (platforms.exists(platformInput)) {
-      parameters.platform = platformInput;
-    } else {
-      throw new Error(`${platformInput} platform parameter is unknown.`);
-    }
-  }
-
-  if (genusInput) {
-    // TODO: match the input with loaded list
-    parameters.genus = genusInput.toLowerCase();
-    parameters.request = 'genus';
-  }
-  if (speciesInput) {
-    // TODO: match the input with loaded list
-    parameters.species = speciesInput.toLowerCase();
-    parameters.request = 'species'; // make the request type more specific
-  }
-
-  return parameters;
-}
-
-function statisticsParameters(query, res) {
-  const platformInput = query.platform;
-
-  if(!platformInput) {
-    res.status(400).send('No platfom parameter provided');
-    return false;
-  }  else {
-    if (platforms.exists(platformInput)) {
-      return platformInput;
-    } else {
-      res.status(404).send(`${platformInput} platform parameter is unknown.`);
-      return false;
-    }
-  }
-}
+var interpret = require('../helpers/request_interpretation');
 
 module.exports.set = function(app) {
-  app.get('/blog', function(req, res) {
-    //   get cached blog posts
-    var blogPosts = blogUtils.readCacheJson();
 
-    // replace content between [ ]
-    for (var i=0; i<blogPosts.length; i++)
-        blogPosts[i].content = blogPosts[i].content.replace(/\s*\[.*?\]\s*/g, '');
+  app.get('/objects', function(req, res) {
+    const parameters = interpret.objectParameters(req.query, res);
 
-    // send the blog posts to the client 'blog' page
-    res.json({ posts: blogPosts });
+    if (parameters) {
+      objects.get(parameters)
+      .then(function(data) {
+        res.json(data);
+      }, function(error) {
+        res.status(400).send(error.message);
+      });
+    }
   });
 
   app.get('/statistics', function(req, res) {
-    const platformId = statisticsParameters(req.query, res);
+    const platformId = interpret.statisticsParameters(req.query, res);
     const platform = platforms.platform(platformId);
 
     if (platformId) {
-      platformStatistics.statistics(platformId)
+      platformStatistics.get(platformId)
       .then(function(statistics) {
           res.json({ "platform": platform.name, "statistics": statistics });
       }, function(error) {
-          winston.log('error', `Error connecting to ${platform.name}: ${error}`);
           res.status(404).send(`Statistics for ${platform.name} are not available at this moment`);
       });
     }
@@ -83,16 +39,15 @@ module.exports.set = function(app) {
     res.json({platforms: platformInfo});
   });
 
-  app.get('/objects', function(req, res) {
-    try {
-      var parameters = objectParameters(req.query);
+  app.get('/blog', function(req, res) {
+    //   get cached blog posts
+    var blogPosts = blogUtils.readCacheJson();
 
-      objects.objects(parameters)
-      .then(function(data) {
-        res.json(data);
-      });
-    } catch (error) {
-      res.status(400).send(error.message);
-    }
+    // replace content between [ ]
+    for (var i=0; i<blogPosts.length; i++)
+        blogPosts[i].content = blogPosts[i].content.replace(/\s*\[.*?\]\s*/g, '');
+
+    // send the blog posts to the client 'blog' page
+    res.json({ posts: blogPosts });
   });
 };

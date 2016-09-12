@@ -10,7 +10,7 @@ var tripleStore = require('../middlewares/triple-store');
 
 module.exports = {
   // return a promise of objects of the platform
-  objects: function(parameters) {
+  get: function(parameters) {
     const platform = platformMetadata.platform(parameters.platform);
 
     switch(platform.endpoint_type) {
