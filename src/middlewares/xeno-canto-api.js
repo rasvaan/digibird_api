@@ -4,6 +4,7 @@ Xeno-canto API middleware
 var platforms = require('../helpers/platforms');
 var request = require('request-promise-native');
 var winston = require('winston');
+var Aggregation = require('../helpers/Aggregation');
 
 module.exports = {
   request: function(parameters) {
@@ -48,13 +49,19 @@ module.exports = {
   },
   processObjects: function(string) {
     const data = JSON.parse(string);
-    let sounds = [];
+    let aggregations = [];
 
     for (let i=0; i<data.recordings.length; i++) {
-      sounds[sounds.length] = data.recordings[i].file;
+      const result = data.recordings[i];
+
+      aggregations[aggregations.length] = new Aggregation(
+        `${result.url}/aggregation`,
+        result.url,
+        result.file
+      );
     }
 
-    return sounds;
+    return aggregations;
   },
   metadataOptions: function() {
     const url = platforms.platform("xeno-canto").endpoint_location;
