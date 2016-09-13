@@ -18,12 +18,13 @@ var natuurbeeldenUtils = require('../helpers/natuurbeelden');
 var URL = 'http://api2.video.beeldengeluid.videodock.com/api/2.0/guci/';
 
 module.exports = {
-    getVideoUrls: function(guciID) {
+    // retrieve the image and video Urls from VideoDock
+    getVideoUrls: function(video) {
 
       // configuration of GET request
       var options = {
         method: 'GET',
-        uri: URL + guciID, // URL to hit
+        uri: URL + video.guciID, // URL to hit
         headers: {
           'Content-Type': 'application/json'
         },
@@ -33,10 +34,9 @@ module.exports = {
       // return a promise with the video information
       return request(options)
       .then(function (response) {
-        var video = {
-          imageUrl: response.player.posterUrl,
-          videoUrl: response.player.stream.vodUrl
-        };
+        // add the image and video Urls for the current video
+        video.imageUrl = response.player.posterUrl;
+        video.videoUrl = response.player.stream.vodUrl;
 
         return video;
       })
@@ -54,37 +54,35 @@ module.exports = {
       var filePath = path.resolve(__dirname, '..', 'helpers/natuurbeelden_selection.json');
       var data = utils.readJsonFile(filePath);
 
-      var totCount = Object.keys(data).length;
-      console.log("Count:", totCount);
+      // var totCount = Object.keys(data).length;
+      // console.log("Count:", totCount);
 
       // for every selected video
       for (var key in data) {
         if (data.hasOwnProperty(key)) {
           // get the guci ID for the current video record
-          var guciID = data[key].details.guci;
+          var video = {
+            guciID: data[key].details.guci
+          };
+          // get the selecties object, where title and duration are
+          var selecties = data[key].details.selecties;
 
-          // console.log('guciID:', guciID);
-          // console.log('details:', data[key].details);
+          // retrieve the title and the duration of the video
+          for (var k in selecties) {
+            if (data.hasOwnProperty(k)) {
+              video.title = selecties[k].selectie.titel;
+              video.duration = selecties[k].tijdsduur;
 
-          // add a new property in the data object named video, that contains
-          // information about the video (like imageURL and videoURL). Initially,
-          // this property has value null
-          data[key].video = null;
-
-          // get video information for the current record from VideoDock
-          this.getVideoUrls(guciID)
-          .then(function(videoUrls) {
-            if (videoUrls != null) {
-                // add image and video URL for the video
-                // data[key].video.imageUrl = videoUrls.imageUrl;
-                // data[key].video.videoUrl = videoUrls.videoUrl;
-                data[key].video = videoUrls;
-
-                //console.log(data[key].details.guci, ' -> ', data[key].video);
-                //console.log(guciID, ' -> ', data[key].video);
-                // console.log(data[key]);
+              // get video information for the current video from VideoDock
+              this.getVideoUrls(video)
+              .then(function(videoUrls) {
+                if (videoUrls != null) {
+                  // here make API call to the Waisda MySQL API and insert every video
+                  console.log(videoUrls);
+                }
+              });
             }
-          });
+          }
         }
       }
     }
