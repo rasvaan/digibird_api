@@ -4,7 +4,9 @@ Xeno-canto API middleware
 var platforms = require('../helpers/platforms');
 var request = require('request-promise-native');
 var winston = require('winston');
-var Aggregation = require('../helpers/Aggregation');
+var Aggregation = require('../classes/Aggregation');
+var CulturalObject = require('../classes/CulturalObject');
+var WebResource = require('../classes/WebResource');
 
 module.exports = {
   request: function(parameters) {
@@ -16,14 +18,14 @@ module.exports = {
         options = this.genus(parameters);
 
         return request(options).then((data) => {
-          return _this.processObjects(data);
+          return _this.processAggregations(data);
         });
       }
       case 'species': {
         options = this.species(parameters);
 
         return request(options).then((data) => {
-          return _this.processObjects(data);
+          return _this.processAggregations(data);
         });
       }
       case 'metadata': {
@@ -47,8 +49,9 @@ module.exports = {
 
     return { "url":url, "qs": query };
   },
-  processObjects: function(string) {
+  processAggregations: function(string) {
     const data = JSON.parse(string);
+    const SOUND = 'http://purl.org/dc/dcmitype/Sound';
     let aggregations = [];
 
     for (let i=0; i<data.recordings.length; i++) {
@@ -56,8 +59,8 @@ module.exports = {
 
       aggregations[aggregations.length] = new Aggregation(
         `${result.url}/aggregation`,
-        result.url,
-        result.file
+        new CulturalObject(result.url),
+        new WebResource(result.file, SOUND)
       );
     }
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
-DigiBird integration module
-
+DigiBird Aggregation class
+Aggregation object with a structure corresponding to ore aggregations
 *******************************************************************************/
 class Aggregation {
-  constructor(uri, object, webResource) {
+  constructor(uri, culturalObject, webResource) {
     this.uri = uri;
-    this.object = object; // simple string for now
-    this.webResource = webResource; // simple string for now
+    this.culturalObject = culturalObject;
+    this.webResource = webResource;
   }
   toJSON() {
     const json =
@@ -14,8 +14,8 @@ class Aggregation {
       "aggregation":
       {
         "uri": this.uri,
-        "object": this.object,
-        "webResource": this.webResource
+        "object": this.culturalObject.toJSON(),
+        "web_resource": this.webResource.toJSON()
       }
     };
 
