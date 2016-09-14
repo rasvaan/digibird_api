@@ -8,21 +8,18 @@ class Aggregation {
     this.culturalObject = culturalObject;
     this.webResource = webResource;
   }
-  toJSON() {
+  toJSONLD() {
     const json =
     {
       "aggregation":
       {
         "uri": this.uri,
-        "object": this.culturalObject.toJSON(),
-        "web_resource": this.webResource.toJSON()
+        "object": this.culturalObject.toJSONLD(),
+        "web_resource": this.webResource.toJSONLD()
       }
     };
 
     return json;
-  }
-  toJSONLD() {
-    return 'something fancier than this';
   }
 }
 

@@ -7,11 +7,8 @@ class WebResource {
     this.uri = uri;
     this.type = type;
   }
-  toJSON() {
-    return { "uri": this.uri, "type": this.type };
-  }
   toJSONLD() {
-    return 'something fancier than this';
+    return { "uri": this.uri, "type": this.type };
   }
 }
 

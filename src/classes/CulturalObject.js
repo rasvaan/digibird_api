@@ -6,11 +6,8 @@ class CulturalObject {
   constructor(uri) {
     this.uri = uri;
   }
-  toJSON() {
-    return { "uri": this.uri };
-  }
   toJSONLD() {
-    return 'something fancier than this';
+    return { "uri": this.uri };
   }
 }
 
