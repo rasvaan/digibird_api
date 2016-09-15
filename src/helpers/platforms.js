@@ -26,13 +26,7 @@ module.exports = {
     });
   },
   platformIds: function() {
-    var data = this.platforms();
-    var platformIds = [];
-
-    for (var i=0; i<data.length; i++)
-        platformIds[i] = data[i].id;
-
-    return platformIds;
+    return this.platforms().map(platform => platform.id);
   },
   exists: function(id) {
     var platforms = this.platforms();

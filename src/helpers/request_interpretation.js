@@ -69,21 +69,27 @@ module.exports = {
   },
   platformParameter: function(query, res) {
     /* Three situations to handle:
-    *  1. No parameter given -> return null
-    *  2. Correct platform parameter -> return input
-    *  3. Platform does not exist -> 404 response & return false
+    *  1. No parameter given -> return all available platforms
+    *  2. Single parameter given -> put in array and loop once
+    *  3. Array of platforms -> for every platform
+    *     3.1 Correct platform parameter -> add to verified
+    *     3.2 Platform does not exist -> 404 response & return false
     */
-    const platformInput = query.platform;
+    let input = query.platform;
+    let platformParameters = [];
 
-    if(!platformInput) {
-      return null;
-    }
+    if (!input) return platforms.platformIds();
+    input = typeof input === 'string' ? [input] : input;
 
-    if (platforms.exists(platformInput)) {
-        return platformInput;
-    } else {
-        res.status(404).send(`${platformInput} platform parameter is unknown.`);
+    for (let i=0; i<input.length; i++) {
+      if (platforms.exists(input[i])) {
+        platformParameters.push(input[i]);
+      } else {
+        res.status(404).send(`${input[i]} platform parameter is unknown.`);
         return false;
+      }
     }
+
+    return platformParameters;
   }
 }
