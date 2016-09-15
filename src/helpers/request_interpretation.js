@@ -26,7 +26,9 @@ module.exports = {
     }
   },
   birdParameters: function(query, res) {
-    /* This function interprets the type of object requested:
+    /* Return parameters object containging type of request and bird species
+    *
+    *  This function interprets the type of object requested:
     *  1. No parameters provided -> 400 response & return nul
     *  2. Input is added to parameters object and request property is set to
     *     most specific type of object query (common -> genus -> species)
@@ -58,11 +60,13 @@ module.exports = {
     return parameters;
   },
   platformParameter: function(query, res) {
-   /* Three situations to handle:
-    *  1. No parameter given -> return null
-    *  2. Correct platform parameter -> return input
-    *  3. Platform does not exist -> 404 response & return false
-    */
+    /* Return platform string based on url parameter
+     *
+     *  Three situations to handle:
+     *  1. No parameter given -> return null
+     *  2. Correct platform parameter -> return input
+     *  3. Platform does not exist -> 404 response & return false
+     */
     const platformInput = query.platform;
 
     if(!platformInput) return null;
@@ -75,7 +79,9 @@ module.exports = {
     }
   },
   platformParameters: function(query, res) {
-    /* Three situations to handle:
+    /* Return array of platform strings based on url parameters
+    *
+    *  Three situations to handle:
     *  1. No parameter given -> return all available platforms
     *  2. Single parameter given -> put in array and loop once
     *  3. Array of platforms -> for every platform
