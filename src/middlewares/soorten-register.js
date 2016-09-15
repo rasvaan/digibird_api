@@ -4,6 +4,9 @@ Soortenregister API middleware
 var platforms = require('../helpers/platforms');
 var request = require('request-promise-native');
 var winston = require('winston');
+var Aggregation = require('../classes/Aggregation');
+var CulturalObject = require('../classes/CulturalObject');
+var WebResource = require('../classes/WebResource');
 
 module.exports = {
   request: function(parameters) {
@@ -15,14 +18,14 @@ module.exports = {
         options = this.genus(parameters);
 
         return request(options).then((data) => {
-          return _this.processObjects(data);
+          return _this.processAggregations(data);
         });
       }
       case 'species': {
         options = this.species(parameters);
 
         return request(options).then((data) => {
-          return _this.processObjects(data);
+          return _this.processAggregations(data);
         });
       }
     }
@@ -48,14 +51,21 @@ module.exports = {
 
     return { "url":url, "qs": query };
   },
-  processObjects: function(string) {
+  processAggregations: function(string) {
     const data = JSON.parse(string);
-    let images = [];
+    const IMAGE = 'dctype:Image';
+    let aggregations = [];
 
     for (let i=0; i<data.searchResults.length; i++) {
-      images[images.length] = data.searchResults[i].result.serviceAccessPoints.MEDIUM_QUALITY.accessUri;
+      const result = data.searchResults[i].result;
+
+      aggregations[aggregations.length] = new Aggregation(
+        `http://www.nederlandsesoorten.nl/${result.sourceSystemId}/aggregation`,
+        new CulturalObject(`http://www.nederlandsesoorten.nl/${result.sourceSystemId}`),
+        new WebResource(result.serviceAccessPoints.MEDIUM_QUALITY.accessUri, IMAGE)
+      );
     }
 
-    return images;
+    return aggregations;
   }
 }

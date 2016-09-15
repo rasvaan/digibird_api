@@ -4,19 +4,15 @@ var platformStatistics = require('../helpers/statistics');
 var platforms = require('../helpers/platforms');
 var objects = require('../helpers/objects');
 var interpret = require('../helpers/request_interpretation');
-var Results = require('../classes/Results');
 
 module.exports.set = function(app) {
 
   app.get('/objects', function(req, res) {
     const parameters = interpret.objectParameters(req.query, res);
-    let results = new Results();
 
     if (parameters) {
       objects.get(parameters)
-      .then(function(aggregations) {
-        results.addAggregations(aggregations);
-        results.addPlatform('xeno-canto');
+      .then(function(results) {
         let jsonLd = results.toJSONLD();
 
         res.json(jsonLd);

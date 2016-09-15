@@ -7,6 +7,7 @@ var winston = require('winston');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
 var tripleStore = require('../middlewares/triple-store');
+var Results = require('../classes/Results');
 
 module.exports = {
   // return a promise of objects of the platform
@@ -24,8 +25,22 @@ module.exports = {
   },
   objectsApi: function(platformId, parameters) {
     switch (platformId) {
-      case 'soortenregister': return soortenRegister.request(parameters);
-      case 'xeno-canto': return xenoCanto.request(parameters);
+      case 'soortenregister': {
+        return soortenRegister.request(parameters).then((aggregations) => {
+          let soortenResults = new Results();
+          soortenResults.addAggregations(aggregations);
+          soortenResults.addPlatform('soortenregister');
+          return soortenResults;
+        });
+      }
+      case 'xeno-canto': {
+        return xenoCanto.request(parameters).then((aggregations) => {
+          let xenoResults = new Results();
+          xenoResults.addAggregations(aggregations);
+          xenoResults.addPlatform('xeno-canto');
+          return xenoResults;
+        });
+      }
       default: {
         return new Promise(function(resolve, reject) {
           resolve({ "error": "Not yet available" });
