@@ -9,15 +9,15 @@ class Results {
     this.platforms = [];
   }
   addAggregation(aggregation) {
-    // add one Aggregation object to the aggregationss array
+    // add one Aggregation object to the aggregations array
     this.results.push(aggregation);
   }
   addAggregations(aggregations) {
-    // add an array of Aggregation objects to the aggregationss array
+    // add an array of Aggregation objects to the aggregations array
     this.results = this.results.concat(aggregations);
   }
   addPlatform(platform) {
-    // add one platform to the platforms array
+    // add one platform object to the platforms array
     this.platforms.push(platform);
   }
   addPlatforms(platforms) {
