@@ -8,24 +8,14 @@ let platforms = require('../helpers/platforms');
 
 module.exports = {
   objectParameters: function(query, res) {
+    // retrieve information about the requested bird and platforms
     let parameters = this.birdParameters(query, res);
-    const platformParameter = this.platformParameter(query, res);
+    const platformParameters = this.platformParameters(query, res);
 
-    // no correct query given
-    if (parameters === null) {
-      return false;
-    }
-
-    // add platform parameter to object
-    if (platformParameter === null) {
-      parameters.platform = 'all';
-    } else {
-      parameters.platform = platformParameter;
-    }
-
-    return parameters;
+    return parameters.platforms = platformParameters;
   },
   statisticsParameters: function(query, res) {
+    // retrieve one platform
     const platformParameter = this.platformParameter(query, res);
 
     if (platformParameter === null) {
@@ -68,6 +58,23 @@ module.exports = {
     return parameters;
   },
   platformParameter: function(query, res) {
+   /* Three situations to handle:
+    *  1. No parameter given -> return null
+    *  2. Correct platform parameter -> return input
+    *  3. Platform does not exist -> 404 response & return false
+    */
+    const platformInput = query.platform;
+
+    if(!platformInput) return null;
+
+    if (platforms.exists(platformInput)) {
+        return platformInput;
+    } else {
+        res.status(404).send(`${platformInput} platform parameter is unknown.`);
+        return false;
+    }
+  },
+  platformParameters: function(query, res) {
     /* Three situations to handle:
     *  1. No parameter given -> return all available platforms
     *  2. Single parameter given -> put in array and loop once
