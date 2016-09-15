@@ -4,6 +4,7 @@ var platformStatistics = require('../helpers/statistics');
 var platforms = require('../helpers/platforms');
 var objects = require('../helpers/objects');
 var interpret = require('../helpers/request_interpretation');
+var Results = require('../classes/Results');
 
 module.exports.set = function(app) {
 
@@ -12,8 +13,17 @@ module.exports.set = function(app) {
 
     if (parameters) {
       objects.get(parameters)
-      .then(function(results) {
-        let jsonLd = results.toJSONLD();
+      .then(function(resultsArray) {
+        let mergedResults = new Results();
+
+        // simple merge of results
+        resultsArray.forEach((results) => {
+          mergedResults.addAggregations(results.results);
+          mergedResults.addPlatform(results.platforms[0]);
+        });
+
+        // convert to json-ld
+        let jsonLd = mergedResults.toJSONLD();
 
         res.json(jsonLd);
       }, function(error) {
@@ -37,8 +47,7 @@ module.exports.set = function(app) {
   });
 
   app.get('/platforms', function(req, res) {
-    var platformInfo = platforms.platforms();
-    res.json({platforms: platformInfo});
+    res.json({ platforms: platforms.platforms() });
   });
 
   app.get('/blog', function(req, res) {

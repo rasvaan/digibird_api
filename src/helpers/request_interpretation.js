@@ -10,9 +10,9 @@ module.exports = {
   objectParameters: function(query, res) {
     // retrieve information about the requested bird and platforms
     let parameters = this.birdParameters(query, res);
-    const platformParameters = this.platformParameters(query, res);
+    parameters.platforms = this.platformParameters(query, res);
 
-    return parameters.platforms = platformParameters;
+    return parameters;
   },
   statisticsParameters: function(query, res) {
     // retrieve one platform

@@ -10,18 +10,30 @@ var tripleStore = require('../middlewares/triple-store');
 var Results = require('../classes/Results');
 
 module.exports = {
-  // return a promise of objects of the platform
   get: function(parameters) {
-    const platform = platformMetadata.platform(parameters.platform);
+    /* Execute a list of promises obtaining objects
+     *
+     * Create promises based on provided parameters. It is possible to request
+     * integrated results from multiple platforms at once, hence the loop through
+     * the platforms parameter.
+     */
+    let promises = [];
 
-    switch(platform.endpoint_type) {
-      case 'json-api': return this.objectsApi(platform.id, parameters);
-      default: {
-        return new Promise(function(resolve, reject) {
-          resolve({ "error": "Not yet available" });
-        });
+    for (let i=0; i<parameters.platforms.length; i++) {
+      const platform = platformMetadata.platform(parameters.platforms[i]);
+      switch(platform.endpoint_type) {
+        case 'json-api': {
+          promises[i] = this.objectsApi(platform.id, parameters);
+        }
+        // default: {
+        //   promises[i] = new Promise(function(resolve, reject) {
+        //     resolve({ "error": "Endpoint type not yet available" });
+        //   });
+        // }
       }
     }
+
+    return Promise.all(promises);
   },
   objectsApi: function(platformId, parameters) {
     switch (platformId) {
@@ -43,7 +55,7 @@ module.exports = {
       }
       default: {
         return new Promise(function(resolve, reject) {
-          resolve({ "error": "Not yet available" });
+          resolve({ "error": "Platform not yet available" });
         });
       }
     }
