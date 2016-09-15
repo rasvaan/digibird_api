@@ -51,7 +51,7 @@ module.exports = {
   },
   processAggregations: function(string) {
     const data = JSON.parse(string);
-    const SOUND = 'http://purl.org/dc/dcmitype/Sound';
+    const SOUND = 'dctype:Sound';
     let aggregations = [];
 
     for (let i=0; i<data.recordings.length; i++) {

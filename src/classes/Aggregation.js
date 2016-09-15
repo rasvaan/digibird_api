@@ -9,17 +9,15 @@ class Aggregation {
     this.webResource = webResource;
   }
   toJSONLD() {
-    const json =
+    const jsonLd =
     {
-      "aggregation":
-      {
-        "uri": this.uri,
-        "object": this.culturalObject.toJSONLD(),
-        "web_resource": this.webResource.toJSONLD()
-      }
+      "@id": this.uri,
+      "@type": "ore:Aggregation",
+      "edm:aggregatedCHO": this.culturalObject.toJSONLD(),
+      "edm:hasView": this.webResource.toJSONLD()
     };
 
-    return json;
+    return jsonLd;
   }
 }
 

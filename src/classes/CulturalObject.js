@@ -5,9 +5,16 @@ Metadata about a pretty cultural heritage object
 class CulturalObject {
   constructor(uri) {
     this.uri = uri;
+    this.type = 'edm:ProvidedCHO';
   }
   toJSONLD() {
-    return { "uri": this.uri };
+    const jsonLd =
+    {
+      "@id": this.uri,
+      "@type": this.type
+    }
+
+    return jsonLd;
   }
 }
 
