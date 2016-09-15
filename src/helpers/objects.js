@@ -24,12 +24,16 @@ module.exports = {
       switch(platform.endpoint_type) {
         case 'json-api': {
           promises[i] = this.objectsApi(platform.id, parameters);
+          break;
         }
-        // default: {
-        //   promises[i] = new Promise(function(resolve, reject) {
-        //     resolve({ "error": "Endpoint type not yet available" });
-        //   });
-        // }
+        default: {
+          promises[i] = new Promise(function(resolve, reject) {
+            const error = new Error(
+              `${platform.endpoint_type} for ${platform.id} is not yet available`
+            );
+            reject(error);
+          });
+        }
       }
     }
 
@@ -55,7 +59,8 @@ module.exports = {
       }
       default: {
         return new Promise(function(resolve, reject) {
-          resolve({ "error": "Platform not yet available" });
+          const error = new Error(`${platformId} is not yet available`);
+          reject(error);
         });
       }
     }

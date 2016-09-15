@@ -18,8 +18,10 @@ module.exports.set = function(app) {
 
         // simple merge of results
         resultsArray.forEach((results) => {
-          mergedResults.addAggregations(results.results);
-          mergedResults.addPlatform(results.platforms[0]);
+          if (!results.unavailable) {
+            mergedResults.addAggregations(results.results);
+            mergedResults.addPlatform(results.platforms[0]);
+          }
         });
 
         // convert to json-ld
