@@ -18,12 +18,9 @@ module.exports.set = function(app) {
 
         // simple merge of results
         resultsArray.forEach((results) => {
-          if (!results.unavailable) {
-            mergedResults.addAggregations(results.results);
-            mergedResults.addPlatform(results.platforms[0]);
-          }
+          mergedResults.addAggregations(results.results);
+          mergedResults.addPlatform(results.platforms[0]);
         });
-
         // convert to json-ld
         let jsonLd = mergedResults.toJSONLD();
 

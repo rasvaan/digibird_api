@@ -26,14 +26,12 @@ class Results {
   }
   getContext() {
     // construct the JSON-LD context object
-    // TODO: make the platform xc line depend on the platform array
-    const context =
+    let context =
     {
       "dcterms": "http://purl.org/dc/terms/",
       "dctype": "http://purl.org/dc/dcmitype/",
       "ore": "http://www.openarchives.org/ore/terms/",
       "edm": "http://www.europeana.eu/schemas/edm/",
-      "xc": "http://www.xeno-canto.org/",
       "dcterms:type": {
         "@type": "@id"
       },
@@ -44,6 +42,16 @@ class Results {
         "@type": "@id"
       }
     }
+
+    context = this.addPrefixToContext(context);
+
+    return context;
+  }
+  addPrefixToContext(context) {
+    // iterate through platforms, adding prefix and namespace
+    this.platforms.forEach((platform) => {
+      context[platform.prefix] = platform.name_space;
+    });
 
     return context;
   }

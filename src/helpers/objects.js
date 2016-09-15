@@ -23,7 +23,7 @@ module.exports = {
       const platform = platformMetadata.platform(parameters.platforms[i]);
       switch(platform.endpoint_type) {
         case 'json-api': {
-          promises[i] = this.objectsApi(platform.id, parameters);
+          promises[i] = this.objectsApi(platform, parameters);
           break;
         }
         default: {
@@ -39,13 +39,13 @@ module.exports = {
 
     return Promise.all(promises);
   },
-  objectsApi: function(platformId, parameters) {
-    switch (platformId) {
+  objectsApi: function(platform, parameters) {
+    switch (platform.id) {
       case 'soortenregister': {
         return soortenRegister.request(parameters).then((aggregations) => {
           let soortenResults = new Results();
           soortenResults.addAggregations(aggregations);
-          soortenResults.addPlatform('soortenregister');
+          soortenResults.addPlatform(platform);
           return soortenResults;
         });
       }
@@ -53,7 +53,7 @@ module.exports = {
         return xenoCanto.request(parameters).then((aggregations) => {
           let xenoResults = new Results();
           xenoResults.addAggregations(aggregations);
-          xenoResults.addPlatform('xeno-canto');
+          xenoResults.addPlatform(platform);
           return xenoResults;
         });
       }
