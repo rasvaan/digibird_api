@@ -14,6 +14,11 @@ module.exports = {
       'application/ld+json': function() {
         res.json(jsonLd);
       },
+      'application/json': function() {
+        const json = _this.nonGenericToJSON(jsonLd);
+        console.log(json);
+        res.json(json);
+      },
       'text/turtle': function() {
         _this.toTurtle(jsonLd).then(function(turtle) {
           res.send(turtle);
@@ -31,6 +36,29 @@ module.exports = {
         res.status(406).send('Not acceptable');
       }
     });
+  },
+  nonGenericToJSON: function(jsonLd) {
+    /* This function reverts the json ld structure back to a more simple json
+    * object. It is not generic in doing so and relies on some keys to be
+    * present in the jsonLd object. Steps:
+    * 1. drop context
+    * 2. rewrite nested structures
+    * 3. drop prefixes (already clashes with type?)
+    */
+    const graph = jsonLd['@graph'];
+    let objects = [];
+
+    for (let i=0; i<graph.length; i++) {
+      let object = {};
+
+      object.url = graph[i]['edm:aggregatedCHO']['@id'];
+      object.media_url = graph[i]['edm:hasView']['@id'];
+      type = graph[i]['edm:hasView']['dcterms:type'].split(':').pop();
+      object.media_type = type;
+      objects[i] = object;
+    }
+
+    return { "results": objects };
   },
   toNQuads: function(jsonLd) {
     // create the promise of a nquads string
