@@ -12,7 +12,7 @@
     "name": "Nederlands soortenregister",
     "id": "soortenregister",
     "prefix": "nsr",
-    "name_space": "http://www.nederlandsesoorten.nl",
+    "name_space": "http://www.nederlandsesoorten.nl/",
     "endpoint_type": "json-api",
     "endpoint_location": "http://api.biodiversitydata.nl/v0",
     "statistics": [],

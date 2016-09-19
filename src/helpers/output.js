@@ -73,7 +73,7 @@ module.exports = {
     });
   },
   extractPrefixes: function(context) {
-    var prefixes = {};
+    let prefixes = {};
 
     // iterate through keys and check whether the value is a string
     for (let key in context) {
