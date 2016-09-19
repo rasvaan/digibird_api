@@ -25,7 +25,8 @@ module.exports.set = function(app) {
 
         // convert to json-ld and output
         let jsonLd = mergedResults.toJSONLD();
-        output.replySerialization('turtle', jsonLd, res);
+        // reply results according to request header
+        output.contentNegotiation(res, jsonLd);
       }, function(error) {
         res.status(400).send(error.message);
       });

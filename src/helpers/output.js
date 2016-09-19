@@ -6,40 +6,31 @@ var jsonLdPromises = jsonld.promises;
 var N3 = require('n3');
 
 module.exports = {
-  replySerialization: function(format, jsonLd, res) {
+  contentNegotiation: function(res, jsonLd) {
     const fileName = 'objects';
+    let _this = this;
 
-    switch (format) {
-      case 'json-ld': {
+    res.format({
+      'application/ld+json': function() {
         res.json(jsonLd);
-      }
-      case 'nQuads': {
-        this.toNQuads(jsonLd).then(function(nQuads) {
-          // set nquads mime-type
-          res.set({
-            "Content-Type": 'application/n-quads',
-            "Content-Disposition": `filename=${fileName}.nq`
-          });
-          res.send(nQuads);
-        });
-      }
-      case 'turtle': {
-        this.toTurtle(jsonLd).then(function(turtle) {
-          // set turtle mime-type
-          res.set({
-            "Content-Type": 'text/turtle',
-            "Content-Disposition": `filename=${fileName}.ttl`
-          });
+      },
+      'text/turtle': function() {
+        _this.toTurtle(jsonLd).then(function(turtle) {
           res.send(turtle);
         });
-      }
-      default: {
-        return new Promise(function(resolve, reject) {
-          const error = new Error(`${format} serialization is not yet available`);
-          reject(error);
+      },
+      'application/n-quads': function(){
+        _this.toNQuads(jsonLd).then(function(nQuads) {
+          // specify filename
+          res.set({"Content-Disposition": `filename=${fileName}.nq`});
+          res.send(nQuads);
         });
+      },
+      'default': function() {
+        // log the request and respond with 406
+        res.status(406).send('Not acceptable');
       }
-    }
+    });
   },
   toNQuads: function(jsonLd) {
     // create the promise of a nquads string
