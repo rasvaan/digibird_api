@@ -1,6 +1,8 @@
 /*******************************************************************************
 DigiBird output helper file, serializes JSON-LD into a variety of RDF formats
 *******************************************************************************/
+var jsonld = require('jsonld');
+var jsonLdPromises = jsonld.promises;
 
 module.exports = {
   replySerialization: function(format, jsonLd, res) {
@@ -9,7 +11,16 @@ module.exports = {
         res.json(jsonLd);
       }
       case 'nQuads': {
-        return toNQuads(json);
+        this.toNQuads(jsonLd).then(function(nQuads) {
+          const fileName = 'objects';
+
+          // set nquads mime-type
+          res.set({
+            "Content-Type": 'application/n-quads',
+            "Content-Disposition": `filename=${fileName}.nq`
+          });
+          res.send(nQuads);
+        });
       }
       default: {
         return new Promise(function(resolve, reject) {
@@ -19,7 +30,8 @@ module.exports = {
       }
     }
   },
-  toNQuads: function(json) {
-    console.log('converting the following to nquads:', json);
+  toNQuads: function(jsonLd) {
+    // create the promise of a nquads string
+    return jsonLdPromises.toRDF(jsonLd, {format: 'application/nquads'});
   }
 }
