@@ -7,14 +7,14 @@ var N3 = require('n3');
 
 module.exports = {
   replySerialization: function(format, jsonLd, res) {
+    const fileName = 'objects';
+
     switch (format) {
       case 'json-ld': {
         res.json(jsonLd);
       }
       case 'nQuads': {
         this.toNQuads(jsonLd).then(function(nQuads) {
-          const fileName = 'objects';
-
           // set nquads mime-type
           res.set({
             "Content-Type": 'application/n-quads',
@@ -25,7 +25,12 @@ module.exports = {
       }
       case 'turtle': {
         this.toTurtle(jsonLd).then(function(turtle) {
-          console.log('outputted turtle', turtle);
+          // set turtle mime-type
+          res.set({
+            "Content-Type": 'text/turtle',
+            "Content-Disposition": `filename=${fileName}.ttl`
+          });
+          res.send(turtle);
         });
       }
       default: {
