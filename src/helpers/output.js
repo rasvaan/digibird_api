@@ -47,9 +47,13 @@ module.exports = {
   },
   toTurtle: function(jsonLd) {
     let _this = this;
+    let prefixes;
 
     return this.parseTriples(jsonLd).then(function(triples) {
-      return _this.writeTurtle(triples);
+      // extract prefixes from context
+      prefixes = _this.extractPrefixes(jsonLd['@context']);
+      // write the nquads
+      return _this.writeTurtle(triples, prefixes);
     });
   },
   parseTriples(jsonLd) {
@@ -68,9 +72,18 @@ module.exports = {
       return promise;
     });
   },
-  writeTurtle: function(triples) {
-    //TODO: add correct prefixes from context
-    let writer = N3.Writer({ "prefixes": { } });
+  extractPrefixes: function(context) {
+    var prefixes = {};
+
+    // iterate through keys and check whether the value is a string
+    for (let key in context) {
+      if (typeof context[key] === 'string') prefixes[key] = context[key];
+    }
+
+    return { "prefixes": prefixes };
+  },
+  writeTurtle: function(triples, prefixes) {
+    let writer = N3.Writer(prefixes);
 
     for (let i=0; i<triples.length; i++) {
       writer.addTriple(triples[i]);
