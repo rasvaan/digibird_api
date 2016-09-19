@@ -4,6 +4,7 @@ var platformStatistics = require('../helpers/statistics');
 var platforms = require('../helpers/platforms');
 var objects = require('../helpers/objects');
 var interpret = require('../helpers/request_interpretation');
+var output = require('../helpers/output');
 var Results = require('../classes/Results');
 
 module.exports.set = function(app) {
@@ -21,10 +22,10 @@ module.exports.set = function(app) {
           mergedResults.addAggregations(results.results);
           mergedResults.addPlatform(results.platforms[0]);
         });
-        // convert to json-ld
-        let jsonLd = mergedResults.toJSONLD();
 
-        res.json(jsonLd);
+        // convert to json-ld and output
+        let jsonLd = mergedResults.toJSONLD();
+        output.replySerialization('json-ld', jsonLd, res);
       }, function(error) {
         res.status(400).send(error.message);
       });
