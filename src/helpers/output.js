@@ -16,7 +16,6 @@ module.exports = {
       },
       'application/json': function() {
         const json = _this.nonGenericToJSON(jsonLd);
-        console.log(json);
         res.json(json);
       },
       'text/turtle': function() {

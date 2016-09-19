@@ -57,6 +57,7 @@ module.exports = {
       parameters.species = speciesInput.toLowerCase();
       parameters.request = 'species'; // make the request type more specific
     }
+
     return parameters;
   },
   platformParameter: function(query, res) {
@@ -92,6 +93,7 @@ module.exports = {
     let platformParameters = [];
 
     if (!input) return platforms.platformIds();
+    // make sure to return an array
     input = typeof input === 'string' ? [input] : input;
 
     for (let i=0; i<input.length; i++) {
