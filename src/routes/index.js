@@ -25,7 +25,7 @@ module.exports.set = function(app) {
 
         // convert to json-ld and output
         let jsonLd = mergedResults.toJSONLD();
-        output.replySerialization('nQuads', jsonLd, res);
+        output.replySerialization('turtle', jsonLd, res);
       }, function(error) {
         res.status(400).send(error.message);
       });
