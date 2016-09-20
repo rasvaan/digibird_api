@@ -42,7 +42,7 @@
     "name": "Rijksmuseum",
     "id": "rijksmuseum",
     "prefix": "rma",
-    "name_space": "https://www.rijksmuseum.nl",
+    "name_space": "http://purl.org/collections/nl/rma/",
     "endpoint_type": "sparql",
     "endpoint_location": "http://rijksmuseum.sealinc.eculture.labs.vu.nl/sparql/",
     "statistics": ["objects"],
