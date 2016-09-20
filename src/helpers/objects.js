@@ -26,6 +26,10 @@ module.exports = {
           promises[i] = this.objectsApi(platform, parameters);
           break;
         }
+        case 'sparql': {
+          promises[i] = this.objectsTripleStore(platform, parameters);
+          break;
+        }
         default: {
           promises[i] = new Promise(function(resolve, reject) {
             const error = new Error(
@@ -64,5 +68,45 @@ module.exports = {
         });
       }
     }
+  },
+  objectsTripleStore: function(platform, parameters) {
+    console.log('retrieving objects from', platform.id, ' with parameters ', parameters);
+    // const query = this.sparqlObjectQueries()[statistic];
+    switch(platform.id) {
+      case 'rijksmuseum': {
+        const query = this.sparqlObjectQueries()['test'];
+        console.log('Query', query);
+        return tripleStore.query(platform, query.query).then(function(value) {
+          console.log('results', value);
+          // process the results
+          let rijksmuseumResults = new Results();
+          rijksmuseumResults.addPlatform(platform);
+          return rijksmuseumResults;
+        });
+      }
+      default: {
+        return new Promise(function(resolve, reject) {
+          const error = new Error(`${platformId} is not yet available`);
+          reject(error);
+        });
+      }
+    }
+  },
+  sparqlObjectQueries: function() {
+    // create an object with queries that can be used to retrieve objects
+    const queries =
+    {
+      "test":
+        {
+          "query":
+            "SELECT ?s ?p ?o " +
+            "WHERE " +
+              "{ ?s ?p ?o . } " +
+            "LIMIT 10",
+          "name": "test"
+        }
+    }
+
+    return queries;
   }
 }
