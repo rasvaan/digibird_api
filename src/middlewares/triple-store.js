@@ -20,7 +20,6 @@ module.exports = {
 
     return request(options)
     .then(function(response) {
-      console.log('Endpoint response:', response);
       return JSON.parse(response).results.bindings;
     });
   },

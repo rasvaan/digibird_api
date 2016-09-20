@@ -74,8 +74,9 @@ module.exports = {
     // const query = this.sparqlObjectQueries()[statistic];
     switch(platform.id) {
       case 'rijksmuseum': {
-        const query = this.sparqlObjectQueries()['test'];
-        console.log('Query', query);
+        const filter = this.mergeQueryParameters(parameters);
+        const query = this.sparqlObjectQueries(filter)['filter_desciption'];
+        console.log('Query', query.query);
         return tripleStore.query(platform, query.query).then(function(value) {
           console.log('results', value);
           // process the results
@@ -92,7 +93,16 @@ module.exports = {
       }
     }
   },
+  mergeQueryParameters: function(parameters) {
+    // merge the parameters if we can not query for specifc concepts
+    switch(parameters.request) {
+      case 'genus': return parameters.genus;
+      case 'species': return `${parameters.genus} ${parameters.species}`;
+      case 'common': return parameters.common_name;
+    }
+  },
   sparqlObjectQueries: function() {
+    console.log('argument 1', arguments[0]);
     // create an object with queries that can be used to retrieve objects
     const queries =
     {
@@ -104,7 +114,38 @@ module.exports = {
               "{ ?s ?p ?o . } " +
             "LIMIT 10",
           "name": "test"
-        }
+        },
+      "edm_objects":
+        {
+          "query":
+            "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
+            "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
+            "SELECT ?object ?image " +
+            "WHERE {" +
+              "?object rdf:type edm:ProvidedCHO . " +
+              "?aggregation edm:aggregatedCHO ?object . " +
+              "?aggregation edm:isShownBy ?image . " +
+            "} " +
+            "LIMIT 10",
+          "name": "edm objects"
+        },
+        "filter_desciption":
+          {
+            "query":
+              "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
+              "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
+              "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
+              "SELECT ?object ?image " +
+              "WHERE {" +
+                "?object rdf:type edm:ProvidedCHO . " +
+                "?aggregation edm:aggregatedCHO ?object . " +
+                "?aggregation edm:isShownBy ?image . " +
+                "?object dc:description ?description . " +
+                `FILTER regex(?description, \"${arguments[0]}\", \"i\") ` +
+              "} " +
+              "LIMIT 10",
+            "name": "description filter"
+          }
     }
 
     return queries;

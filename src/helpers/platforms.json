@@ -44,7 +44,7 @@
     "prefix": "rma",
     "name_space": "https://www.rijksmuseum.nl",
     "endpoint_type": "sparql",
-    "endpoint_location": "https://rijksmuseum.dydra.com/lizzyjongma/rijksmuseum-collection/sparql",
+    "endpoint_location": "http://rijksmuseum.sealinc.eculture.labs.vu.nl/sparql/",
     "statistics": ["objects"],
     "poll_interval": 20000
   },
