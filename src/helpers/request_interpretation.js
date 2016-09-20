@@ -106,5 +106,18 @@ module.exports = {
     }
 
     return platformParameters;
+  },
+  iocConceptFromInput: function(parameters) {
+    let concept;
+    return concept;
+  },
+  mergeQueryParameters: function(parameters) {
+    // merge the parameters if we can not query for specifc concepts
+    switch(parameters.request) {
+      case 'genus': return parameters.genus;
+      case 'species': return `${parameters.genus} ${parameters.species}`;
+      case 'common': return parameters.common_name;
+    }
+    // TODO: for the Rijksmuseum translate scientific names to common?
   }
 }

@@ -4,6 +4,7 @@ DigiBird object information component
 var platformMetadata = require('./platforms');
 var request = require('request-promise-native');
 var winston = require('winston');
+var interpret = require('../helpers/request_interpretation');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
 var tripleStore = require('../middlewares/triple-store');
@@ -81,6 +82,16 @@ module.exports = {
           return new Results(aggregations, [platform]);
         });
       }
+      case 'accurator': {
+        const filter = interpret.mergeQueryParameters(parameters);
+        const query = this.sparqlObjectQueries(filter)['filter_desciption'];
+
+        return tripleStore.query(platform, query.query).then((values) => {
+          return _this.processSparqlAggregations(values, 'dctype:Image');
+        }).then((aggregations) => {
+          return new Results(aggregations, [platform]);
+        });
+      }
       default: {
         return new Promise(function(resolve, reject) {
           const error = new Error(`${platformId} is not yet available`);
@@ -88,15 +99,6 @@ module.exports = {
         });
       }
     }
-  },
-  mergeQueryParameters: function(parameters) {
-    // merge the parameters if we can not query for specifc concepts
-    switch(parameters.request) {
-      case 'genus': return parameters.genus;
-      case 'species': return `${parameters.genus} ${parameters.species}`;
-      case 'common': return parameters.common_name;
-    }
-    // TODO: for the Rijksmuseum translate scientific names to common?
   },
   processSparqlAggregations: function(results, type) {
     let aggregations = [];
@@ -152,7 +154,7 @@ module.exports = {
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
                 "?object dc:description ?description . " +
-                `FILTER regex(?description, \"${arguments[0]}\", \"i\") ` +
+                `FILTER regex(?description, \" ${arguments[0]} \", \"i\") ` +
               "} " +
               "LIMIT 10",
             "name": "description filter"
