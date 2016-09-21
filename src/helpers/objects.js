@@ -83,8 +83,8 @@ module.exports = {
         });
       }
       case 'accurator': {
-        const filter = interpret.mergeQueryParameters(parameters);
-        const query = this.sparqlObjectQueries(filter)['filter_desciption'];
+        const queryConcept = interpret.iocConceptFromInput(parameters);
+        const query = this.sparqlObjectQueries(queryConcept)['concept_annotation'];
 
         return tripleStore.query(platform, query.query).then((values) => {
           return _this.processSparqlAggregations(values, 'dctype:Image');
@@ -119,29 +119,6 @@ module.exports = {
     // create an object with queries that can be used to retrieve objects
     const queries =
     {
-      "test":
-        {
-          "query":
-            "SELECT ?s ?p ?o " +
-            "WHERE " +
-              "{ ?s ?p ?o . } " +
-            "LIMIT 10",
-          "name": "test"
-        },
-      "edm_objects":
-        {
-          "query":
-            "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
-            "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
-            "SELECT ?object ?image " +
-            "WHERE {" +
-              "?object rdf:type edm:ProvidedCHO . " +
-              "?aggregation edm:aggregatedCHO ?object . " +
-              "?aggregation edm:isShownBy ?image . " +
-            "} " +
-            "LIMIT 10",
-          "name": "edm objects"
-        },
         "filter_desciption":
           {
             "query":
@@ -155,6 +132,24 @@ module.exports = {
                 "?aggregation edm:isShownBy ?view . " +
                 "?object dc:description ?description . " +
                 `FILTER regex(?description, \" ${arguments[0]} \", \"i\") ` +
+              "} " +
+              "LIMIT 10",
+            "name": "description filter"
+          },
+        "concept_annotation":
+          {
+            "query":
+              "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
+              "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
+              "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
+              "PREFIX oa: <http://www.w3.org/ns/oa#> " +
+              "SELECT ?aggregation ?object ?view " +
+              "WHERE { " +
+                `?annotation oa:hasBody <${arguments[0]}> . ` +
+                "?annotation oa:hasTarget ?object . " +
+                "?object rdf:type edm:ProvidedCHO . " +
+                "?aggregation edm:aggregatedCHO ?object . " +
+                "?aggregation edm:isShownBy ?view . " +
               "} " +
               "LIMIT 10",
             "name": "description filter"
