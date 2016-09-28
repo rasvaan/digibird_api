@@ -132,8 +132,7 @@ module.exports = {
                 "?aggregation edm:isShownBy ?view . " +
                 "?object dc:description ?description . " +
                 `FILTER regex(?description, \" ${arguments[0]} \", \"i\") ` +
-              "} " +
-              "LIMIT 10",
+              "} ",
             "name": "description filter"
           },
         "concept_annotation":
@@ -150,8 +149,7 @@ module.exports = {
                 "?object rdf:type edm:ProvidedCHO . " +
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
-              "} " +
-              "LIMIT 10",
+              "} ",
             "name": "description filter"
           }
     }
