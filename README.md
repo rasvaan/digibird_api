@@ -1,7 +1,7 @@
 # DigiBird API: on the fly collection integration
 [DigiBird](http://www.digibird.org) is a system that integrates cultural heritage data on the fly. Check out the website: [www.digibird.org](http://www.digibird.org). This repository contains code for the API code, code for the client can found in another [repository](https://github.com/rasvaan/digibird_client).
 
-# Example API call
+## Example API call
 Quick example querying for sounds of a Magpie from Xeno-canto:
 
 http://www.digibird.org/api/objects?platform=xeno-canto&genus=Pica&species=pica
@@ -54,7 +54,7 @@ If you want to request media you can use this url:  http://www.digibird.org/api/
 You can use the following parameters for media:
 
 ### Platform
-The platform you would like to get the media from. Supported platforms right now:
+The platform you would like to get media from. Supported platforms right now:
 
 * Xeno-canto (id: xenon-canto) - Bird sounds
 * Rijksmuseum (id: rijksmuseum) - Artworks, substring matching only
@@ -75,6 +75,8 @@ It is not yet verified whether the genus/species exist, this might be implemente
 ### Species
 This parameter is used in combination with the genus parameter to specify the search query:
 http://www.digibird.org/api/objects?platform=xeno-canto&genus=Pica&species=pica
+
+For now either the genus or the genus plus the species is required, at a later point we will support using common name queries.
 
 ## Content negotiation
 Supported media-types:
