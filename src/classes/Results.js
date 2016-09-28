@@ -4,9 +4,9 @@ Object containing Aggregations as results. Can convert results to every desired
 supported serialization.
 *******************************************************************************/
 class Results {
-  constructor() {
-    this.results = [];
-    this.platforms = [];
+  constructor(results, platformArray) {
+    this.results = results || [];
+    this.platforms = platformArray || [];
   }
   addAggregation(aggregation) {
     // add one Aggregation object to the aggregations array
