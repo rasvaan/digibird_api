@@ -66,6 +66,12 @@ module.exports = {
 
     return aggregations;
   },
+  testAsyncReject() {
+    return Promise.reject();
+  },
+  testAsyncVal() {
+    return Promise.resolve('bla');
+  },
   metadataOptions: function() {
     const url = platforms.platform("xeno-canto").endpoint_location;
 

@@ -5,7 +5,7 @@
   "scripts": {
     "start-prod": "node ./src",
     "dev": "nodemon ./src/index.js",
-    "test": "return 1"
+    "test": "mocha $(find ./src -name '*-test.js')"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,8 @@
     "wordpress": "^1.2.1"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.1.0",
     "nodemon": "^1.9.2"
   }
 }
