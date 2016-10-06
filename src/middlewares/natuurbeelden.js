@@ -95,7 +95,7 @@ module.exports = {
           'Content-Type': 'application/json'
         },
         body: {
-          videoData
+          video: videoData
         },
         json: true // json serialization on the body = stringifies body to JSON
       };
