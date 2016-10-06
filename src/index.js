@@ -36,7 +36,6 @@ setInterval(function() {
 
 // test
 BenG.getMetadataVideos();
-//utilsBenG.insertVideo();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

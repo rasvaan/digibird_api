@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./src",
-    "startDev": "nodemon --ignore ./src/helpers/waisda_BenG_selection.json        ./src",
+    "startDev": "nodemon --ignore ./src/helpers/waisda_BenG_selection.json ./src",
     "test": "return 1"
   },
   "repository": {
