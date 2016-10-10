@@ -24,26 +24,25 @@ class Results {
     // add an array to the platforms array
     this.platforms = this.platforms.concat(platforms);
   }
-  getContext() {
+  createContext(propertySet, platforms) {
     // construct the JSON-LD context object
     let context =
     {
       "dcterms": "http://purl.org/dc/terms/",
       "dctype": "http://purl.org/dc/dcmitype/",
       "ore": "http://www.openarchives.org/ore/terms/",
-      "edm": "http://www.europeana.eu/schemas/edm/",
-      "dcterms:type": {
-        "@type": "@id"
-      },
-      "edm:aggregatedCHO": {
-        "@type": "@id"
-      },
-      "edm:hasView": {
-        "@type": "@id"
-      }
+      "edm": "http://www.europeana.eu/schemas/edm/"
     }
+    context = this.addPrefixToContext(context, platforms);
+    context = this.addProperties(context, propertySet);
 
-    context = this.addPrefixToContext(context);
+    return context;
+  }
+  addProperties(context, properties) {
+    // specify the properties that have uris as values
+    properties.forEach((property) => {
+      context[property] = {"@type":'@id'};
+    });
 
     return context;
   }
@@ -55,9 +54,33 @@ class Results {
 
     return context;
   }
+  contextProperties() {
+    let contextProperties = [];
+
+    this.results.forEach(aggregation => {
+      // find properties that might be added
+      let candidates = contextProperties.concat(
+        aggregation.contextProperties,
+        aggregation.culturalObject.contextProperties,
+        aggregation.webResource.contextProperties
+      );
+
+      // only add property when not already present
+      candidates.forEach(candidate => {
+        if (!contextProperties.includes(candidate)) {
+          contextProperties.push(candidate);
+        }
+      });
+    });
+
+    return contextProperties;
+  }
   toJSONLD() {
-    const context = this.getContext();
-    let aggregations = this.results.map(
+    let context, properties, aggregations;
+
+    properties = this.contextProperties();
+    context = this.createContext(properties, this.platforms);
+    aggregations = this.results.map(
       result => result.toJSONLD()
     );
 

@@ -3,6 +3,7 @@
     "name": "Xeno-canto",
     "id": "xeno-canto",
     "prefix": "xc",
+    "name_space": "http://www.xeno-canto.org/",
     "endpoint_type": "json-api",
     "endpoint_location": "http://www.xeno-canto.org/api/2/recordings",
     "statistics": ["users_birds", "annotations_birds", "objects_birds", "annotated_objects_birds"],
