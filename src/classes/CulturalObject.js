@@ -31,7 +31,7 @@ class CulturalObject {
     if (this.creator) ld["dc:creator"] = this.creator;
     if (this.type) ld["dc:type"] = this.objectType;
     if (this.spatial) ld["dcterms:spatial"] = this.spatial;
-    if (this.temporal) ld["dcterns:temporal"] = this.temporal;
+    if (this.temporal) ld["dcterms:temporal"] = this.temporal;
 
     return ld;
   }
