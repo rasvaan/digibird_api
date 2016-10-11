@@ -89,16 +89,16 @@ Supported media-types:
 If you set the accept-header to json, it will give you a plain json response:
 
 ```
-curl -H "Accept: application/json" "http://www.digibird.org/api/objects?platform=soortenregister&genus=Pica&species=pica”
+curl -H "Accept: application/json" "http://www.digibird.org/api/objects?platform=soortenregister&genus=Pica&species=pica"
 ```
 
 The reply will be formatted like this:
 
 ```
-{"results”: [
-  {"url":"http://www.nederlandsesoorten.nl/464942884_2091265265”,
-   "media_url":"http://images.naturalis.nl/original/132623.jpg”,
-   "media_type":”Image”
+{"results": [
+  {"url":"http://www.nederlandsesoorten.nl/464942884_2091265265",
+   "media_url":"http://images.naturalis.nl/original/132623.jpg",
+   "media_type":”Image"
   }
 ]}
 ```
