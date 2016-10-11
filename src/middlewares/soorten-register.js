@@ -28,6 +28,13 @@ module.exports = {
           return _this.processAggregations(data);
         });
       }
+      case 'metadata': {
+        options = this.metadataOptions();
+
+        return request(options).then((data) => {
+          return _this.processMetadata(data);
+        });
+      }
     }
   },
   genus: function(parameters) {
@@ -67,5 +74,32 @@ module.exports = {
     }
 
     return aggregations;
+  },
+  metadataOptions: function() {
+    const url = platforms.platform("soortenregister").statistics_endpoint_location;
+
+    return { "url":url };
+  },
+  processMetadata: function(data) {
+    const metadata = JSON.parse(data);
+
+    return [
+      {
+        "type": 'Species',
+        "value": metadata.all_established
+      },
+      {
+        "type": 'Species with image',
+        "value": metadata.statistics.species_with_image.count
+      },
+      {
+        "type": 'Images',
+        "value": metadata.statistics.images.count
+      },
+      {
+        "type": 'Contributors',
+        "value": metadata.statistics.photographer.count
+      }
+    ];
   }
 }

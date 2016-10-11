@@ -16,6 +16,8 @@
     "name_space": "http://www.nederlandsesoorten.nl/",
     "endpoint_type": "json-api",
     "endpoint_location": "http://api.biodiversitydata.nl/v0",
+    "statistics_endpoint_type": "json-api",
+    "statistics_endpoint_location": "http://www.nederlandsesoorten.nl/linnaeus_ng/app/views/webservices/statistics.php?pid=1",
     "statistics": [],
     "poll_interval": 20000
   },
