@@ -7,18 +7,24 @@ class Aggregation {
     this.uri = uri;
     this.culturalObject = culturalObject;
     this.webResource = webResource;
+    this.views = [];
     this.contextProperties = [
       "dcterms:type",
       "edm:aggregatedCHO",
-      "edm:hasView"
+      "edm:isShownBy"
     ];
   }
   addLicense(license) {
     this.license = license;
     this.contextProperties.push("dcterms:rights");
   }
+  addView(webResource) {
+    // add another view
+    if (this.views.length === 0) this.contextProperties.push("edm:hasView");
+    this.views.push(webResource);
+  }
   toJSONLD() {
-    let jsonLd =
+    let ld =
     {
       "@id": this.uri,
       "@type": "ore:Aggregation",
@@ -26,9 +32,26 @@ class Aggregation {
       "edm:isShownBy": this.webResource.toJSONLD()
     };
 
-    if (this.license) jsonLd["dcterms:rights"] = this.license;
+    if (this.license) ld["dcterms:rights"] = this.license;
+    if (this.views.length > 0) ld = this.JSONLDViews(ld);
 
-    return jsonLd;
+    return ld;
+  }
+  JSONLDViews(ld) {
+    // add possibly multiple additional views to json object
+    if (this.views.length === 1) {
+      // add single object
+      ld["edm:hasView"] = this.views[0].toJSONLD();
+    } else {
+      ld["edm:hasView"] = [];
+
+      for (let i=0; i<this.views.length; i++) {
+        // add json views to array of views
+        ld["edm:hasView"].push(this.views[i].toJSONLD());
+      }
+    }
+
+    return ld;
   }
 }
 
