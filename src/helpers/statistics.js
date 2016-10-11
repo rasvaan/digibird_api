@@ -6,13 +6,14 @@ var request = require('request-promise-native');
 var winston = require('winston');
 var xenoCanto = require('../middlewares/xeno-canto-api');
 var soortenRegister = require('../middlewares/soorten-register');
+var waisda = require('../middlewares/waisda');
 var tripleStore = require('../middlewares/triple-store');
 
 module.exports = {
   // return a promise of statistics of the platform
   get: function(platformId) {
     const platform = platforms.platform(platformId);
-
+    console.log('getting info fr', platform)
     switch(platform.endpoint_type) {
       case 'json-api': return this.statisticsApi(platform);
       case 'sparql': {
@@ -47,6 +48,9 @@ module.exports = {
       }
       case 'soortenregister': {
         return soortenRegister.request(parameters);
+      }
+      case 'waisda': {
+        return waisda.request(parameters);
       }
       default: {
         // stub for not yet added apis

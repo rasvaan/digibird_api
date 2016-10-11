@@ -36,8 +36,8 @@
     "id": "waisda",
     "prefix": "wa",
     "name_space": "http://waisda.nl",
-    "endpoint_type": "sql",
-    "endpoint_location": "",
+    "endpoint_type": "json-api",
+    "endpoint_location": "http://waisda.beeldengeluid.nl/waisdadb",
     "statistics": [],
     "poll_interval": 20000
   },
