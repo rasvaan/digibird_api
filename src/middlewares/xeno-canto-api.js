@@ -56,8 +56,10 @@ module.exports = {
 
     for (let i=0; i<data.recordings.length; i++) {
       const result = data.recordings[i];
+      const embedUrl = `${result.url}/embed`;
       let culturalObject = this.createCulturalObject(result);
       let webResource = new WebResource(result.file, SOUND);
+
       let aggregation = new Aggregation(
         `${result.url}/aggregation`,
         culturalObject,
@@ -65,6 +67,7 @@ module.exports = {
       );
 
       aggregation.addLicense(result.lic);
+      aggregation.addView(new WebResource(embedUrl, SOUND));
       aggregations[aggregations.length] = aggregation;
     }
 

@@ -49,7 +49,7 @@ module.exports = {
 
     for (let i=0; i<graph.length; i++) {
       let object = {};
-      console.log(graph[i]);
+
       if (graph[i]['dcterms:rights']) {
         object.rights = graph[i]['dcterms:rights'];
       }

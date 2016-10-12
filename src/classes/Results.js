@@ -29,6 +29,7 @@ class Results {
     let context =
     {
       "dcterms": "http://purl.org/dc/terms/",
+      "dc": "http://purl.org/dc/elements/1.1/",
       "dctype": "http://purl.org/dc/dcmitype/",
       "ore": "http://www.openarchives.org/ore/terms/",
       "edm": "http://www.europeana.eu/schemas/edm/"
