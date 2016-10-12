@@ -119,7 +119,7 @@ module.exports = {
     // create an object with queries that can be used to retrieve objects
     const queries =
     {
-        "filter_desciption":
+        "edm_filter_desciption":
           {
             "query":
               "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
