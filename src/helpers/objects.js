@@ -73,14 +73,16 @@ module.exports = {
     switch(platform.id) {
       case 'rijksmuseum': {
         // only filter, since we have no suitable concepts to query for
-        const filter = this.mergeQueryParameters(parameters);
-        const query = this.sparqlObjectQueries(filter)['filter_desciption'];
-
+        const filter = interpret.mergeQueryParameters(parameters);
+        const query = this.sparqlObjectQueries(filter)['edm_filter_desciption'];
+        console.log('query: ', query);
         return tripleStore.query(platform, query.query).then((values) => {
-          return _this.processSparqlAggregations(values, 'dctype:Image');
-        }).then((aggregations) => {
-          return new Results(aggregations, [platform]);
+          console.log(values);
+          //return _this.processSparqlAggregations(values, 'dctype:Image');
         });
+        //.then((aggregations) => {
+        //  return new Results(aggregations, [platform]);
+        //});
       }
       case 'accurator': {
         const queryConcept = interpret.iocConceptFromInput(parameters);
@@ -125,13 +127,24 @@ module.exports = {
               "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
               "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
               "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
-              "SELECT ?aggregation ?object ?view " +
+              "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+              "SELECT DISTINCT ?aggregation ?rights ?object ?view ?title ?creator " +
               "WHERE {" +
                 "?object rdf:type edm:ProvidedCHO . " +
+                "?object dc:description ?description . " +
+                `FILTER ( lang(?description) = "nl" && regex(?description, " ${arguments[0]} ", "i") ) ` +
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
-                "?object dc:description ?description . " +
-                `FILTER regex(?description, \" ${arguments[0]} \", \"i\") ` +
+                "?aggregation edm:rights ?rights . " +
+                "OPTIONAL { " +
+                "  ?object dc:title ?title . " +
+                "   FILTER ( lang(?title) = \"en\" ) " +
+                "} " +
+                "OPTIONAL { " +
+                "  ?object dc:creator ?creatorId . " +
+                "  ?creatorId skos:prefLabel ?creator . " +
+                "  FILTER ( lang(?creator) = \"en\" ) " +
+                "} " +
               "} ",
             "name": "description filter"
           },
