@@ -75,14 +75,12 @@ module.exports = {
         // only filter, since we have no suitable concepts to query for
         const filter = interpret.mergeQueryParameters(parameters);
         const query = this.sparqlObjectQueries(filter)['edm_filter_desciption'];
-        console.log('query: ', query);
+
         return tripleStore.query(platform, query.query).then((values) => {
-          console.log(values);
-          //return _this.processSparqlAggregations(values, 'dctype:Image');
+          return _this.processSparqlAggregations(values, 'dctype:Image');
+        }).then((aggregations) => {
+          return new Results(aggregations, [platform]);
         });
-        //.then((aggregations) => {
-        //  return new Results(aggregations, [platform]);
-        //});
       }
       case 'accurator': {
         const queryConcept = interpret.iocConceptFromInput(parameters);
@@ -103,16 +101,39 @@ module.exports = {
     }
   },
   processSparqlAggregations: function(results, type) {
+    /* extract results from sparql objects, consider:
+    *  - duplicate results -> merge into one objects
+    *  - duplicate values property object -> make value an array of values
+    */
     let aggregations = [];
+    let uris = []; // book keepping
 
     for (let i=0; i<results.length; i++) {
       const result = results[i];
+      const index = uris.indexOf(result.aggregation.value);
 
-      aggregations[aggregations.length] = new Aggregation(
-        result.aggregation.value,
-        new CulturalObject(result.object.value),
-        new WebResource(result.view.value, type)
-      );
+      // see if already present in aggregations
+      if (index < 0) {
+        // unknown uri, add to array and create a new aggregation
+        uris.push(result.aggregation.value);
+        let culturalObject = new CulturalObject(result.object.value);
+        let webResource = new WebResource(result.view.value, type);
+
+        // extend information object when possible
+        if (result.creator) culturalObject.addCreator(result.creator.value);
+        if (result.title) culturalObject.addTitle(result.title.value);
+
+        let aggregation = new Aggregation(
+          result.aggregation.value,
+          culturalObject,
+          webResource
+        );
+
+        aggregation.addLicense(result.rights.value);
+        aggregations[aggregations.length] = aggregation;
+      } else {
+        // TODO: extend current data in a sensible way (duplicate values)
+      }
     }
 
     return aggregations;
