@@ -4,9 +4,6 @@ DigiBird retreival of Waisda? instance data
 This is the server backend to connect to the Waisda? instance
 containing the Natuurbeelden video collection depicting birds.
 
-The script can be run individually with the following command:
-node ./src/middlewares/waisda.js
-
 *******************************************************************************/
 var http = require('http');
 var request = require('request-promise-native');
