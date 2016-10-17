@@ -50,6 +50,7 @@ module.exports = {
         return soortenRegister.request(parameters);
       }
       case 'waisda': {
+        console.log('in statistics - platform:', platform);
         return waisda.request(parameters);
       }
       default: {

@@ -12,12 +12,15 @@ module.exports = {
   request: function(parameters) {
     let options;
     let _this = this;
+    console.log("in waisda - request:", parameters);
 
     switch(parameters.request) {
       case 'metadata': {
         options = this.metadataOptions();
+        console.log("options:", options);
 
         return request(options).then((data) => {
+          console.log("data:", data);
           return _this.processMetadata(data);
         });
       }
@@ -32,8 +35,20 @@ module.exports = {
     const metadata = JSON.parse(data);
 
     return [{
-      "type": 'Dutch contributions',
-      "value": metadata.numRecordings
+      "type": 'Number of players',
+      "value": metadata.noPlayers
+    },
+    {
+      "type": 'Number of tags',
+      "value": metadata.noTags
+    },
+    {
+      "type": 'Number of videos',
+      "value": metadata.noVideos
+    },
+    {
+      "type": 'Number of games',
+      "value": metadata.noGames
     }];
   }
 }

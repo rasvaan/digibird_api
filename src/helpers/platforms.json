@@ -37,7 +37,7 @@
     "prefix": "wa",
     "name_space": "http://waisda.nl",
     "endpoint_type": "json-api",
-    "endpoint_location": "http://waisda.beeldengeluid.nl/waisdadb",
+    "endpoint_location": "http://localhost:3010",
     "statistics": [],
     "poll_interval": 20000
   },

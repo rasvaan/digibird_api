@@ -37,6 +37,8 @@ module.exports.set = function(app) {
     const platformId = interpret.statisticsParameters(req.query, res);
     const platform = platforms.platform(platformId);
 
+    console.log("platform:", platform);
+
     if (platformId) {
       platformStatistics.get(platformId)
       .then(function(statistics) {
