@@ -11,6 +11,9 @@ class CulturalObject {
   addCreator(creator) {
     this.creator = creator;
   }
+  addTitle(title) {
+    this.title = title;
+  }
   addType(objectType) {
     this.objectType = objectType;
   }
@@ -29,6 +32,7 @@ class CulturalObject {
 
     // stuff we might add
     if (this.creator) ld["dc:creator"] = this.creator;
+    if (this.title) ld["dc:title"] = this.title;
     if (this.type) ld["dc:type"] = this.objectType;
     if (this.spatial) ld["dcterms:spatial"] = this.spatial;
     if (this.temporal) ld["dcterms:temporal"] = this.temporal;

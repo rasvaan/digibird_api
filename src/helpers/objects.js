@@ -73,8 +73,8 @@ module.exports = {
     switch(platform.id) {
       case 'rijksmuseum': {
         // only filter, since we have no suitable concepts to query for
-        const filter = this.mergeQueryParameters(parameters);
-        const query = this.sparqlObjectQueries(filter)['filter_desciption'];
+        const filter = interpret.mergeQueryParameters(parameters);
+        const query = this.sparqlObjectQueries(filter)['edm_filter_desciption'];
 
         return tripleStore.query(platform, query.query).then((values) => {
           return _this.processSparqlAggregations(values, 'dctype:Image');
@@ -101,16 +101,39 @@ module.exports = {
     }
   },
   processSparqlAggregations: function(results, type) {
+    /* extract results from sparql objects, consider:
+    *  - duplicate results -> merge into one objects
+    *  - duplicate values property object -> make value an array of values
+    */
     let aggregations = [];
+    let uris = []; // book keepping
 
     for (let i=0; i<results.length; i++) {
       const result = results[i];
+      const index = uris.indexOf(result.aggregation.value);
 
-      aggregations[aggregations.length] = new Aggregation(
-        result.aggregation.value,
-        new CulturalObject(result.object.value),
-        new WebResource(result.view.value, type)
-      );
+      // see if already present in aggregations
+      if (index < 0) {
+        // unknown uri, add to array and create a new aggregation
+        uris.push(result.aggregation.value);
+        let culturalObject = new CulturalObject(result.object.value);
+        let webResource = new WebResource(result.view.value, type);
+
+        // extend information object when possible
+        if (result.creator) culturalObject.addCreator(result.creator.value);
+        if (result.title) culturalObject.addTitle(result.title.value);
+
+        let aggregation = new Aggregation(
+          result.aggregation.value,
+          culturalObject,
+          webResource
+        );
+
+        aggregation.addLicense(result.rights.value);
+        aggregations[aggregations.length] = aggregation;
+      } else {
+        // TODO: extend current data in a sensible way (duplicate values)
+      }
     }
 
     return aggregations;
@@ -119,19 +142,30 @@ module.exports = {
     // create an object with queries that can be used to retrieve objects
     const queries =
     {
-        "filter_desciption":
+        "edm_filter_desciption":
           {
             "query":
               "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
               "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
               "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
-              "SELECT ?aggregation ?object ?view " +
+              "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+              "SELECT DISTINCT ?aggregation ?rights ?object ?view ?title ?creator " +
               "WHERE {" +
                 "?object rdf:type edm:ProvidedCHO . " +
+                "?object dc:description ?description . " +
+                `FILTER ( lang(?description) = "nl" && regex(?description, " ${arguments[0]} ", "i") ) ` +
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
-                "?object dc:description ?description . " +
-                `FILTER regex(?description, \" ${arguments[0]} \", \"i\") ` +
+                "?aggregation edm:rights ?rights . " +
+                "OPTIONAL { " +
+                "  ?object dc:title ?title . " +
+                "   FILTER ( lang(?title) = \"en\" ) " +
+                "} " +
+                "OPTIONAL { " +
+                "  ?object dc:creator ?creatorId . " +
+                "  ?creatorId skos:prefLabel ?creator . " +
+                "  FILTER ( lang(?creator) = \"en\" ) " +
+                "} " +
               "} ",
             "name": "description filter"
           },
