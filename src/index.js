@@ -10,8 +10,7 @@ var winston = require('winston');
 var routes = require('./routes');
 
 var blog = require('./middlewares/blog');
-var BenG = require('./middlewares/natuurbeelden');
-var utilsBenG = require('./helpers/natuurbeelden');
+var waisda = require('./middlewares/waisda');
 
 var app = express();
 
@@ -35,7 +34,18 @@ setInterval(function() {
 }, 3600000);
 
 // test
-BenG.getMetadataVideos();
+//waisda.getMetadataVideos().then(function(response) {
+//  console.log("response:" + response);
+// });
+waisda.getStatistics().then(function(response) {
+  var result = JSON.stringify(response);
+  // console.log(result);
+  var statistics = JSON.parse(result);
+  console.log("no.players:" + statistics.noPlayers);
+  console.log("no.tags:" + statistics.noTags);
+  console.log("no.videos:" + statistics.noVideos);
+  console.log("no.games:" + statistics.noGames);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
