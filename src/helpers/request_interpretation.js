@@ -150,25 +150,14 @@ module.exports = {
   },
   iocConceptFromInput: function(parameters) {
     // generate an uri based on parameters
-    // TODO: consolidate/normalise using IOC birdnames?
     const nameSpace = 'http://purl.org/collections/birds/';
     let concept;
 
     switch(parameters.request) {
       case 'genus': return `${nameSpace}genus-${parameters.genus}`;
       case 'species': return `${nameSpace}species-${parameters.genus}_${parameters.species}`;
-      case 'common': return 'not supported yet';
     }
 
     return concept;
-  },
-  mergeQueryParameters: function(parameters) {
-    // merge the parameters if we can not query for specifc concepts
-    switch(parameters.request) {
-      case 'genus': return parameters.genus;
-      case 'species': return `${parameters.genus} ${parameters.species}`;
-      case 'common': return parameters.common_name;
-    }
-    // TODO: for the Rijksmuseum translate scientific names to common?
   }
 }
