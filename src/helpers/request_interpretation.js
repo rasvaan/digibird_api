@@ -29,11 +29,11 @@ module.exports = {
   },
   birdParameters: function(query, res) {
     /* Return parameters object containging type of request and bird species
-    *
     *  This function interprets the type of object requested:
-    *  1. No parameters provided -> 400 response & return nul
-    *  2. Input is added to parameters object and request property is set to
-    *     most specific type of object query (common -> genus -> species)
+    *  1. Common name -> send request for additional information and add to parameters
+    *  2. Genus -> verify genus exists, add to parameters
+    *  3. Species -> extend with common names in dutch and english
+    *  4. Incorrect parameters -> 400 response
     */
     let parameters = {};
     const commonInput = query.common_name;
@@ -73,6 +73,7 @@ module.exports = {
           const commonNames = JSON.parse(data);
           parameters.common_name = commonNames.en;
           if (commonNames.nl) parameters.common_name_nl = commonNames.nl;
+
           return parameters;
         },
         error => {
