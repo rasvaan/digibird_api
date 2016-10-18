@@ -3,7 +3,6 @@ DigiBird object information component
 *******************************************************************************/
 var platformMetadata = require('./platforms');
 var request = require('request-promise-native');
-var winston = require('winston');
 var interpret = require('../helpers/request_interpretation');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
@@ -91,7 +90,7 @@ module.exports = {
       }
       case 'accurator': {
         const queryConcept = interpret.iocConceptFromInput(parameters);
-        const query = this.sparqlObjectQueries(queryConcept)['concept_annotation'];
+        const query = this.sparqlObjectQueries(queryConcept)['edm_concept_annotation'];
 
         return tripleStore.query(platform, query.query).then((values) => {
           return _this.processSparqlAggregations(values, 'dctype:Image');
@@ -176,20 +175,30 @@ module.exports = {
               "} ",
             "name": "description filter"
           },
-        "concept_annotation":
+        "edm_concept_annotation":
           {
             "query":
               "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
               "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
               "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
               "PREFIX oa: <http://www.w3.org/ns/oa#> " +
-              "SELECT ?aggregation ?object ?view " +
+              "SELECT ?aggregation ?rights ?object ?view ?title ?creator " +
               "WHERE { " +
                 `?annotation oa:hasBody <${arguments[0]}> . ` +
                 "?annotation oa:hasTarget ?object . " +
                 "?object rdf:type edm:ProvidedCHO . " +
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
+                "?aggregation edm:rights ?rights . " +
+                "OPTIONAL { " +
+                "  ?object dc:title ?title . " +
+                "   FILTER ( lang(?title) = \"en\" ) " +
+                "} " +
+                "OPTIONAL { " +
+                "  ?object dc:creator ?creatorId . " +
+                "  ?creatorId skos:prefLabel ?creator . " +
+                "  FILTER ( lang(?creator) = \"en\" ) " +
+                "} " +
               "} ",
             "name": "description filter"
           }

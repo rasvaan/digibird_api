@@ -10,27 +10,28 @@ var Results = require('../classes/Results');
 module.exports.set = function(app) {
 
   app.get('/objects', function(req, res) {
-    const parameters = interpret.objectParameters(req.query, res);
+    interpret.objectParameters(req.query, res).then(
+      parameters => {
+        objects.get(parameters).then(
+        resultsArray => {
+          let mergedResults = new Results();
 
-    if (parameters) {
-      objects.get(parameters)
-      .then(function(resultsArray) {
-        let mergedResults = new Results();
+          // simple merge of results
+          resultsArray.forEach((results) => {
+            mergedResults.addAggregations(results.results);
+            mergedResults.addPlatform(results.platforms[0]);
+          });
 
-        // simple merge of results
-        resultsArray.forEach((results) => {
-          mergedResults.addAggregations(results.results);
-          mergedResults.addPlatform(results.platforms[0]);
+          // convert to json-ld and output
+          let jsonLd = mergedResults.toJSONLD();
+          // reply results according to request header
+          output.contentNegotiation(res, jsonLd);
         });
-
-        // convert to json-ld and output
-        let jsonLd = mergedResults.toJSONLD();
-        // reply results according to request header
-        output.contentNegotiation(res, jsonLd);
-      }, function(error) {
-        res.status(400).send(error.message);
-      });
-    }
+      },
+      error => {
+        res.status(400).send('Could not process request for objects.');
+      }
+    );
   });
 
   app.get('/statistics', function(req, res) {

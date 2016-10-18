@@ -60,5 +60,13 @@
     "endpoint_location": "http://annotate.accurator.nl/sparql/",
     "statistics": ["users_birds", "annotations_birds", "annotated_objects_birds", "objects_birds"],
     "poll_interval": 5000
+  },
+  {
+    "name": "IOC World Bird List",
+    "id": "ioc",
+    "prefix": "ioc",
+    "name_space": "http://purl.org/vocab/ioc/",
+    "endpoint_type": "json-api",
+    "endpoint_location": "http://ioc.digibird.eculture.labs.vu.nl"
   }
 ]
