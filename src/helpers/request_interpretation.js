@@ -35,44 +35,51 @@ module.exports = {
     *  2. Input is added to parameters object and request property is set to
     *     most specific type of object query (common -> genus -> species)
     */
-    console.log('getting birdParameters');
     let parameters = {};
     const commonInput = query.common_name;
     const genusInput = query.genus;
     const speciesInput = query.species;
 
-    if (!commonInput && !genusInput && !speciesInput) {
-      res.status(400).send('No object parameters provided');
-      return null;
-    }
     if (commonInput) {
       parameters.common_name = commonInput.toLowerCase();
-      console.log('name request');
+      parameters.request = 'species';
+
       return this.getScientific(parameters.common_name).then(data => {
         const scientificName = JSON.parse(data);
         parameters.genus = scientificName.genus.toLowerCase();
         parameters.species = scientificName.species.toLowerCase();
-        console.log('parameters ', parameters);
         return parameters;
       });
+    } else if (genusInput && !speciesInput) {
+      // TODO: verify if exists
+      parameters.genus = genusInput.toLowerCase();
+      parameters.request = 'genus';
+    } else if (genusInput && speciesInput) {
+      parameters.genus = genusInput.toLowerCase();
+      parameters.species = speciesInput.toLowerCase();
+      parameters.request = 'species';
+
+      return this.getCommon(parameters.genus, parameters.species).then(data => {
+        const commonNames = JSON.parse(data);
+        parameters.common_name = commonNames.en;
+        if (commonNames.nl) parameters.common_name_nl = commonNames.nl;
+        return parameters;
+      });
+    } else {
+      res.status(400).send('Missing object parameter.');
+      return null;
     }
-    // if (genusInput) {
-    //   // TODO: match the input with loaded list
-    //   parameters.genus = genusInput.toLowerCase();
-    //   parameters.request = 'genus';
-    // }
-    // if (speciesInput) {
-    //   // TODO: match the input with loaded list
-    //   parameters.species = speciesInput.toLowerCase();
-    //   parameters.request = 'species'; // make the request type more specific
-    // }
-
-
   },
   getScientific: function(common) {
-    console.log('location', platforms.platform('ioc').endpoint_location);
     const url = `${platforms.platform('ioc').endpoint_location}/translate/common_name`;
     const query = { "name": common};
+    return request({ "url":url, "qs": query });
+  },
+  getCommon: function(genus, species) {
+    // return a promise of common names
+    const url = `${platforms.platform('ioc').endpoint_location}/translate/scientific_name`;
+    const query = { "genus": genus, "species": species };
+
     return request({ "url":url, "qs": query });
   },
   platformParameter: function(query, res) {
