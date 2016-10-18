@@ -4,15 +4,17 @@ DigiBird request interpretation module
 This module contains function that help parsing url parameters to interpret the
 request.
 *******************************************************************************/
+let request = require('request-promise-native');
 let platforms = require('../helpers/platforms');
+let winston = require('winston');
 
 module.exports = {
   objectParameters: function(query, res) {
     // retrieve information about the requested bird and platforms
-    let parameters = this.birdParameters(query, res);
-    parameters.platforms = this.platformParameters(query, res);
-
-    return parameters;
+    this.birdParameters(query, res).then(parameters => {
+      parameters.platforms = this.platformParameters(query, res);
+      return parameters;
+    });
   },
   statisticsParameters: function(query, res) {
     // retrieve one platform
@@ -33,6 +35,7 @@ module.exports = {
     *  2. Input is added to parameters object and request property is set to
     *     most specific type of object query (common -> genus -> species)
     */
+    console.log('getting birdParameters');
     let parameters = {};
     const commonInput = query.common_name;
     const genusInput = query.genus;
@@ -43,22 +46,34 @@ module.exports = {
       return null;
     }
     if (commonInput) {
-      // TODO: match the input with loaded list
       parameters.common_name = commonInput.toLowerCase();
-      parameters.request = 'common';
+      console.log('name request');
+      return this.getScientific(parameters.common_name).then(data => {
+        const scientificName = JSON.parse(data);
+        parameters.genus = scientificName.genus.toLowerCase();
+        parameters.species = scientificName.species.toLowerCase();
+        console.log('parameters ', parameters);
+        return parameters;
+      });
     }
-    if (genusInput) {
-      // TODO: match the input with loaded list
-      parameters.genus = genusInput.toLowerCase();
-      parameters.request = 'genus';
-    }
-    if (speciesInput) {
-      // TODO: match the input with loaded list
-      parameters.species = speciesInput.toLowerCase();
-      parameters.request = 'species'; // make the request type more specific
-    }
+    // if (genusInput) {
+    //   // TODO: match the input with loaded list
+    //   parameters.genus = genusInput.toLowerCase();
+    //   parameters.request = 'genus';
+    // }
+    // if (speciesInput) {
+    //   // TODO: match the input with loaded list
+    //   parameters.species = speciesInput.toLowerCase();
+    //   parameters.request = 'species'; // make the request type more specific
+    // }
 
-    return parameters;
+
+  },
+  getScientific: function(common) {
+    console.log('location', platforms.platform('ioc').endpoint_location);
+    const url = `${platforms.platform('ioc').endpoint_location}/translate/common_name`;
+    const query = { "name": common};
+    return request({ "url":url, "qs": query });
   },
   platformParameter: function(query, res) {
     /* Return platform string based on url parameter

@@ -3,7 +3,6 @@ DigiBird object information component
 *******************************************************************************/
 var platformMetadata = require('./platforms');
 var request = require('request-promise-native');
-var winston = require('winston');
 var interpret = require('../helpers/request_interpretation');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
