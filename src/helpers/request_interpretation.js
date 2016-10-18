@@ -11,7 +11,7 @@ let winston = require('winston');
 module.exports = {
   objectParameters: function(query, res) {
     // retrieve information about the requested bird and platforms
-    this.birdParameters(query, res).then(parameters => {
+    return this.birdParameters(query, res).then(parameters => {
       parameters.platforms = this.platformParameters(query, res);
       return parameters;
     });
@@ -39,55 +39,49 @@ module.exports = {
     const commonInput = query.common_name;
     const genusInput = query.genus;
     const speciesInput = query.species;
-    //TODO: handle error
 
     if (commonInput) {
       parameters.common_name = commonInput.toLowerCase();
       parameters.request = 'species';
 
-      return this.getScientific(parameters.common_name).then(data => {
-        const scientificName = JSON.parse(data);
-        parameters.genus = scientificName.genus.toLowerCase();
-        parameters.species = scientificName.species.toLowerCase();
-        return parameters;
-      });
+      return this.getScientific(parameters.common_name).then(
+        data => {
+          const scientificName = JSON.parse(data);
+          parameters.genus = scientificName.genus.toLowerCase();
+          parameters.species = scientificName.species.toLowerCase();
+          return parameters;
+        },
+        error => {
+          res.status(400).send(`Common name ${parameters.common_name} is unknown.`);
+        }
+      );
     } else if (genusInput && !speciesInput) {
       parameters.genus = genusInput.toLowerCase();
       parameters.request = 'genus';
 
-      return this.verifyGenus(parameters.genus).then(() => parameters);
+      return this.verifyGenus(parameters.genus).then(
+        () => parameters,
+        error => { res.status(400).send(`Genus ${parameters.genus} is unknown.`); }
+      );
     } else if (genusInput && speciesInput) {
       parameters.genus = genusInput.toLowerCase();
       parameters.species = speciesInput.toLowerCase();
       parameters.request = 'species';
 
-      return this.getCommon(parameters.genus, parameters.species).then(data => {
-        const commonNames = JSON.parse(data);
-        parameters.common_name = commonNames.en;
-        if (commonNames.nl) parameters.common_name_nl = commonNames.nl;
-        return parameters;
-      });
+      return this.getCommon(parameters.genus, parameters.species).then(
+        data => {
+          const commonNames = JSON.parse(data);
+          parameters.common_name = commonNames.en;
+          if (commonNames.nl) parameters.common_name_nl = commonNames.nl;
+          return parameters;
+        },
+        error => {
+          res.status(400).send(`Species ${parameters.genus} ${parameters.species} is unknown.`);
+        }
+      );
     } else {
       res.status(400).send('Missing object parameter.');
-      return null;
     }
-  },
-  verifyGenus: function(genus) {
-    const url = `${platforms.platform('ioc').endpoint_location}/verify`;
-    const query = { "genus": genus};
-    return request({ "url":url, "qs": query });
-  },
-  getScientific: function(common) {
-    const url = `${platforms.platform('ioc').endpoint_location}/translate/common_name`;
-    const query = { "name": common};
-    return request({ "url":url, "qs": query });
-  },
-  getCommon: function(genus, species) {
-    // return a promise of common names
-    const url = `${platforms.platform('ioc').endpoint_location}/translate/scientific_name`;
-    const query = { "genus": genus, "species": species };
-
-    return request({ "url":url, "qs": query });
   },
   platformParameter: function(query, res) {
     /* Return platform string based on url parameter
@@ -135,6 +129,23 @@ module.exports = {
     }
 
     return platformParameters;
+  },
+  verifyGenus: function(genus) {
+    const url = `${platforms.platform('ioc').endpoint_location}/verify`;
+    const query = { "genus": genus};
+    return request({ "url":url, "qs": query });
+  },
+  getScientific: function(common) {
+    const url = `${platforms.platform('ioc').endpoint_location}/translate/common_name`;
+    const query = { "name": common};
+    return request({ "url":url, "qs": query });
+  },
+  getCommon: function(genus, species) {
+    // return a promise of common names
+    const url = `${platforms.platform('ioc').endpoint_location}/translate/scientific_name`;
+    const query = { "genus": genus, "species": species };
+
+    return request({ "url":url, "qs": query });
   },
   iocConceptFromInput: function(parameters) {
     // generate an uri based on parameters
