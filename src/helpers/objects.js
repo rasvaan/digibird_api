@@ -7,6 +7,7 @@ var winston = require('winston');
 var interpret = require('../helpers/request_interpretation');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
+var waisda = require('../middlewares/waisda');
 var tripleStore = require('../middlewares/triple-store');
 var Results = require('../classes/Results');
 var Aggregation = require('../classes/Aggregation');
@@ -22,6 +23,7 @@ module.exports = {
      * the platforms parameter.
      */
     let promises = [];
+    console.log("in get, parameters:", parameters);
 
     for (let i=0; i<parameters.platforms.length; i++) {
       const platform = platformMetadata.platform(parameters.platforms[i]);
@@ -56,6 +58,11 @@ module.exports = {
       }
       case 'xeno-canto': {
         return xenoCanto.request(parameters).then((aggregations) => {
+          return new Results(aggregations, [platform]);
+        });
+      }
+      case 'waisda': {
+        return waisda.request(parameters).then((aggregations) => {
           return new Results(aggregations, [platform]);
         });
       }

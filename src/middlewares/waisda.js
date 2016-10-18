@@ -15,6 +15,15 @@ module.exports = {
     console.log("in waisda - request:", parameters);
 
     switch(parameters.request) {
+      case 'common': {
+        options = this.commonName(parameters);
+        console.log("options", options);
+
+        // return request(options).then((data) => {
+        //   return _this.processAggregations(data);
+        // });
+        break;
+      }
       case 'metadata': {
         options = this.metadataOptions();
         console.log("options:", options);
@@ -50,5 +59,13 @@ module.exports = {
       "type": 'Number of games',
       "value": metadata.noGames
     }];
-  }
+  },
+  commonName: function(parameters) {
+    const url = platforms.platform("waisda").endpoint_location;
+    const query = { "query": `${parameters.common}`};
+
+    console.log("url", url);
+    console.log("query", query);
+    return { "url":url, "qs": query };
+  },
 }
