@@ -39,6 +39,7 @@ module.exports = {
     const commonInput = query.common_name;
     const genusInput = query.genus;
     const speciesInput = query.species;
+    //TODO: handle error
 
     if (commonInput) {
       parameters.common_name = commonInput.toLowerCase();
@@ -51,9 +52,10 @@ module.exports = {
         return parameters;
       });
     } else if (genusInput && !speciesInput) {
-      // TODO: verify if exists
       parameters.genus = genusInput.toLowerCase();
       parameters.request = 'genus';
+
+      return this.verifyGenus(parameters.genus).then(() => parameters);
     } else if (genusInput && speciesInput) {
       parameters.genus = genusInput.toLowerCase();
       parameters.species = speciesInput.toLowerCase();
@@ -69,6 +71,11 @@ module.exports = {
       res.status(400).send('Missing object parameter.');
       return null;
     }
+  },
+  verifyGenus: function(genus) {
+    const url = `${platforms.platform('ioc').endpoint_location}/verify`;
+    const query = { "genus": genus};
+    return request({ "url":url, "qs": query });
   },
   getScientific: function(common) {
     const url = `${platforms.platform('ioc').endpoint_location}/translate/common_name`;
