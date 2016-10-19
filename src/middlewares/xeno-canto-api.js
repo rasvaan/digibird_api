@@ -79,7 +79,7 @@ module.exports = {
     // extend information object when possible
     if (result.rec) object.addCreator(result.rec);
     if (result.type) object.addType(result.type);
-    if (result.loc) object.addSpatial(result.loc);
+    if (result.loc) object.addSpatial(result.cnt);
     if (result.date) object.addTemporal(result.date);
 
     return object;
