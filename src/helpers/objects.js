@@ -7,6 +7,7 @@ var interpret = require('../helpers/request_interpretation');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
 var waisda = require('../middlewares/waisda');
+var natuurbeelden = require('../middlewares/natuurbeelden');
 var tripleStore = require('../middlewares/triple-store');
 var Results = require('../classes/Results');
 var Aggregation = require('../classes/Aggregation');
@@ -22,7 +23,6 @@ module.exports = {
      * the platforms parameter.
      */
     let promises = [];
-    console.log("in get, parameters:", parameters);
 
     for (let i=0; i<parameters.platforms.length; i++) {
       const platform = platformMetadata.platform(parameters.platforms[i]);
@@ -63,6 +63,12 @@ module.exports = {
       case 'waisda': {
         return waisda.request(parameters).then((aggregations) => {
           return new Results(aggregations, [platform]);
+        });
+      }
+      case 'natuurbeelden': {
+        return natuurbeelden.request(parameters).then((aggregations) => {
+          console.log("aggregations:", aggregations);
+           return new Results(aggregations, [platform]);
         });
       }
       default: {

@@ -26,8 +26,9 @@
     "id": "natuurbeelden",
     "prefix": "nb",
     "name_space": "http://natuurbeelden.nl/",
-    "endpoint_type": "elastic-search",
-    "endpoint_location": "",
+    "endpoint_type": "json-api",
+    "endpoint_location": "http://in.beeldengeluid.nl/collectie/api/",
+    "video_endpoint_location": "http://api2.video.beeldengeluid.videodock.com/api/2.0/",
     "statistics": [],
     "poll_interval": 20000
   },
