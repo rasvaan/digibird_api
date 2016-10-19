@@ -26,6 +26,10 @@ class CulturalObject {
   addThumbnail(thumbnail) {
     this.thumbnail = thumbnail;
   }
+  // TODO: add duration?!
+  // addDuration() {
+  //   this.duration = duration;
+  // }
   toJSONLD() {
     const ld =
     {

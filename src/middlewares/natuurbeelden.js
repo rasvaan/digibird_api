@@ -23,16 +23,27 @@ module.exports = {
 
           for (let i=0; i<bengResults.length; i++) {
             let collectedData = {};
+            collectedData["expressieId"] = bengResults[i].expressie.id;
+            collectedData["title"] = bengResults[i].mainTitle;
+            if (bengResults[i].publicaties[0])
+              collectedData["duration"] = bengResults[i].publicaties[0].tijdsduur;
+            else collectedData["duration"] = 0;
+
             let metadataOptions = this.metadataOptions(bengResults[i].expressie.id);
             let promise = request(metadataOptions).then((stringMetadata) => {
               let metadata = JSON.parse(stringMetadata);
               let videoOptions = this.videoOptions(metadata.details.guci);
+
               collectedData["guci"] = metadata.details.guci;
+              if (metadata.details.selecties[0]) {
+                collectedData["title"] = metadata.details.selecties[0].selectie.titel;
+                collectedData["duration"] = metadata.details.selecties[0].tijdsduur;
+              }
+
               return request(videoOptions).then((stringVideo) => {
                 let videoData = JSON.parse(stringVideo);
                 collectedData["imageUrl"] = videoData.player.posterUrl;
                 collectedData["videoUrl"] = videoData.player.stream.vodUrl;
-                //console.log("collectedData", collectedData);
                 return collectedData;
               });
             });
@@ -40,8 +51,8 @@ module.exports = {
             promises.push(promise);
           }
           return Promise.all(promises).then((results) => {
-            // console.log(results);
             console.log("all promises resolved");
+            //console.log("results:", results);
             return _this.processAggregations(results);
           });
         });
@@ -65,34 +76,33 @@ module.exports = {
 
     return { "url":url };
   },
-  processAggregations: function(data) {
-    // const data = JSON.parse(results);
-    // const VIDEO = 'dctype:MovingImage';
+  processAggregations: function(results) {
+    const VIDEO = 'dctype:MovingImage';
     let aggregations = [];
 
-    // for (let i=0; i<data.length; i++) {
-    //   // const result = data[i];
-    //   // let culturalObject = this.createCulturalObject(result);
-    //   // let webResource = new WebResource(result.sourceUrl, VIDEO);
-    //
-    // //   // TODO: update url to metadataUrl
-    // //   let aggregation = new Aggregation(
-    // //     `${result.sourceUrl}/aggregation`,
-    // //     culturalObject,
-    // //     webResource
-    // //   );
-    // //
-    // //   // TODO: get the actual license rights
-    // //   aggregation.addLicense("https://creativecommons.org/licenses/by/4.0/");
-    // //   aggregations.push(aggregation);
-    // }
+    for (let i=0; i<results.length; i++) {
+      const result = results[i];
+      let culturalObject = this.createCulturalObject(result);
+      let webResource = new WebResource(result.videoUrl, VIDEO);
+
+      // TODO: update url to metadataUrl
+      let aggregation = new Aggregation(
+        `${result.videoUrl}/aggregation`,
+        culturalObject,
+        webResource
+      );
+
+      // TODO: get the actual license rights
+      aggregation.addLicense("https://creativecommons.org/licenses/by/4.0/");
+      aggregations.push(aggregation);
+    }
     console.log("in aggregations");
     return aggregations;
   },
   // TODO: add original link to Natuurbeelden metadata
   createCulturalObject: function(result) {
     // create a new object, minimum info is url
-    let object = new CulturalObject(result.sourceUrl);
+    let object = new CulturalObject(result.videoUrl);
     // extend information object when possible
     if (result.title) object.addTitle(result.title);
     if (result.imageUrl) object.addThumbnail(result.imageUrl);
