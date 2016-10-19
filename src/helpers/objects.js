@@ -79,7 +79,7 @@ module.exports = {
     switch(platform.id) {
       case 'rijksmuseum': {
         // only filter, since we have no suitable concepts to query for
-        const filter = parameters.common_name_nl;
+        let filter = (parameters.common_name_nl || parameters.common_name).toLowerCase();
         const query = this.sparqlObjectQueries(filter)['edm_filter_desciption'];
 
         return tripleStore.query(platform, query.query).then((values) => {

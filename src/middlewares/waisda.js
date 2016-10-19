@@ -12,24 +12,19 @@ module.exports = {
   request: function(parameters) {
     let options;
     let _this = this;
-    console.log("in waisda - request:", parameters);
 
     switch(parameters.request) {
-      case 'common': {
+      case 'species': {
         options = this.commonName(parameters);
-        console.log("options", options);
 
-        // return request(options).then((data) => {
-        //   return _this.processAggregations(data);
-        // });
-        break;
+        return request(options).then((data) => {
+          return _this.processAggregations(data);
+        });
       }
       case 'metadata': {
         options = this.metadataOptions();
-        console.log("options:", options);
 
         return request(options).then((data) => {
-          console.log("data:", data);
           return _this.processMetadata(data);
         });
       }
@@ -60,12 +55,44 @@ module.exports = {
       "value": metadata.noGames
     }];
   },
-  commonName: function(parameters) {
-    const url = platforms.platform("waisda").endpoint_location;
-    const query = { "query": `${parameters.common}`};
+  processAggregations: function(string) {
+    const data = JSON.parse(string);
+    const VIDEO = 'dctype:MovingImage';
+    let aggregations = [];
 
-    console.log("url", url);
-    console.log("query", query);
-    return { "url":url, "qs": query };
+    for (let i=0; i<data.length; i++) {
+      const result = data[i];
+      let culturalObject = this.createCulturalObject(result);
+      let webResource = new WebResource(result.sourceUrl, VIDEO);
+
+      // TODO: update url to metadataUrl
+      let aggregation = new Aggregation(
+        `${result.sourceUrl}/aggregation`,
+        culturalObject,
+        webResource
+      );
+
+      // TODO: get the actual license rights
+      aggregation.addLicense("https://creativecommons.org/licenses/by/4.0/");
+      aggregations.push(aggregation);
+    }
+
+    return aggregations;
+  },
+  // TODO: add original link to Natuurbeelden metadata
+  createCulturalObject: function(result) {
+    // create a new object, minimum info is url
+    let object = new CulturalObject(result.sourceUrl);
+    // extend information object when possible
+    if (result.title) object.addTitle(result.title);
+    if (result.imageUrl) object.addThumbnail(result.imageUrl);
+
+    return object;
+  },
+  commonName: function(parameters) {
+    let commonName = (parameters.common_name_nl || parameters.common_name).toLowerCase();
+    const url = `${platforms.platform("waisda").endpoint_location}/video/tag/${commonName}`;
+
+    return { "url": url };
   },
 }

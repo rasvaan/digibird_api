@@ -23,6 +23,9 @@ class CulturalObject {
   addTemporal(temporal) {
     this.temporal = temporal;
   }
+  addThumbnail(thumbnail) {
+    this.thumbnail = thumbnail;
+  }
   toJSONLD() {
     const ld =
     {
@@ -36,6 +39,7 @@ class CulturalObject {
     if (this.type) ld["dc:type"] = this.objectType;
     if (this.spatial) ld["dcterms:spatial"] = this.spatial;
     if (this.temporal) ld["dcterms:temporal"] = this.temporal;
+    if (this.thumbnail) ld["edm:preview"] = this.thumbnail;
 
     return ld;
   }
