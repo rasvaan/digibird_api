@@ -54,7 +54,7 @@ module.exports.set = function(app) {
         platformAnnotations.get(parameters)
         .then(function(annotations) {
           res.json({
-            "platform": platform.name,
+            "platform": parameters.platform.name,
             "annotations": annotations
           });
         }, function(error) {

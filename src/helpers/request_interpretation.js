@@ -112,7 +112,7 @@ module.exports = {
      */
     const date = dateString ? new Date(dateString) : null;
 
-    if (isNaN(date.getTime())) {
+    if (date && isNaN(date.getTime())) {
       res.status(400).send(`${dateString} is not a valid date.`);
       return false;
     }
