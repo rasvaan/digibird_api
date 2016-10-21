@@ -23,7 +23,7 @@ module.exports = {
 
           for (let i=0; i<bengResults.length; i++) {
             let collectedData = {};
-            collectedData["expressieId"] = bengResults[i].expressie.id;
+            collectedData["uri"] = this.constructUri(bengResults[i].expressie.id).uri;
             collectedData["title"] = bengResults[i].mainTitle;
             if (bengResults[i].publicaties[0])
               collectedData["duration"] = bengResults[i].publicaties[0].tijdsduur;
@@ -34,11 +34,14 @@ module.exports = {
               let metadata = JSON.parse(stringMetadata);
               let videoOptions = this.videoOptions(metadata.details.guci);
 
-              collectedData["guci"] = metadata.details.guci;
+              //collectedData["guci"] = metadata.details.guci;
               if (metadata.details.selecties[0]) {
                 collectedData["title"] = metadata.details.selecties[0].selectie.titel;
                 collectedData["duration"] = metadata.details.selecties[0].tijdsduur;
               }
+              if (metadata.details.expressie.beschrijving)
+                collectedData["description"] = metadata.details.expressie.beschrijving;
+              else collectedData["description"] = '';
 
               return request(videoOptions).then((stringVideo) => {
                 let videoData = JSON.parse(stringVideo);
@@ -66,6 +69,11 @@ module.exports = {
     //   }
     }
   },
+  constructUri: function(expressieId) {
+    const uri = `${platforms.platform("natuurbeelden").name_space}collectie/details/expressie/${expressieId}/false/`;
+
+    return { "uri":uri };
+  },
   metadataOptions: function(expressieId) {
     const url = `${platforms.platform("natuurbeelden").endpoint_location}docs/${expressieId}`;
 
@@ -83,11 +91,11 @@ module.exports = {
     for (let i=0; i<results.length; i++) {
       const result = results[i];
       let culturalObject = this.createCulturalObject(result);
+      console.log(result.uri);
       let webResource = new WebResource(result.videoUrl, VIDEO);
 
-      // TODO: update url to metadataUrl
       let aggregation = new Aggregation(
-        `${result.videoUrl}/aggregation`,
+        `${result.uri}aggregation`,
         culturalObject,
         webResource
       );
@@ -99,13 +107,14 @@ module.exports = {
     console.log("in aggregations");
     return aggregations;
   },
-  // TODO: add original link to Natuurbeelden metadata
   createCulturalObject: function(result) {
     // create a new object, minimum info is url
-    let object = new CulturalObject(result.videoUrl);
+    let object = new CulturalObject(result.uri);
     // extend information object when possible
     if (result.title) object.addTitle(result.title);
+    if (result.description) object.addDescription(result.description);
     if (result.imageUrl) object.addThumbnail(result.imageUrl);
+    if (result.duration) object.addDuration(result.duration);
 
     return object;
   },

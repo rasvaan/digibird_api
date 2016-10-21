@@ -17,6 +17,9 @@ class CulturalObject {
   addType(objectType) {
     this.objectType = objectType;
   }
+  addDescription(description) {
+    this.description = description;
+  }
   addSpatial(spatial) {
     this.spatial = spatial;
   }
@@ -26,10 +29,9 @@ class CulturalObject {
   addThumbnail(thumbnail) {
     this.thumbnail = thumbnail;
   }
-  // TODO: add duration?!
-  // addDuration() {
-  //   this.duration = duration;
-  // }
+  addDuration(duration) {
+    this.duration = duration;
+  }
   toJSONLD() {
     const ld =
     {
@@ -41,9 +43,11 @@ class CulturalObject {
     if (this.creator) ld["dc:creator"] = this.creator;
     if (this.title) ld["dc:title"] = this.title;
     if (this.type) ld["dc:type"] = this.objectType;
+    if (this.description) ld["dcterms:description"] = this.description;
     if (this.spatial) ld["dcterms:spatial"] = this.spatial;
     if (this.temporal) ld["dcterms:temporal"] = this.temporal;
     if (this.thumbnail) ld["edm:preview"] = this.thumbnail;
+    if (this.duration) ld["dcterms:extent"] = this.duration;
 
     return ld;
   }
