@@ -37,32 +37,28 @@ module.exports.set = function(app) {
 
   app.get('/annotations', function(req, res) {
     const parameters = interpret.annotationParameters(req.query, res);
-    console.log('parameters in annotations ', parameters);
+
     if (parameters) {
       if (parameters.date) {
         platformAnnotations.since(parameters)
         .then(function(annotations) {
-            res.json({
-              "platform": parameters.platform.name,
-              "since": parameters.date.toJSON(),
-              "annotations": annotations
-            });
+          res.json({
+            "platform": parameters.platform.name,
+            "since": parameters.date.toJSON(),
+            "annotations": annotations
+          });
         }, function(error) {
-            res.status(404).send(
-              `Annotations for ${parameters.platform.name} are not available at this moment`
-            );
+          res.status(404).send(error.message);
         });
       } else {
         platformAnnotations.get(parameters)
         .then(function(annotations) {
-            res.json({
-              "platform": platform.name,
-              "annotations": annotations
-            });
+          res.json({
+            "platform": platform.name,
+            "annotations": annotations
+          });
         }, function(error) {
-            res.status(404).send(
-              `Annotations for ${parameters.platform.name} are not available at this moment`
-            );
+          res.status(404).send(error.message);
         });
       }
     }
