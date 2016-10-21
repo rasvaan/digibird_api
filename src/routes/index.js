@@ -1,6 +1,7 @@
 var winston = require('winston');
 var blogUtils = require('../helpers/blog');
 var platformStatistics = require('../helpers/statistics');
+platformAnnotations = require('../helpers/annotations');
 var platforms = require('../helpers/platforms');
 var objects = require('../helpers/objects');
 var interpret = require('../helpers/request_interpretation');
@@ -34,6 +35,39 @@ module.exports.set = function(app) {
     );
   });
 
+  app.get('/annotations', function(req, res) {
+    const parameters = interpret.annotationParameters(req.query, res);
+    console.log('parameters in annotations ', parameters);
+    if (parameters) {
+      if (parameters.date) {
+        platformAnnotations.since(parameters)
+        .then(function(annotations) {
+            res.json({
+              "platform": parameters.platform.name,
+              "since": parameters.date.toJSON(),
+              "annotations": annotations
+            });
+        }, function(error) {
+            res.status(404).send(
+              `Annotations for ${parameters.platform.name} are not available at this moment`
+            );
+        });
+      } else {
+        platformAnnotations.get(parameters)
+        .then(function(annotations) {
+            res.json({
+              "platform": platform.name,
+              "annotations": annotations
+            });
+        }, function(error) {
+            res.status(404).send(
+              `Annotations for ${parameters.platform.name} are not available at this moment`
+            );
+        });
+      }
+    }
+  });
+
   app.get('/statistics', function(req, res) {
     const platformId = interpret.statisticsParameters(req.query, res);
     const platform = platforms.platform(platformId);
@@ -59,4 +93,5 @@ module.exports.set = function(app) {
     // send the blog posts to the client 'blog' page
     res.json({ posts: blogPosts });
   });
+
 };

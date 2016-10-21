@@ -27,6 +27,28 @@ module.exports = {
       return platformParameter;
     }
   },
+  annotationParameters: function(query, res) {
+    // retrieve one platform
+    const platformId = this.platformParameter(query, res);
+    const date = this.dateParameter(query.since, res);
+
+    if (platformId === null) {
+      // bad request, no platform
+      res.status(400).send('No platfom parameter provided');
+      return false;
+    } else if (date === false) {
+      // bad request, invalid date
+      return false;
+    } else if (platformId && !date) {
+      // proper request, platform but no date
+      const platform = platforms.platform(platformId);
+      return { "platform": platform };
+    } else if (platformId && date) {
+      // al good
+      const platform = platforms.platform(platformId);
+      return { "platform": platform, "date": date };
+    }
+  },
   birdParameters: function(query, res) {
     /* Return parameters object containging type of request and bird species
     *  This function interprets the type of object requested:
@@ -83,6 +105,19 @@ module.exports = {
     } else {
       res.status(400).send('Missing object parameter.');
     }
+  },
+  dateParameter: function(dateString, res) {
+    /* Date parameters are expected to be provided in ISO-8601 format.
+     * example: 2011-10-10T14:48:00
+     */
+    const date = dateString ? new Date(dateString) : null;
+
+    if (isNaN(date.getTime())) {
+      res.status(400).send(`${dateString} is not a valid date.`);
+      return false;
+    }
+
+    return date;
   },
   platformParameter: function(query, res) {
     /* Return platform string based on url parameter
