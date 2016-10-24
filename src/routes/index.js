@@ -41,12 +41,10 @@ module.exports.set = function(app) {
     if (parameters) {
       if (parameters.date) {
         platformAnnotations.since(parameters)
-        .then(function(annotations) {
-          res.json({
-            "platform": parameters.platform.name,
-            "since": parameters.date.toJSON(),
-            "annotations": annotations
-          });
+        .then(function(results) {
+          let jsonLd = results.toJSONLD();
+          // reply results according to request header
+          output.contentNegotiation(res, jsonLd);
         }, function(error) {
           res.status(404).send(error.message);
         });
