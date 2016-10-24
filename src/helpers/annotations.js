@@ -70,7 +70,7 @@ module.exports = {
 
     switch(parameters.platform.id) {
       case 'accurator': {
-        const limit = 10;
+        const limit = 60;
         const query = this.sparqlAnnotationQueries(limit)['edm_sorted_annotation'];
 
         return tripleStore.query(parameters.platform, query.query).then((values) => {
@@ -241,7 +241,7 @@ module.exports = {
             "} " +
           "} " +
           "ORDER BY DESC(?dateAnnotated) " +
-          "LIMIT 60",
+          `LIMIT ${arguments[0]}`,
           "name": "annotations sorted by date"
         }
     }
