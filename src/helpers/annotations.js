@@ -4,6 +4,7 @@ DigiBird annotation information component
 var platformMetadata = require('./platforms');
 var request = require('request-promise-native');
 var interpret = require('../helpers/request_interpretation');
+var objects = require('../helpers/objects');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
 var tripleStore = require('../middlewares/triple-store');
@@ -74,7 +75,7 @@ module.exports = {
         const query = this.sparqlAnnotationQueries(limit)['edm_sorted_annotation'];
 
         return tripleStore.query(parameters.platform, query.query).then((values) => {
-          let aggregations = _this.processSparqlAggregations(values, 'dctype:Image');
+          let aggregations = objects.processSparqlAggregations(values, 'dctype:Image');
           let annotations = _this.processSparqlAnnotations(values);
           let combined = aggregations.concat(annotations);
           return new Results(combined, [parameters.platform]);
@@ -121,44 +122,6 @@ module.exports = {
         });
       }
     }
-  },
-  processSparqlAggregations: function(results, type) {
-    /* extract results from sparql objects, consider:
-    *  - duplicate results -> merge into one objects
-    *  - duplicate values property object -> make value an array of values
-    */
-    let aggregations = [];
-    let uris = []; // book keepping
-
-    for (let i=0; i<results.length; i++) {
-      const result = results[i];
-      const index = uris.indexOf(result.aggregation.value);
-
-      // see if already present in aggregations
-      if (index < 0) {
-        // unknown uri, add to array and create a new aggregation
-        uris.push(result.aggregation.value);
-        let culturalObject = new CulturalObject(result.object.value);
-        let webResource = new WebResource(result.view.value, type);
-
-        // extend information object when possible
-        if (result.creator) culturalObject.addCreator(result.creator.value);
-        if (result.title) culturalObject.addTitle(result.title.value);
-
-        let aggregation = new Aggregation(
-          result.aggregation.value,
-          culturalObject,
-          webResource
-        );
-
-        aggregation.addLicense(result.rights.value);
-        aggregations[aggregations.length] = aggregation;
-      } else {
-        // TODO: extend current data in a sensible way (duplicate values)
-      }
-    }
-
-    return aggregations;
   },
   processSparqlAnnotations: function(results) {
     /* extract annotations from sparql objects
