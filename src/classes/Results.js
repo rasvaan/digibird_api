@@ -59,13 +59,17 @@ class Results {
   contextProperties() {
     let contextProperties = [];
 
-    this.results.forEach(aggregation => {
-      // find properties that might be added
-      let candidates = contextProperties.concat(
-        aggregation.contextProperties,
-        aggregation.culturalObject.contextProperties,
-        aggregation.webResource.contextProperties
-      );
+    this.results.forEach(result => {
+      let candidates = result.contextProperties;
+
+      // find properties in embedded classes that might be added
+      for (let key in result) {
+        if (result[key].contextProperties) {
+          if (result[key].contextProperties.length > 0) {
+            candidates = candidates.concat(result[key].contextProperties);
+          }
+        }
+      }
 
       // only add property when not already present
       candidates.forEach(candidate => {
@@ -79,9 +83,9 @@ class Results {
   }
   toJSONLD() {
     let context, properties, aggregations;
-
     properties = this.contextProperties();
     context = this.createContext(properties, this.platforms);
+
     aggregations = this.results.map(
       result => result.toJSONLD()
     );

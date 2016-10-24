@@ -11,6 +11,7 @@ var Results = require('../classes/Results');
 var Aggregation = require('../classes/Aggregation');
 var CulturalObject = require('../classes/CulturalObject');
 var WebResource = require('../classes/WebResource');
+var Annotation = require('../classes/Annotation');
 
 module.exports = {
   get: function(parameters) {
@@ -73,9 +74,10 @@ module.exports = {
         const query = this.sparqlAnnotationQueries(limit)['edm_sorted_annotation'];
 
         return tripleStore.query(parameters.platform, query.query).then((values) => {
-          return _this.processSparqlAggregations(values, 'dctype:Image');
-        }).then((aggregations) => {
-          return new Results(aggregations, [parameters.platform]);
+          let aggregations = _this.processSparqlAggregations(values, 'dctype:Image');
+          let annotations = _this.processSparqlAnnotations(values);
+          let combined = aggregations.concat(annotations);
+          return new Results(combined, [parameters.platform]);
         });
       }
       default: {
@@ -157,6 +159,44 @@ module.exports = {
     }
 
     return aggregations;
+  },
+  processSparqlAnnotations: function(results) {
+    /* extract annotations from sparql objects, consider:
+    */
+    let annotations = [];
+    let uris = []; // book keepping
+
+    let annotation = new Annotation('http://anno.nl', ':nightwatch', 'kip');
+    annotations.push(annotation);
+    // for (let i=0; i<results.length; i++) {
+    //   const result = results[i];
+    //   const index = uris.indexOf(result.aggregation.value);
+    //
+    //   // see if already present in aggregations
+    //   if (index < 0) {
+    //     // unknown uri, add to array and create a new aggregation
+    //     uris.push(result.aggregation.value);
+    //     let culturalObject = new CulturalObject(result.object.value);
+    //     let webResource = new WebResource(result.view.value, type);
+    //
+    //     // extend information object when possible
+    //     if (result.creator) culturalObject.addCreator(result.creator.value);
+    //     if (result.title) culturalObject.addTitle(result.title.value);
+    //
+    //     let aggregation = new Aggregation(
+    //       result.aggregation.value,
+    //       culturalObject,
+    //       webResource
+    //     );
+    //
+    //     aggregation.addLicense(result.rights.value);
+    //     aggregations[aggregations.length] = aggregation;
+    //   } else {
+    //     // TODO: extend current data in a sensible way (duplicate values)
+    //   }
+    // }
+
+    return annotations;
   },
   sparqlAnnotationQueries: function() {
     // create an object with queries that can be used to retrieve objects

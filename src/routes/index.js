@@ -52,11 +52,10 @@ module.exports.set = function(app) {
         });
       } else {
         platformAnnotations.get(parameters)
-        .then(function(annotations) {
-          res.json({
-            "platform": parameters.platform.name,
-            "annotations": annotations
-          });
+        .then(function(results) {
+          let jsonLd = results.toJSONLD();
+          // reply results according to request header
+          output.contentNegotiation(res, jsonLd);
         }, function(error) {
           res.status(404).send(error.message);
         });
