@@ -108,13 +108,17 @@ module.exports = {
     let _this = this;
 
     switch(parameters.platform.id) {
-      // case 'accurator': {
-      //   return tripleStore.query(platform, query.query).then((values) => {
-      //     return _this.processSparqlAggregations(values, 'dctype:Image');
-      //   }).then((aggregations) => {
-      //     return new Results(aggregations, [platform]);
-      //   });
-      // }
+      case 'accurator': {
+        const sparqlDate = parameters.date.toISOString();
+        const query = this.sparqlAnnotationQueries(sparqlDate)['edm_time_annotation'];
+
+        return tripleStore.query(parameters.platform, query.query).then((values) => {
+          let aggregations = objects.processSparqlAggregations(values, 'dctype:Image');
+          let annotations = _this.processSparqlAnnotations(values);
+          let combined = aggregations.concat(annotations);
+          return new Results(combined, [parameters.platform]);
+        });
+      }
       default: {
         return new Promise(function(resolve, reject) {
           const error = new Error(`Annotations from ${parameters.platform.id} are not yet available`);
@@ -165,11 +169,11 @@ module.exports = {
           "PREFIX cnt: <http://www.w3.org/2011/content#> " +
           "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
           "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
-          "SELECT ?aggregation ?annotation ?dateAnnotated ?label ?rights ?object ?view  ?label ?title ?creator " +
+          "SELECT ?aggregation ?annotation ?date ?label ?rights ?object ?view  ?label ?title ?creator " +
           "WHERE { " +
             "?annotation oa:hasBody ?body . " +
             "?annotation oa:hasTarget ?object . " +
-            "?annotation oa:annotatedAt ?dateAnnotated . " +
+            "?annotation oa:annotatedAt ?date . " +
             "?aggregation edm:aggregatedCHO ?object . " +
             "?aggregation edm:isShownBy ?view . " +
             "?aggregation edm:rights ?rights . " +
@@ -193,10 +197,48 @@ module.exports = {
               "FILTER ( lang(?creator) = \"en\" ) " +
             "} " +
           "} " +
-          "ORDER BY DESC(?dateAnnotated) " +
+          "ORDER BY DESC(?date) " +
           `LIMIT ${arguments[0]}`,
           "name": "annotations sorted by date"
-        }
+        },
+        "edm_time_annotation":
+          {
+            "query":
+              "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
+              "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
+              "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
+              "PREFIX oa: <http://www.w3.org/ns/oa#> " +
+              "SELECT DISTINCT ?aggregation ?annotation ?date ?rights ?object ?view  ?label ?title ?creator " +
+              "WHERE { " +
+                "?annotation oa:hasBody ?body . " +
+                "?annotation oa:hasTarget ?object . " +
+                "?annotation oa:annotatedAt ?date . " +
+                "?aggregation edm:aggregatedCHO ?object . " +
+                "?aggregation edm:isShownBy ?view . " +
+                "?aggregation edm:rights ?rights . " +
+                "?object rdf:type <http://accurator.nl/bird#Target> . " +
+                "OPTIONAL { " +
+                  "?body rdf:type cnt:ContentAsText . " +
+                  "?body cnt:chars ?label . " +
+                "} " +
+                "OPTIONAL { " +
+                  "?body rdf:type skos:Concept . " +
+                  "?body skos:prefLabel ?label . " +
+                  "FILTER ( lang(?title) = \"en\" ) " +
+                "} " +
+                "OPTIONAL { " +
+                  "?object dc:title ?title . " +
+                   "FILTER ( lang(?title) = \"en\" ) " +
+                "} " +
+                "OPTIONAL { " +
+                  "?object dc:creator ?creatorId . " +
+                  "?creatorId skos:prefLabel ?creator . " +
+                  "FILTER ( lang(?creator) = \"en\" ) " +
+                "} " +
+                `FILTER (?date > "${arguments[0]}"^^xsd:dateTime) ` +
+              "} ",
+            "name": "annotations since date"
+          }
     }
 
     return queries;
