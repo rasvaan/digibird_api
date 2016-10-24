@@ -1,0 +1,207 @@
+############### annotation concept query ###############
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+SELECT ?aggregation ?rights ?object ?view ?title ?creator
+WHERE {
+  ?annotation oa:hasBody <http://purl.org/collections/birds/species-pica_pica> .
+  ?annotation oa:hasTarget ?object .
+  ?object rdf:type edm:ProvidedCHO .
+  ?aggregation edm:aggregatedCHO ?object .
+  ?aggregation edm:isShownBy ?view .
+  ?aggregation edm:rights ?rights .
+  OPTIONAL {
+    ?object dc:title ?title .
+     FILTER ( lang(?title) = \en\ )
+  }
+  OPTIONAL {
+    ?object dc:creator ?creatorId .
+    ?creatorId skos:prefLabel ?creator .
+    FILTER ( lang(?creator) = \en\ )
+  }
+}
+
+############### sorted annotation concept query ###############
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+SELECT DISTINCT ?aggregation ?dateAnnotated ?rights ?object ?view ?title ?creator
+WHERE {
+  ?annotation oa:hasBody <http://purl.org/collections/birds/species-pica_pica> .
+  ?annotation oa:hasTarget ?object .
+  ?annotation oa:annotatedAt ?dateAnnotated .
+  ?object rdf:type edm:ProvidedCHO .
+  ?aggregation edm:aggregatedCHO ?object .
+  ?aggregation edm:isShownBy ?view .
+  ?aggregation edm:rights ?rights .
+  OPTIONAL {
+    ?object dc:title ?title .
+     FILTER ( lang(?title) = "en" )
+  }
+  OPTIONAL {
+    ?object dc:creator ?creatorId .
+    ?creatorId skos:prefLabel ?creator .
+    FILTER ( lang(?creator) = "en" )
+  }
+}
+ORDER BY DESC(?dateAnnotated)
+LIMIT 10
+
+############### 10 distinct annotated aggregations ###############
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+SELECT DISTINCT ?aggregation
+WHERE {
+  ?annotation oa:hasBody ?body .
+  ?annotation oa:hasTarget ?object .
+  ?aggregation edm:aggregatedCHO ?object .
+}
+LIMIT 10
+
+############### 10 distinct annotated aggregations ordered by date ###############
+# problem: introduces duplicate aggregations
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+SELECT ?aggregation ?dateAnnotated
+WHERE {
+  ?annotation oa:hasBody ?body .
+  ?annotation oa:hasTarget ?object .
+  ?annotation oa:annotatedAt ?dateAnnotated .
+  ?aggregation edm:aggregatedCHO ?object .
+}
+ORDER BY DESC(?dateAnnotated)
+LIMIT 10
+
+############### 10 distinct annotated aggregations ordered by date ###############
+# problem: dateMax is not shown (cliopatria bug?)
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+SELECT ?aggregation (max(?dateAnnotated) as ?dateMax)
+WHERE {
+  ?annotation oa:hasBody ?body .
+  ?annotation oa:hasTarget ?object .
+  ?annotation oa:annotatedAt ?dateAnnotated .
+  ?aggregation edm:aggregatedCHO ?object .
+}
+GROUP BY (?aggregation)
+ORDER BY DESC(MAX(?dateAnnotated))
+LIMIT 10
+
+############### -30 annotated aggregations ordered by date ###############
+# problem:
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+SELECT ?aggregation ?dateAnnotated ?body
+WHERE {
+  ?annotation oa:hasBody ?body .
+  ?annotation oa:hasTarget ?object .
+  ?annotation oa:annotatedAt ?dateAnnotated .
+  ?aggregation edm:aggregatedCHO ?object .
+}
+ORDER BY DESC(?dateAnnotated)
+LIMIT 30
+
+
+###############  Optional annotation info ###############
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+PREFIX cnt: <http://www.w3.org/2011/content#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT ?aggregation ?dateAnnotated ?label
+WHERE {
+  ?annotation oa:hasBody ?body .
+  ?annotation oa:hasTarget ?object .
+  ?annotation oa:annotatedAt ?dateAnnotated .
+  ?aggregation edm:aggregatedCHO ?object .
+  OPTIONAL {
+    ?body rdf:type cnt:ContentAsText .
+    ?body cnt:chars ?label .
+  }
+  OPTIONAL {
+    ?body rdf:type skos:Concept .
+    ?body skos:prefLabel ?label .
+    FILTER ( lang(?title) = "en" )
+  }
+}
+ORDER BY DESC(?dateAnnotated)
+LIMIT 60
+
+############### show only elements within the bird domain ###############
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+PREFIX cnt: <http://www.w3.org/2011/content#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT ?aggregation ?dateAnnotated ?label
+WHERE {
+  ?annotation oa:hasBody ?body .
+  ?annotation oa:hasTarget ?object .
+  ?annotation oa:annotatedAt ?dateAnnotated .
+  ?aggregation edm:aggregatedCHO ?object .
+  ?object rdf:type <http://accurator.nl/bird#Target> .
+  OPTIONAL {
+    ?body rdf:type cnt:ContentAsText .
+    ?body cnt:chars ?label .
+  }
+  OPTIONAL {
+    ?body rdf:type skos:Concept .
+    ?body skos:prefLabel ?label .
+    FILTER ( lang(?title) = "en" )
+  }
+}
+ORDER BY DESC(?dateAnnotated)
+LIMIT 60
+
+###############  add annotation information ###############
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX oa: <http://www.w3.org/ns/oa#>
+PREFIX cnt: <http://www.w3.org/2011/content#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT ?aggregation ?dateAnnotated ?rights ?object ?view  ?label ?title ?creator
+WHERE {
+  ?annotation oa:hasBody ?body .
+  ?annotation oa:hasTarget ?object .
+  ?annotation oa:annotatedAt ?dateAnnotated .
+  ?aggregation edm:aggregatedCHO ?object .
+  ?aggregation edm:isShownBy ?view .
+  ?aggregation edm:rights ?rights .
+  ?object rdf:type <http://accurator.nl/bird#Target> .
+  OPTIONAL {
+    ?body rdf:type cnt:ContentAsText .
+    ?body cnt:chars ?label .
+  }
+  OPTIONAL {
+    ?body rdf:type skos:Concept .
+    ?body skos:prefLabel ?label .
+    FILTER ( lang(?title) = "en" )
+  }
+  OPTIONAL {
+    ?object dc:title ?title .
+     FILTER ( lang(?title) = "en" )
+  }
+  OPTIONAL {
+    ?object dc:creator ?creatorId .
+    ?creatorId skos:prefLabel ?creator .
+    FILTER ( lang(?creator) = "en" )
+  }
+}
+ORDER BY DESC(?dateAnnotated)
+LIMIT 60
