@@ -12,8 +12,11 @@ class Annotation {
       "oa:hasTarget"
     ];
   }
+  addDate(date) {
+    this.date = date;
+  }
   toJSONLD() {
-    const jsonLd =
+    let ld =
     {
       "@id": this.uri,
       "@type": this.type,
@@ -21,7 +24,9 @@ class Annotation {
       "oa:hasBody": this.body
     };
 
-    return jsonLd;
+    if (this.date) ld["oa:annotatedAt"] = this.date;
+
+    return ld;
   }
 }
 

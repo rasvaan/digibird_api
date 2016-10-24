@@ -148,6 +148,9 @@ module.exports = {
             result.object.value,
             result.label.value
           );
+
+          if (result.date) annotation.addDate(result.date.value);
+
           annotations.push(annotation);
         }
       }
