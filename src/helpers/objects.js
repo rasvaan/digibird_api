@@ -138,7 +138,6 @@ module.exports = {
     return aggregations;
   },
   sparqlObjectQueries: function() {
-    console.log(arguments[0]);
     // create an object with queries that can be used to retrieve objects
     const queries =
     {

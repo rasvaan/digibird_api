@@ -7,7 +7,6 @@ var winston = require('winston');
 
 module.exports = {
   query: function(platform, query) {
-    console.log('query ', platform, query);
     // query the platforms endpoint
     var options = {
       url: platform.endpoint_location,
@@ -21,7 +20,6 @@ module.exports = {
 
     return request(options)
     .then(function(response) {
-      console.log('respnse ', response);
       return JSON.parse(response).results.bindings;
     });
   },

@@ -14,7 +14,6 @@ var WebResource = require('../classes/WebResource');
 
 module.exports = {
   get: function(parameters) {
-    console.log('annotations get');
     switch(parameters.platform.endpoint_type) {
       case 'json-api': {
         return this.annotationsApi(parameters);
@@ -33,7 +32,6 @@ module.exports = {
     }
   },
   since: function(parameters) {
-    console.log('annotations since');
     switch(parameters.platform.endpoint_type) {
       case 'json-api': {
         return this.annotationsSinceApi(parameters);
@@ -52,7 +50,6 @@ module.exports = {
     }
   },
   annotationsApi: function(parameters) {
-    console.log('annotations api, ', parameters.platform.id);
     switch (parameters.platform.id) {
       // case 'waisda': {
       //   return waisda.request(parameters).then((aggregations) => {
@@ -69,7 +66,7 @@ module.exports = {
   },
   annotationsTripleStore: function(parameters) {
     let _this = this;
-    console.log('annotations triple store, ', parameters.platform.id);
+
     switch(parameters.platform.id) {
       case 'accurator': {
         const limit = 10;
@@ -78,7 +75,6 @@ module.exports = {
         return tripleStore.query(parameters.platform, query.query).then((values) => {
           return _this.processSparqlAggregations(values, 'dctype:Image');
         }).then((aggregations) => {
-          console.log('aggregations ', aggregations);
           return new Results(aggregations, [parameters.platform]);
         });
       }
@@ -91,7 +87,6 @@ module.exports = {
     }
   },
   annotationsSinceApi: function(parameters) {
-    console.log('annotations since api, ', parameters.platform.id);
     switch (parameters.platform.id) {
       // case 'waisda': {
       //   return waisda.request(parameters).then((aggregations) => {
@@ -108,7 +103,7 @@ module.exports = {
   },
   annotationsSinceTripleStore: function(parameters) {
     let _this = this;
-    console.log('annotations since triple store, ', parameters.platform.id);
+
     switch(parameters.platform.id) {
       // case 'accurator': {
       //   return tripleStore.query(platform, query.query).then((values) => {
@@ -170,28 +165,43 @@ module.exports = {
       "edm_sorted_annotation":
         {
           "query":
-            "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
-            "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
-            "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
-            "PREFIX oa: <http://www.w3.org/ns/oa#> " +
-            "SELECT ?aggregation ?rights ?object ?view ?title ?creator " +
-            "WHERE { " +
-              `?annotation oa:hasBody <http://purl.org/collections/birds/species-pica_pica> . ` +
-              "?annotation oa:hasTarget ?object . " +
-              "?object rdf:type edm:ProvidedCHO . " +
-              "?aggregation edm:aggregatedCHO ?object . " +
-              "?aggregation edm:isShownBy ?view . " +
-              "?aggregation edm:rights ?rights . " +
-              "OPTIONAL { " +
-              "  ?object dc:title ?title . " +
-              "   FILTER ( lang(?title) = \"en\" ) " +
-              "} " +
-              "OPTIONAL { " +
-              "  ?object dc:creator ?creatorId . " +
-              "  ?creatorId skos:prefLabel ?creator . " +
-              "  FILTER ( lang(?creator) = \"en\" ) " +
-              "} " +
-            "} ",
+          "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
+          "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
+          "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
+          "PREFIX oa: <http://www.w3.org/ns/oa#> " +
+          "PREFIX cnt: <http://www.w3.org/2011/content#> " +
+          "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+          "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+          "SELECT ?aggregation ?dateAnnotated ?rights ?object ?view  ?label ?title ?creator " +
+          "WHERE { " +
+            "?annotation oa:hasBody ?body . " +
+            "?annotation oa:hasTarget ?object . " +
+            "?annotation oa:annotatedAt ?dateAnnotated . " +
+            "?aggregation edm:aggregatedCHO ?object . " +
+            "?aggregation edm:isShownBy ?view . " +
+            "?aggregation edm:rights ?rights . " +
+            "?object rdf:type <http://accurator.nl/bird#Target> . " +
+            "OPTIONAL { " +
+              "?body rdf:type cnt:ContentAsText . " +
+              "?body cnt:chars ?label . " +
+            "} " +
+            "OPTIONAL { " +
+              "?body rdf:type skos:Concept . " +
+              "?body skos:prefLabel ?label . " +
+              "FILTER ( lang(?title) = \"en\" ) " +
+            "} " +
+            "OPTIONAL { " +
+              "?object dc:title ?title . " +
+              "FILTER ( lang(?title) = \"en\" ) " +
+            "} " +
+            "OPTIONAL { " +
+              "?object dc:creator ?creatorId . " +
+              "?creatorId skos:prefLabel ?creator . " +
+              "FILTER ( lang(?creator) = \"en\" ) " +
+            "} " +
+          "} " +
+          "ORDER BY DESC(?dateAnnotated) " +
+          "LIMIT 60",
           "name": "annotations sorted by date"
         }
     }
