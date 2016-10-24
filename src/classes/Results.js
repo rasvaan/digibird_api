@@ -32,7 +32,8 @@ class Results {
       "dc": "http://purl.org/dc/elements/1.1/",
       "dctype": "http://purl.org/dc/dcmitype/",
       "ore": "http://www.openarchives.org/ore/terms/",
-      "edm": "http://www.europeana.eu/schemas/edm/"
+      "edm": "http://www.europeana.eu/schemas/edm/",
+      "oa": "http://www.w3.org/ns/oa#"
     }
     context = this.addPrefixToContext(context, platforms);
     context = this.addProperties(context, propertySet);
