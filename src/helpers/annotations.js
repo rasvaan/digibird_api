@@ -161,40 +161,30 @@ module.exports = {
     return aggregations;
   },
   processSparqlAnnotations: function(results) {
-    /* extract annotations from sparql objects, consider:
+    /* extract annotations from sparql objects
     */
     let annotations = [];
     let uris = []; // book keepping
 
-    let annotation = new Annotation('http://anno.nl', ':nightwatch', 'kip');
-    annotations.push(annotation);
-    // for (let i=0; i<results.length; i++) {
-    //   const result = results[i];
-    //   const index = uris.indexOf(result.aggregation.value);
-    //
-    //   // see if already present in aggregations
-    //   if (index < 0) {
-    //     // unknown uri, add to array and create a new aggregation
-    //     uris.push(result.aggregation.value);
-    //     let culturalObject = new CulturalObject(result.object.value);
-    //     let webResource = new WebResource(result.view.value, type);
-    //
-    //     // extend information object when possible
-    //     if (result.creator) culturalObject.addCreator(result.creator.value);
-    //     if (result.title) culturalObject.addTitle(result.title.value);
-    //
-    //     let aggregation = new Aggregation(
-    //       result.aggregation.value,
-    //       culturalObject,
-    //       webResource
-    //     );
-    //
-    //     aggregation.addLicense(result.rights.value);
-    //     aggregations[aggregations.length] = aggregation;
-    //   } else {
-    //     // TODO: extend current data in a sensible way (duplicate values)
-    //   }
-    // }
+    for (let i=0; i<results.length; i++) {
+      const result = results[i];
+      const index = uris.indexOf(result.annotation.value);
+
+      // see if already present in aggregations
+      if (index < 0) {
+        // unknown uri, add to array and create a new aggregation
+        uris.push(result.annotation.value);
+
+        if (result.label) {
+          let annotation = new Annotation(
+            result.annotation.value,
+            result.object.value,
+            result.label.value
+          );
+          annotations.push(annotation);
+        }
+      }
+    }
 
     return annotations;
   },
@@ -212,7 +202,7 @@ module.exports = {
           "PREFIX cnt: <http://www.w3.org/2011/content#> " +
           "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
           "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
-          "SELECT ?aggregation ?dateAnnotated ?rights ?object ?view  ?label ?title ?creator " +
+          "SELECT ?aggregation ?annotation ?dateAnnotated ?label ?rights ?object ?view  ?label ?title ?creator " +
           "WHERE { " +
             "?annotation oa:hasBody ?body . " +
             "?annotation oa:hasTarget ?object . " +
