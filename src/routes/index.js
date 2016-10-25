@@ -1,6 +1,7 @@
 var winston = require('winston');
 var blogUtils = require('../helpers/blog');
 var platformStatistics = require('../helpers/statistics');
+platformAnnotations = require('../helpers/annotations');
 var platforms = require('../helpers/platforms');
 var objects = require('../helpers/objects');
 var interpret = require('../helpers/request_interpretation');
@@ -34,6 +35,32 @@ module.exports.set = function(app) {
     );
   });
 
+  app.get('/annotations', function(req, res) {
+    const parameters = interpret.annotationParameters(req.query, res);
+
+    if (parameters) {
+      if (parameters.date) {
+        platformAnnotations.since(parameters)
+        .then(function(results) {
+          let jsonLd = results.toJSONLD();
+          // reply results according to request header
+          output.contentNegotiation(res, jsonLd);
+        }, function(error) {
+          res.status(404).send(error.message);
+        });
+      } else {
+        platformAnnotations.get(parameters)
+        .then(function(results) {
+          let jsonLd = results.toJSONLD();
+          // reply results according to request header
+          output.contentNegotiation(res, jsonLd);
+        }, function(error) {
+          res.status(404).send(error.message);
+        });
+      }
+    }
+  });
+
   app.get('/statistics', function(req, res) {
     const platformId = interpret.statisticsParameters(req.query, res);
     const platform = platforms.platform(platformId);
@@ -61,4 +88,5 @@ module.exports.set = function(app) {
     // send the blog posts to the client 'blog' page
     res.json({ posts: blogPosts });
   });
+
 };
