@@ -55,7 +55,6 @@ module.exports = {
           }
           return Promise.all(promises).then((results) => {
             console.log("all promises resolved");
-            //console.log("results:", results);
             return _this.processAggregations(results);
           });
         });
