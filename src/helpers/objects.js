@@ -67,7 +67,6 @@ module.exports = {
       }
       case 'natuurbeelden': {
         return natuurbeelden.request(parameters).then((aggregations) => {
-          console.log("aggregations:", aggregations);
            return new Results(aggregations, [platform]);
         });
       }

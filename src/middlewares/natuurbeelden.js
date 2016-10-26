@@ -138,7 +138,6 @@ module.exports = {
     for (let i=0; i<results.length; i++) {
       const result = results[i];
       let culturalObject = this.createCulturalObject(result);
-      console.log(result.uri);
       let webResource = new WebResource(result.videoUrl, VIDEO);
 
       let aggregation = new Aggregation(
@@ -151,7 +150,6 @@ module.exports = {
       aggregation.addLicense("https://creativecommons.org/licenses/by/4.0/");
       aggregations.push(aggregation);
     }
-    console.log("in aggregations");
     return aggregations;
   },
   createCulturalObject: function(result) {
