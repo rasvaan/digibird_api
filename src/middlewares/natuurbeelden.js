@@ -109,11 +109,11 @@ module.exports = {
 
     return [{
       "type": 'Total number of videos',
-      "value": (totCount == 0 ? "not available" : totCount)
+      "value": (totCount == 0 ? "not available" : totCount).toString()
     },
     {
       "type": 'Number of Natuurbeelden videos',
-      "value": (nbCount == 0 ? "not available" : nbCount)
+      "value": (nbCount == 0 ? "not available" : nbCount).toString()
     }];
   },
   constructUri: function(expressieId) {
