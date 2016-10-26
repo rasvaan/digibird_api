@@ -1,7 +1,7 @@
 var winston = require('winston');
 var blogUtils = require('../helpers/blog');
 var platformStatistics = require('../helpers/statistics');
-platformAnnotations = require('../helpers/annotations');
+var platformAnnotations = require('../helpers/annotations');
 var platforms = require('../helpers/platforms');
 var objects = require('../helpers/objects');
 var interpret = require('../helpers/request_interpretation');
@@ -40,6 +40,9 @@ module.exports.set = function(app) {
 
     if (parameters) {
       if (parameters.date) {
+        console.log('get since');
+        parameters.request = 'annotations_since';
+
         platformAnnotations.since(parameters)
         .then(function(results) {
           let jsonLd = results.toJSONLD();
@@ -49,6 +52,8 @@ module.exports.set = function(app) {
           res.status(404).send(error.message);
         });
       } else {
+        parameters.request = 'annotations';
+
         platformAnnotations.get(parameters)
         .then(function(results) {
           let jsonLd = results.toJSONLD();

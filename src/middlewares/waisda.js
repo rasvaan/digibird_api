@@ -21,6 +21,22 @@ module.exports = {
           return _this.processAggregations(data);
         });
       }
+      case 'annotations': {
+        options = this.annotationOptions(parameters);
+        console.log('annotations options', options);
+        return request(options).then((data) => {
+          console.log('got data', data);
+          // return _this.processAggregations(data);
+        });
+      }
+      case 'annotations_since': {
+        options = this.annotationSinceOptions(parameters);
+        console.log('annotations since options', options);
+        return request(options).then((data) => {
+          console.log('got data', data);
+          // return _this.processAggregations(data);
+        });
+      }
       case 'metadata': {
         options = this.metadataOptions();
 
@@ -34,6 +50,21 @@ module.exports = {
     const url = `${platforms.platform("waisda").endpoint_location}statistics/`;
 
     return { "url":url };
+  },
+  annotationOptions: function() {
+    const url = `${platforms.platform("waisda").endpoint_location}video/tag`;
+    const bodyData = { "limit": 40 };
+
+    return { "url": url, "method": "POST", "body": bodyData, "json": true};
+  },
+  annotationSinceOptions: function(parameters) {
+    //TODO: correct to original date
+    let shortDate = parameters.date.toJSON().substring(0, 19);
+    console.log('shortdate', shortDate);
+    const url = `${platforms.platform("waisda").endpoint_location}video/tag`;
+    const bodyData = { "date": shortDate };
+
+    return { "url": url, "method": "POST", "body": bodyData, "json": true};
   },
   processMetadata: function(data) {
     const metadata = JSON.parse(data);

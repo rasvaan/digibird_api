@@ -7,6 +7,7 @@ var interpret = require('../helpers/request_interpretation');
 var objects = require('../helpers/objects');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
+var waisda = require('../middlewares/waisda');
 var tripleStore = require('../middlewares/triple-store');
 var Results = require('../classes/Results');
 var Aggregation = require('../classes/Aggregation');
@@ -53,11 +54,13 @@ module.exports = {
   },
   annotationsApi: function(parameters) {
     switch (parameters.platform.id) {
-      // case 'waisda': {
-      //   return waisda.request(parameters).then((aggregations) => {
-      //     return new Results(aggregations, [platform]);
-      //   });
-      // }
+      case 'waisda': {
+        console.log('getting waisda');
+        waisda.request(parameters);
+        // return waisda.request(parameters).then((aggregations) => {
+        //   return new Results(aggregations, [platform]);
+        // });
+      }
       default: {
         return new Promise(function(resolve, reject) {
           const error = new Error(`Annotations from ${parameters.platform.id} are not yet available`);
@@ -91,11 +94,12 @@ module.exports = {
   },
   annotationsSinceApi: function(parameters) {
     switch (parameters.platform.id) {
-      // case 'waisda': {
-      //   return waisda.request(parameters).then((aggregations) => {
-      //     return new Results(aggregations, [platform]);
-      //   });
-      // }
+      case 'waisda': {
+        waisda.request(parameters);
+        // return waisda.request(parameters).then((aggregations) => {
+        //   return new Results(aggregations, [platform]);
+        // });
+      }
       default: {
         return new Promise(function(resolve, reject) {
           const error = new Error(`Annotations from ${parameters.platform.id} are not yet available`);
