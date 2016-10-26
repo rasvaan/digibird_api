@@ -1,5 +1,5 @@
 /*******************************************************************************
-Xeno-canto API middleware
+Waisda API middleware
 *******************************************************************************/
 var platforms = require('../helpers/platforms');
 var request = require('request-promise-native');

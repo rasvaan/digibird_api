@@ -1,5 +1,5 @@
 /*******************************************************************************
-Xeno-canto API middleware
+Natuurbeelden API middleware
 *******************************************************************************/
 var platforms = require('../helpers/platforms');
 var request = require('request-promise-native');
@@ -45,8 +45,9 @@ module.exports = {
 
               return request(videoOptions).then((stringVideo) => {
                 let videoData = JSON.parse(stringVideo);
+                let drefVideoUrl = videoData.player.stream.vodUrl;
                 collectedData["imageUrl"] = videoData.player.posterUrl;
-                collectedData["videoUrl"] = videoData.player.stream.vodUrl;
+                collectedData["videoUrl"] = drefVideoUrl.replace(/.dref/gi, "");
                 return collectedData;
               });
             });
