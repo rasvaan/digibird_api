@@ -34,7 +34,6 @@ module.exports = {
               let metadata = JSON.parse(stringMetadata);
               let videoOptions = this.videoOptions(metadata.details.guci);
 
-              //collectedData["guci"] = metadata.details.guci;
               if (metadata.details.selecties[0]) {
                 collectedData["title"] = metadata.details.selecties[0].selectie.titel;
                 collectedData["duration"] = metadata.details.selecties[0].tijdsduur;
@@ -55,19 +54,67 @@ module.exports = {
             promises.push(promise);
           }
           return Promise.all(promises).then((results) => {
-            console.log("all promises resolved");
             return _this.processAggregations(results);
           });
         });
       }
-    //   case 'metadata': {
-    //     options = this.metadataOptions();
-    //
-    //     return request(options).then((data) => {
-    //       return _this.processMetadata(data);
-    //     });
-    //   }
+      case 'metadata': {
+        options = this.statisticsOptions();
+        return request(options).then((data) => {
+          return _this.processStatistics(data);
+        });
+      }
     }
+  },
+  statisticsOptions: function() {
+    const url = `${platforms.platform("natuurbeelden").endpoint_location}terms/`;
+    const bodyData = {
+      "phrase": "",
+      "page":"1",
+      "numkeyframes":5,
+      "sorting":"SORT-DEF",
+      "mediaType":"ALL_MEDIA",
+      "pagesize":20,
+      "startdate":null,
+      "enddate":null,
+      "publiclyViewableResultsOnly":"true",
+      "digitalViewableResultsOnly":null,
+      "termFilters":{}
+    };
+
+    var options = {
+      url: url, // URL to hit
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: bodyData,
+      json: true // json serialization on the body = stringifies body to JSON
+    };
+    return options;
+  },
+  processStatistics: function(data) {
+    let totCount = 0, nbCount = 0;
+    for (let i = 0; i < data.terms.length; i++) {
+      if (data.terms[i].name.toLowerCase() === 'titels') {
+        totCount = data.terms[i].total;
+        for (let j = 0; j < data.terms[i].counts.length; j++)
+          if (data.terms[i].counts[j].term.toLowerCase() === 'natuurbeelden') {
+            nbCount = data.terms[i].counts[j].count;
+            break;
+          }
+      break;
+      }
+    }
+
+    return [{
+      "type": 'Total number of videos',
+      "value": (totCount == 0 ? "not available" : totCount)
+    },
+    {
+      "type": 'Number of Natuurbeelden videos',
+      "value": (nbCount == 0 ? "not available" : nbCount)
+    }];
   },
   constructUri: function(expressieId) {
     const uri = `${platforms.platform("natuurbeelden").name_space}collectie/details/expressie/${expressieId}/false/`;

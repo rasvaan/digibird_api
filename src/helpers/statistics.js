@@ -7,6 +7,7 @@ var winston = require('winston');
 var xenoCanto = require('../middlewares/xeno-canto-api');
 var soortenRegister = require('../middlewares/soorten-register');
 var waisda = require('../middlewares/waisda');
+var natuurbeelden = require('../middlewares/natuurbeelden');
 var tripleStore = require('../middlewares/triple-store');
 
 module.exports = {
@@ -52,6 +53,9 @@ module.exports = {
       case 'waisda': {
         console.log('in statistics - platform:', platform);
         return waisda.request(parameters);
+      }
+      case 'natuurbeelden': {
+        return natuurbeelden.request(parameters);
       }
       default: {
         // stub for not yet added apis

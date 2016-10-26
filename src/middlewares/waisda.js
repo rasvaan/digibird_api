@@ -31,7 +31,7 @@ module.exports = {
     }
   },
   metadataOptions: function() {
-    const url = `${platforms.platform("waisda").endpoint_location}/statistics/`;
+    const url = `${platforms.platform("waisda").endpoint_location}statistics/`;
 
     return { "url":url };
   },
@@ -91,7 +91,7 @@ module.exports = {
   },
   commonName: function(parameters) {
     let commonName = (parameters.common_name_nl || parameters.common_name).toLowerCase();
-    const url = `${platforms.platform("waisda").endpoint_location}/video/tag/${commonName}`;
+    const url = `${platforms.platform("waisda").endpoint_location}video/tag/${commonName}`;
 
     return { "url": url };
   },
