@@ -14,7 +14,7 @@ module.exports = {
   // return a promise of statistics of the platform
   get: function(platformId) {
     const platform = platforms.platform(platformId);
-    console.log('getting info fr', platform)
+
     switch(platform.endpoint_type) {
       case 'json-api': return this.statisticsApi(platform);
       case 'sparql': {
@@ -51,7 +51,6 @@ module.exports = {
         return soortenRegister.request(parameters);
       }
       case 'waisda': {
-        console.log('in statistics - platform:', platform);
         return waisda.request(parameters);
       }
       case 'natuurbeelden': {
