@@ -128,7 +128,7 @@ module.exports = {
       );
 
       // process annotations and add to list
-      annotations.concat(
+      annotations = annotations.concat(
         this.processAnnotations(result.sourceUrl, result.tags)
       );
 
