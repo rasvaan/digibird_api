@@ -7,6 +7,7 @@ var winston = require('winston');
 var Aggregation = require('../classes/Aggregation');
 var CulturalObject = require('../classes/CulturalObject');
 var WebResource = require('../classes/WebResource');
+var Annotation = require('../classes/Annotation');
 
 module.exports = {
   request: function(parameters) {
@@ -18,22 +19,29 @@ module.exports = {
         options = this.commonName(parameters);
 
         return request(options).then((data) => {
-          return _this.processAggregations(data);
+          const values = JSON.parse(data);
+          return _this.processAggregations(values);
         });
       }
       case 'annotations': {
         options = this.annotationOptions(parameters);
-        console.log('annotations options', options);
+
         return request(options).then((data) => {
-          console.log('got data', data);
-          // return _this.processAggregations(data);
+          const values = JSON.parse(data);
+          console.log('got results ', values.length);
+          let aggregations = _this.processAnnotatedAggregations(values);
+          // let annotations = _this.processSparqlAnnotations(values);
+          // let combined = aggregations.concat(annotations);
+          // return new Results(combined, [parameters.platform]);
         });
       }
       case 'annotations_since': {
         options = this.annotationSinceOptions(parameters);
-        console.log('annotations since options', options);
+
         return request(options).then((data) => {
-          console.log('got data', data);
+          const values = JSON.parse(data);
+          console.log('got since results ', values.length);
+          let aggregations = _this.processAnnotatedAggregations(values);
           // return _this.processAggregations(data);
         });
       }
@@ -53,18 +61,18 @@ module.exports = {
   },
   annotationOptions: function() {
     const url = `${platforms.platform("waisda").endpoint_location}video/tag`;
-    const bodyData = { "limit": 40 };
+    const body = { "limit": 40 };
 
-    return { "url": url, "method": "POST", "body": bodyData, "json": true};
+    return { "url": url, "method": "POST", "body": JSON.stringify(body) };
   },
   annotationSinceOptions: function(parameters) {
     //TODO: correct to original date
     let shortDate = parameters.date.toJSON().substring(0, 19);
     console.log('shortdate', shortDate);
     const url = `${platforms.platform("waisda").endpoint_location}video/tag`;
-    const bodyData = { "date": shortDate };
+    const body = { "date": shortDate };
 
-    return { "url": url, "method": "POST", "body": bodyData, "json": true};
+    return { "url": url, "method": "POST", "body": JSON.stringify(body) };
   },
   processMetadata: function(data) {
     const metadata = JSON.parse(data);
@@ -86,8 +94,7 @@ module.exports = {
       "value": metadata.noGames
     }];
   },
-  processAggregations: function(string) {
-    const data = JSON.parse(string);
+  processAggregations: function(data) {
     const VIDEO = 'dctype:MovingImage';
     let aggregations = [];
 
@@ -110,6 +117,35 @@ module.exports = {
 
     return aggregations;
   },
+  processAnnotatedAggregations: function(data) {
+    const VIDEO = 'dctype:MovingImage';
+    let aggregations = [];
+    let annotations = [];
+
+    for (let i=0; i<data.length; i++) {
+      const result = data[i];
+      let culturalObject = this.createCulturalObject(result);
+      let webResource = new WebResource(result.sourceUrl, VIDEO);
+
+      // TODO: update url to metadataUrl
+      let aggregation = new Aggregation(
+        `${result.sourceUrl}/aggregation`,
+        culturalObject,
+        webResource
+      );
+
+      // process annotations and add to list
+      annotations.concat(
+        this.processAnnotations(result.sourceUrl, result.tags)
+      );
+
+      // TODO: get the actual license rights
+      aggregation.addLicense("https://creativecommons.org/licenses/by/4.0/");
+      aggregations.push(aggregation);
+    }
+
+    return aggregations;
+  },
   // TODO: add original link to Natuurbeelden metadata
   createCulturalObject: function(result) {
     // create a new object, minimum info is url
@@ -119,6 +155,32 @@ module.exports = {
     if (result.imageUrl) object.addThumbnail(result.imageUrl);
 
     return object;
+  },
+  processAnnotations: function(target, tags) {
+    /* extract annotations from sparql objects
+    */
+    let annotations = [];
+
+    for (let i=0; i<tags.length; i++) {
+      const tag = tags[i];
+      const date = new Date(tag.creationDate);
+      // TODO: garuantee that the uri is unique (e.g. add user)
+      // this is currently not garanteed, because the uri is based on time and
+      // tag, while we ask users to tag stuff at the same time...
+      const tagUri = encodeURI(`${target}/${date.valueOf()}/${tag.tag}`);
+
+      // create a new annotation
+      let annotation = new Annotation(
+        tagUri,
+        target,
+        tag.tag
+      );
+
+      if (!isNaN(date)) annotation.addDate(date.toJSON());
+      annotations.push(annotation);
+    }
+
+    return annotations;
   },
   commonName: function(parameters) {
     let commonName = (parameters.common_name_nl || parameters.common_name).toLowerCase();
