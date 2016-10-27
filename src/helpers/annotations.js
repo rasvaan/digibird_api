@@ -55,11 +55,7 @@ module.exports = {
   annotationsApi: function(parameters) {
     switch (parameters.platform.id) {
       case 'waisda': {
-        console.log('getting waisda');
-        waisda.request(parameters);
-        // return waisda.request(parameters).then((aggregations) => {
-        //   return new Results(aggregations, [platform]);
-        // });
+        return waisda.request(parameters);
       }
       default: {
         return new Promise(function(resolve, reject) {
@@ -95,10 +91,7 @@ module.exports = {
   annotationsSinceApi: function(parameters) {
     switch (parameters.platform.id) {
       case 'waisda': {
-        waisda.request(parameters);
-        // return waisda.request(parameters).then((aggregations) => {
-        //   return new Results(aggregations, [platform]);
-        // });
+        return waisda.request(parameters);
       }
       default: {
         return new Promise(function(resolve, reject) {

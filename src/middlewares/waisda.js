@@ -4,6 +4,7 @@ Waisda API middleware
 var platforms = require('../helpers/platforms');
 var request = require('request-promise-native');
 var winston = require('winston');
+var Results = require('../classes/Results');
 var Aggregation = require('../classes/Aggregation');
 var CulturalObject = require('../classes/CulturalObject');
 var WebResource = require('../classes/WebResource');
@@ -27,22 +28,14 @@ module.exports = {
         options = this.annotationOptions(parameters);
 
         return request(options).then((data) => {
-          const values = JSON.parse(data);
-          console.log('got results ', values.length);
-          let aggregations = _this.processAnnotatedAggregations(values);
-          // let annotations = _this.processSparqlAnnotations(values);
-          // let combined = aggregations.concat(annotations);
-          // return new Results(combined, [parameters.platform]);
+          return new Results(_this.processAnnotatedAggregations(data));
         });
       }
       case 'annotations_since': {
         options = this.annotationSinceOptions(parameters);
 
         return request(options).then((data) => {
-          const values = JSON.parse(data);
-          console.log('got since results ', values.length);
-          let aggregations = _this.processAnnotatedAggregations(values);
-          // return _this.processAggregations(data);
+          return new Results(_this.processAnnotatedAggregations(data));
         });
       }
       case 'metadata': {
@@ -61,9 +54,9 @@ module.exports = {
   },
   annotationOptions: function() {
     const url = `${platforms.platform("waisda").endpoint_location}video/tag`;
-    const body = { "limit": 40 };
+    const body = { "limit": 50 };
 
-    return { "url": url, "method": "POST", "body": JSON.stringify(body) };
+    return { "url": url, "method": "POST", "body": body, "json": true };
   },
   annotationSinceOptions: function(parameters) {
     //TODO: correct to original date
@@ -72,7 +65,7 @@ module.exports = {
     const url = `${platforms.platform("waisda").endpoint_location}video/tag`;
     const body = { "date": shortDate };
 
-    return { "url": url, "method": "POST", "body": JSON.stringify(body) };
+    return { "url": url, "method": "POST", "body": body, "json": true };
   },
   processMetadata: function(data) {
     const metadata = JSON.parse(data);
@@ -144,7 +137,7 @@ module.exports = {
       aggregations.push(aggregation);
     }
 
-    return aggregations;
+    return aggregations.concat(annotations);
   },
   // TODO: add original link to Natuurbeelden metadata
   createCulturalObject: function(result) {
