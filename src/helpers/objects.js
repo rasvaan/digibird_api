@@ -86,7 +86,7 @@ module.exports = {
         // only filter, since we have no suitable concepts to query for
         let filter = (parameters.common_name_nl || parameters.common_name).toLowerCase();
         const query = this.sparqlObjectQueries(filter)['edm_filter_desciption'];
-        console.log(query);
+
         return tripleStore.query(platform, query.query).then((values) => {
           return _this.processSparqlAggregations(values, 'dctype:Image');
         }).then((aggregations) => {
@@ -121,7 +121,6 @@ module.exports = {
 
     for (let i=0; i<results.length; i++) {
       const result = results[i];
-      console.log(result);
       const index = uris.indexOf(result.aggregation.value);
 
       // see if already present in aggregations
