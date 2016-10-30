@@ -71,6 +71,9 @@ module.exports = {
           const scientificName = JSON.parse(data);
           parameters.genus = scientificName.genus.toLowerCase();
           parameters.species = scientificName.species.toLowerCase();
+          if (scientificName.en) parameters.common_name = scientificName.en.toLowerCase();
+          if (scientificName.nl) parameters.common_name_nl = scientificName.nl.toLowerCase();
+
           return parameters;
         },
         error => {
