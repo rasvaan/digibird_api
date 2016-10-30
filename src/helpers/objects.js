@@ -86,7 +86,7 @@ module.exports = {
         // only filter, since we have no suitable concepts to query for
         let filter = (parameters.common_name_nl || parameters.common_name).toLowerCase();
         const query = this.sparqlObjectQueries(filter)['edm_filter_desciption'];
-
+        console.log(query);
         return tripleStore.query(platform, query.query).then((values) => {
           return _this.processSparqlAggregations(values, 'dctype:Image');
         }).then((aggregations) => {
@@ -121,6 +121,7 @@ module.exports = {
 
     for (let i=0; i<results.length; i++) {
       const result = results[i];
+      console.log(result);
       const index = uris.indexOf(result.aggregation.value);
 
       // see if already present in aggregations
@@ -133,6 +134,7 @@ module.exports = {
         // extend information object when possible
         if (result.creator) culturalObject.addCreator(result.creator.value);
         if (result.title) culturalObject.addTitle(result.title.value);
+        if (result.description) culturalObject.addDescription(result.description.value);
 
         let aggregation = new Aggregation(
           result.aggregation.value,
@@ -168,15 +170,9 @@ module.exports = {
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
                 "?aggregation edm:rights ?rights . " +
-                "OPTIONAL { " +
-                "  ?object dc:title ?title . " +
-                "   FILTER ( lang(?title) = \"en\" ) " +
-                "} " +
-                "OPTIONAL { " +
-                "  ?object dc:creator ?creatorId . " +
-                "  ?creatorId skos:prefLabel ?creator . " +
-                "  FILTER ( lang(?creator) = \"en\" ) " +
-                "} " +
+                "?object dc:title ?title . " +
+                "?object dc:creator ?creatorId . " +
+                "?creatorId skos:prefLabel ?creator . " +
               "} ",
             "name": "description filter"
           },
@@ -195,14 +191,9 @@ module.exports = {
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
                 "?aggregation edm:rights ?rights . " +
-                "OPTIONAL { " +
-                "  ?object dc:title ?title . " +
-                "   FILTER ( lang(?title) = \"en\" ) " +
-                "} " +
-                "OPTIONAL { " +
-                "  ?object dc:creator ?creatorId . " +
-                "  ?creatorId skos:prefLabel ?creator . " +
-                "  FILTER ( lang(?creator) = \"en\" ) " +
+                "?object dc:title ?title . " +
+                "?object dc:creator ?creatorId . " +
+                "?creatorId skos:prefLabel ?creator . " +
                 "} " +
               "} ",
             "name": "description filter"
