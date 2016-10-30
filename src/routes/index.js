@@ -40,7 +40,6 @@ module.exports.set = function(app) {
 
     if (parameters) {
       if (parameters.date) {
-        console.log('get since');
         parameters.request = 'annotations_since';
 
         platformAnnotations.since(parameters)

@@ -59,9 +59,7 @@ module.exports = {
     return { "url": url, "method": "POST", "body": body, "json": true };
   },
   annotationSinceOptions: function(parameters) {
-    //TODO: correct to original date
     let shortDate = parameters.date.toJSON().substring(0, 19);
-    console.log('shortdate', shortDate);
     const url = `${platforms.platform("waisda").endpoint_location}video/tag`;
     const body = { "date": shortDate };
 
