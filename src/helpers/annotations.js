@@ -178,6 +178,7 @@ module.exports = {
             "?aggregation edm:isShownBy ?view . " +
             "?aggregation edm:rights ?rights . " +
             "?object rdf:type <http://accurator.nl/bird#Target> . " +
+            "?object dc:title ?title . " +
             "OPTIONAL { " +
               "?body rdf:type cnt:ContentAsText . " +
               "?body cnt:chars ?label . " +
@@ -185,11 +186,6 @@ module.exports = {
             "OPTIONAL { " +
               "?body rdf:type skos:Concept . " +
               "?body skos:prefLabel ?label . " +
-              "FILTER ( lang(?title) = \"en\" ) " +
-            "} " +
-            "OPTIONAL { " +
-              "?object dc:title ?title . " +
-              "FILTER ( lang(?title) = \"en\" ) " +
             "} " +
             "OPTIONAL { " +
               "?object dc:creator ?creatorId . " +
@@ -208,7 +204,7 @@ module.exports = {
               "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
               "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
               "PREFIX oa: <http://www.w3.org/ns/oa#> " +
-              "SELECT DISTINCT ?aggregation ?annotation ?date ?rights ?object ?view  ?label ?title ?creator " +
+              "SELECT DISTINCT ?aggregation ?annotation ?date ?rights ?object ?view ?label ?title ?creator " +
               "WHERE { " +
                 "?annotation oa:hasBody ?body . " +
                 "?annotation oa:hasTarget ?object . " +
@@ -217,6 +213,7 @@ module.exports = {
                 "?aggregation edm:isShownBy ?view . " +
                 "?aggregation edm:rights ?rights . " +
                 "?object rdf:type <http://accurator.nl/bird#Target> . " +
+                "?object dc:title ?title . " +
                 "OPTIONAL { " +
                   "?body rdf:type cnt:ContentAsText . " +
                   "?body cnt:chars ?label . " +
@@ -224,11 +221,6 @@ module.exports = {
                 "OPTIONAL { " +
                   "?body rdf:type skos:Concept . " +
                   "?body skos:prefLabel ?label . " +
-                  "FILTER ( lang(?title) = \"en\" ) " +
-                "} " +
-                "OPTIONAL { " +
-                  "?object dc:title ?title . " +
-                   "FILTER ( lang(?title) = \"en\" ) " +
                 "} " +
                 "OPTIONAL { " +
                   "?object dc:creator ?creatorId . " +
