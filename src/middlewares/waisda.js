@@ -94,9 +94,8 @@ module.exports = {
       let culturalObject = this.createCulturalObject(result);
       let webResource = new WebResource(result.sourceUrl, VIDEO);
 
-      // TODO: update url to metadataUrl
       let aggregation = new Aggregation(
-        `${result.sourceUrl}/aggregation`,
+        `${culturalObject.uri}aggregation`,
         culturalObject,
         webResource
       );
@@ -115,19 +114,21 @@ module.exports = {
 
     for (let i=0; i<data.length; i++) {
       const result = data[i];
-      let culturalObject = this.createCulturalObject(result);
-      let webResource = new WebResource(result.sourceUrl, VIDEO);
+      let uri = result.sourceUrl;
+      if (result.attribute === 'webResource') uri = result.value;
 
-      // TODO: update url to metadataUrl
+      let culturalObject = this.createCulturalObject(result);
+      let webResource = new WebResource(uri, VIDEO);
+
       let aggregation = new Aggregation(
-        `${result.sourceUrl}/aggregation`,
+        `${culturalObject.uri}aggregation`,
         culturalObject,
         webResource
       );
 
       // process annotations and add to list
       annotations = annotations.concat(
-        this.processAnnotations(result.sourceUrl, result.tags)
+        this.processAnnotations(culturalObject.uri, result.tags)
       );
 
       // TODO: get the actual license rights
@@ -137,10 +138,13 @@ module.exports = {
 
     return aggregations.concat(annotations);
   },
-  // TODO: add original link to Natuurbeelden metadata
+  // TODO: add original link to Waisda metadata
   createCulturalObject: function(result) {
+    let uri = result.sourceUrl;
+    if (result.attribute === 'webResource') uri = result.value;
+
     // create a new object, minimum info is url
-    let object = new CulturalObject(result.sourceUrl);
+    let object = new CulturalObject(uri);
     // extend information object when possible
     if (result.title) object.addTitle(result.title);
     if (result.imageUrl) object.addThumbnail(result.imageUrl);
@@ -158,7 +162,7 @@ module.exports = {
       // TODO: garuantee that the uri is unique (e.g. add user)
       // this is currently not garanteed, because the uri is based on time and
       // tag, while we ask users to tag stuff at the same time...
-      const tagUri = encodeURI(`${target}/${date.valueOf()}/${tag.tag}`);
+      const tagUri = encodeURI(`${target}${date.valueOf()}/${tag.tag}`);
 
       // create a new annotation
       let annotation = new Annotation(
