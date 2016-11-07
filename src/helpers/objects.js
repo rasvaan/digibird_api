@@ -193,7 +193,6 @@ module.exports = {
                 "?object dc:title ?title . " +
                 "?object dc:creator ?creatorId . " +
                 "?creatorId skos:prefLabel ?creator . " +
-                "} " +
               "} ",
             "name": "description filter"
           }
