@@ -63,6 +63,9 @@ module.exports = {
     const IMAGE = 'dctype:Image';
     let aggregations = [];
 
+    // there might be no results
+    if (!data.searchResults) return aggregations;
+
     for (let i=0; i<data.searchResults.length; i++) {
       const result = data.searchResults[i].result;
       const uri = `http://www.nederlandsesoorten.nl/nsr/concept/${result.associatedTaxonReference}/${i}`
@@ -77,6 +80,7 @@ module.exports = {
       if (result.copyrightText) aggregation.addLicense(result.copyrightText);
       aggregations.push(aggregation);
     }
+
 
     return aggregations;
   },

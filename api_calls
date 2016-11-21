@@ -4,4 +4,7 @@ http://api.biodiversitydata.nl/v0/multimedia/search/?genus=pica&species=pica&sou
 ############### soorten registers scientific species query white belied sea eagle ###############
 http://api.biodiversitydata.nl/v0/multimedia/search/?genus=haliaeetus&species=leucogaster&sourceSystem=Naturalis - Nederlands Soortenregister
 
+############### soorten registers scientific species query white-bellied goshwak (0 results)###############
+http://api.biodiversitydata.nl/v0/multimedia/search/?genus=accipiter&species=haplochrous&sourceSystem=Naturalis - Nederlands Soortenregister
+
 ############### natuurbeelden api call ###############
