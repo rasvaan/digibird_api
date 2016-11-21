@@ -25,6 +25,7 @@ module.exports = {
         options = this.species(parameters);
 
         return request(options).then((data) => {
+          console.log('3. data soorten register ', data);
           return _this.processAggregations(data);
         });
       }
@@ -66,6 +67,7 @@ module.exports = {
     for (let i=0; i<data.searchResults.length; i++) {
       const result = data.searchResults[i].result;
       const uri = `http://www.nederlandsesoorten.nl/nsr/concept/${result.associatedTaxonReference}/${i}`
+      console.log('4. URI ', uri);
       let culturalObject = this.createCulturalObject(result, uri);
 
       let aggregation = new Aggregation(
@@ -86,15 +88,21 @@ module.exports = {
 
     // extend information object when possible
     if (result.creator) object.addCreator(result.creator);
-    if (result.identifications[0].vernacularNames[1].name) {
+
+    if (result.identifications &&
+        result.identifications[0].vernacularNames &&
+        result.identifications[0].vernacularNames[1] &&
+        result.identifications[0].vernacularNames[1].name) {
       object.addTitle(result.identifications[0].vernacularNames[1].name);
     }
-    if (result.gatheringEvents[0].dateTimeBegin) {
+
+    if (result.gatheringEvents && result.gatheringEvents[0].dateTimeBegin) {
       const date = new Date(result.gatheringEvents[0].dateTimeBegin);
       const dateString = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
       if (!isNaN(date)) object.addTemporal(dateString);
     }
-    if (result.gatheringEvents[0].localityText) {
+
+    if (result.gatheringEvents && result.gatheringEvents[0].localityText) {
       object.addSpatial(result.gatheringEvents[0].localityText);
     }
 
