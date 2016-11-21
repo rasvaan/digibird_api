@@ -25,7 +25,6 @@ module.exports = {
         options = this.species(parameters);
 
         return request(options).then((data) => {
-          console.log('3. data soorten register ', data);
           return _this.processAggregations(data);
         });
       }
@@ -67,7 +66,6 @@ module.exports = {
     for (let i=0; i<data.searchResults.length; i++) {
       const result = data.searchResults[i].result;
       const uri = `http://www.nederlandsesoorten.nl/nsr/concept/${result.associatedTaxonReference}/${i}`
-      console.log('4. URI ', uri);
       let culturalObject = this.createCulturalObject(result, uri);
 
       let aggregation = new Aggregation(

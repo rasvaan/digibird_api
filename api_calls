@@ -3,3 +3,5 @@ http://api.biodiversitydata.nl/v0/multimedia/search/?genus=pica&species=pica&sou
 
 ############### soorten registers scientific species query white belied sea eagle ###############
 http://api.biodiversitydata.nl/v0/multimedia/search/?genus=haliaeetus&species=leucogaster&sourceSystem=Naturalis - Nederlands Soortenregister
+
+############### natuurbeelden api call ###############
