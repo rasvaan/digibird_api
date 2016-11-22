@@ -165,7 +165,7 @@ module.exports = {
               "WHERE {" +
                 "?object rdf:type edm:ProvidedCHO . " +
                 "?object dc:description ?description . " +
-                `FILTER ( lang(?description) = "nl" && regex(?description, " ${arguments[0]} ", "i") ) ` +
+                `FILTER ( lang(?description) = "nl" && regex(?description, "${arguments[0]}", "i") ) ` +
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
                 "?aggregation edm:rights ?rights . " +
@@ -194,7 +194,7 @@ module.exports = {
                 "?object dc:creator ?creatorId . " +
                 "?creatorId skos:prefLabel ?creator . " +
               "} ",
-            "name": "description filter"
+            "name": "annotated concept"
           }
     }
 
