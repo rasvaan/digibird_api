@@ -21,6 +21,10 @@ module.exports = {
           let searchResults = data.responseItems;
           let promises = [];
 
+          /* Iterate through obtained results, obtaining additional metadata
+          *  return null is something went wrong along the way, allowing the
+          *  result to be filtered.
+          */
           for (let i=0; i<searchResults.length; i++) {
             let collectedData = this.processSearchResult(searchResults[i]);
 
@@ -38,20 +42,20 @@ module.exports = {
 
                   return request(videoOptions).then(stringVideo => {
                     let videoData = JSON.parse(stringVideo);
-                    collectedData = this.processVideoData(videoData, collectedData);
 
-                    return collectedData;
-                  });
+                    return this.processVideoData(videoData, collectedData);
+                  }, error => null); // something went wrong while retrieving stream data
                 } else {
                   // could not retrieve video metadata
                   return null;
                 }
-              });
+              }, error => null); // something went wrong while retrieving metadata
 
               promises.push(promise);
             }
           }
 
+          // wait till all data is in before processing the aggregations
           return Promise.all(promises).then(results => {
             // filter null values
             results = results.filter(result => result != undefined);
