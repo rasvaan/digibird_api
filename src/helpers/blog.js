@@ -17,14 +17,10 @@ module.exports = {
     }
   },
   readCacheJson: function () {
-    try {
-      // read contents
-      var contents = fs.readFileSync('./src/helpers/posts.json', 'utf-8');
-      // parse
-      var parsed = JSON.parse(contents);
-    } catch (error) {
-      winston.log('error', error);
-    }
+    // read contents
+    const contents = fs.readFileSync('./src/helpers/posts.json', 'utf-8');
+    // parse
+    const parsed = JSON.parse(contents);
 
     return parsed;
   },
