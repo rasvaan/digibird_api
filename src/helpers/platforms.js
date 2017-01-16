@@ -6,6 +6,7 @@ incoorporated in DigiBird
 *******************************************************************************/
 var fs = require('fs');
 var path = require('path');
+var winston = require('winston');
 
 var PLATFORM_FILE = path.join(__dirname, 'platforms.json');
 

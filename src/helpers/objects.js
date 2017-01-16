@@ -3,10 +3,11 @@ DigiBird object information component
 *******************************************************************************/
 var platformMetadata = require('./platforms');
 var request = require('request-promise-native');
-var winston = require('winston');
 var interpret = require('../helpers/request_interpretation');
 var soortenRegister = require('../middlewares/soorten-register');
 var xenoCanto = require('../middlewares/xeno-canto-api');
+var waisda = require('../middlewares/waisda');
+var natuurbeelden = require('../middlewares/natuurbeelden');
 var tripleStore = require('../middlewares/triple-store');
 var Results = require('../classes/Results');
 var Aggregation = require('../classes/Aggregation');
@@ -59,6 +60,16 @@ module.exports = {
           return new Results(aggregations, [platform]);
         });
       }
+      case 'waisda': {
+        return waisda.request(parameters).then((aggregations) => {
+          return new Results(aggregations, [platform]);
+        });
+      }
+      case 'natuurbeelden': {
+        return natuurbeelden.request(parameters).then((aggregations) => {
+           return new Results(aggregations, [platform]);
+        });
+      }
       default: {
         return new Promise(function(resolve, reject) {
           const error = new Error(`${platformId} is not yet available`);
@@ -73,8 +84,8 @@ module.exports = {
     switch(platform.id) {
       case 'rijksmuseum': {
         // only filter, since we have no suitable concepts to query for
-        const filter = this.mergeQueryParameters(parameters);
-        const query = this.sparqlObjectQueries(filter)['filter_desciption'];
+        let filter = (parameters.common_name_nl || parameters.common_name).toLowerCase();
+        const query = this.sparqlObjectQueries(filter)['edm_filter_desciption'];
 
         return tripleStore.query(platform, query.query).then((values) => {
           return _this.processSparqlAggregations(values, 'dctype:Image');
@@ -84,7 +95,7 @@ module.exports = {
       }
       case 'accurator': {
         const queryConcept = interpret.iocConceptFromInput(parameters);
-        const query = this.sparqlObjectQueries(queryConcept)['concept_annotation'];
+        const query = this.sparqlObjectQueries(queryConcept)['edm_concept_annotation'];
 
         return tripleStore.query(platform, query.query).then((values) => {
           return _this.processSparqlAggregations(values, 'dctype:Image');
@@ -101,16 +112,40 @@ module.exports = {
     }
   },
   processSparqlAggregations: function(results, type) {
+    /* extract results from sparql objects, consider:
+    *  - duplicate results -> merge into one objects
+    *  - duplicate values property object -> make value an array of values
+    */
     let aggregations = [];
+    let uris = []; // book keepping
 
     for (let i=0; i<results.length; i++) {
       const result = results[i];
+      const index = uris.indexOf(result.aggregation.value);
 
-      aggregations[aggregations.length] = new Aggregation(
-        result.aggregation.value,
-        new CulturalObject(result.object.value),
-        new WebResource(result.view.value, type)
-      );
+      // see if already present in aggregations
+      if (index < 0) {
+        // unknown uri, add to array and create a new aggregation
+        uris.push(result.aggregation.value);
+        let culturalObject = new CulturalObject(result.object.value);
+        let webResource = new WebResource(result.view.value, type);
+
+        // extend information object when possible
+        if (result.creator) culturalObject.addCreator(result.creator.value);
+        if (result.title) culturalObject.addTitle(result.title.value);
+        if (result.description) culturalObject.addDescription(result.description.value);
+
+        let aggregation = new Aggregation(
+          result.aggregation.value,
+          culturalObject,
+          webResource
+        );
+
+        aggregation.addLicense(result.rights.value);
+        aggregations[aggregations.length] = aggregation;
+      } else {
+        // TODO: extend current data in a sensible way (duplicate values)
+      }
     }
 
     return aggregations;
@@ -119,38 +154,47 @@ module.exports = {
     // create an object with queries that can be used to retrieve objects
     const queries =
     {
-        "filter_desciption":
+        "edm_filter_desciption":
           {
             "query":
               "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
               "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
               "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
-              "SELECT ?aggregation ?object ?view " +
+              "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+              "SELECT DISTINCT ?aggregation ?rights ?object ?view ?title ?creator " +
               "WHERE {" +
                 "?object rdf:type edm:ProvidedCHO . " +
+                "?object dc:description ?description . " +
+                `FILTER ( lang(?description) = "nl" && regex(?description, "${arguments[0]}", "i") ) ` +
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
-                "?object dc:description ?description . " +
-                `FILTER regex(?description, \" ${arguments[0]} \", \"i\") ` +
+                "?aggregation edm:rights ?rights . " +
+                "?object dc:title ?title . " +
+                "?object dc:creator ?creatorId . " +
+                "?creatorId skos:prefLabel ?creator . " +
               "} ",
             "name": "description filter"
           },
-        "concept_annotation":
+        "edm_concept_annotation":
           {
             "query":
               "PREFIX edm: <http://www.europeana.eu/schemas/edm/> " +
               "PREFIX ore: <http://www.openarchives.org/ore/terms/> " +
               "PREFIX dc: <http://purl.org/dc/elements/1.1/> " +
               "PREFIX oa: <http://www.w3.org/ns/oa#> " +
-              "SELECT ?aggregation ?object ?view " +
+              "SELECT ?aggregation ?rights ?object ?view ?title ?creator " +
               "WHERE { " +
                 `?annotation oa:hasBody <${arguments[0]}> . ` +
                 "?annotation oa:hasTarget ?object . " +
                 "?object rdf:type edm:ProvidedCHO . " +
                 "?aggregation edm:aggregatedCHO ?object . " +
                 "?aggregation edm:isShownBy ?view . " +
+                "?aggregation edm:rights ?rights . " +
+                "?object dc:title ?title . " +
+                "?object dc:creator ?creatorId . " +
+                "?creatorId skos:prefLabel ?creator . " +
               "} ",
-            "name": "description filter"
+            "name": "annotated concept"
           }
     }
 

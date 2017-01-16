@@ -7,6 +7,7 @@ class WebResource {
     this.uri = uri;
     this.type = 'edm:WebResource';
     this.dctermsType = type;
+    this.contextProperties = [];
   }
   toJSONLD() {
     const jsonLd =

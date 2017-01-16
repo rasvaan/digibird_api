@@ -50,10 +50,26 @@ module.exports = {
     for (let i=0; i<graph.length; i++) {
       let object = {};
 
+      if (graph[i]['dcterms:rights']) {
+        object.rights = graph[i]['dcterms:rights'];
+      }
       object.url = graph[i]['edm:aggregatedCHO']['@id'];
-      object.media_url = graph[i]['edm:hasView']['@id'];
-      type = graph[i]['edm:hasView']['dcterms:type'].split(':').pop();
+      if (graph[i]['edm:aggregatedCHO']['dc:creator']) {
+        object.creator = graph[i]['edm:aggregatedCHO']['dc:creator'];
+      }
+      if (graph[i]['edm:aggregatedCHO']['dc:type']) {
+        object.type = graph[i]['edm:aggregatedCHO']['dc:dc:type'];
+      }
+      if (graph[i]['edm:aggregatedCHO']['dcterms:spatial']) {
+        object.spatial = graph[i]['edm:aggregatedCHO']['dcterms:spatial'];
+      }
+      if (graph[i]['edm:aggregatedCHO']['dcterms:temporal']) {
+        object.temporal = graph[i]['edm:aggregatedCHO']['dcterms:temporal'];
+      }
+      object.media_url = graph[i]['edm:isShownBy']['@id'];
+      type = graph[i]['edm:isShownBy']['dcterms:type'].split(':').pop();
       object.media_type = type;
+
       objects[i] = object;
     }
 

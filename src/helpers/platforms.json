@@ -3,6 +3,7 @@
     "name": "Xeno-canto",
     "id": "xeno-canto",
     "prefix": "xc",
+    "name_space": "http://www.xeno-canto.org/",
     "endpoint_type": "json-api",
     "endpoint_location": "http://www.xeno-canto.org/api/2/recordings",
     "statistics": ["users_birds", "annotations_birds", "objects_birds", "annotated_objects_birds"],
@@ -15,6 +16,8 @@
     "name_space": "http://www.nederlandsesoorten.nl/",
     "endpoint_type": "json-api",
     "endpoint_location": "http://api.biodiversitydata.nl/v0",
+    "statistics_endpoint_type": "json-api",
+    "statistics_endpoint_location": "http://www.nederlandsesoorten.nl/linnaeus_ng/app/views/webservices/statistics.php?pid=1",
     "statistics": [],
     "poll_interval": 20000
   },
@@ -22,9 +25,10 @@
     "name": "Natuurbeelden",
     "id": "natuurbeelden",
     "prefix": "nb",
-    "name_space": "http://natuurbeelden.nl/",
-    "endpoint_type": "elastic-search",
-    "endpoint_location": "",
+    "name_space": "http://in.beeldengeluid.nl/",
+    "endpoint_type": "json-api",
+    "endpoint_location": "http://in.beeldengeluid.nl/collectie/api/",
+    "video_endpoint_location": "http://api2.video.beeldengeluid.videodock.com/api/2.0/",
     "statistics": [],
     "poll_interval": 20000
   },
@@ -32,9 +36,9 @@
     "name": "Waisda?",
     "id": "waisda",
     "prefix": "wa",
-    "name_space": "http://waisda.nl",
-    "endpoint_type": "sql",
-    "endpoint_location": "",
+    "name_space": "http://waisda.beeldengeluid.nl/",
+    "endpoint_type": "json-api",
+    "endpoint_location": "http://waisda.beeldengeluid.nl/waisdadb/",
     "statistics": [],
     "poll_interval": 20000
   },
@@ -57,5 +61,13 @@
     "endpoint_location": "http://annotate.accurator.nl/sparql/",
     "statistics": ["users_birds", "annotations_birds", "annotated_objects_birds", "objects_birds"],
     "poll_interval": 5000
+  },
+  {
+    "name": "IOC World Bird List",
+    "id": "ioc",
+    "prefix": "ioc",
+    "name_space": "http://purl.org/vocab/ioc/",
+    "endpoint_type": "json-api",
+    "endpoint_location": "http://ioc.digibird.eculture.labs.vu.nl"
   }
 ]

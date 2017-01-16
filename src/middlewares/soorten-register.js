@@ -28,6 +28,13 @@ module.exports = {
           return _this.processAggregations(data);
         });
       }
+      case 'metadata': {
+        options = this.metadataOptions();
+
+        return request(options).then((data) => {
+          return _this.processMetadata(data);
+        });
+      }
     }
   },
   genus: function(parameters) {
@@ -56,16 +63,78 @@ module.exports = {
     const IMAGE = 'dctype:Image';
     let aggregations = [];
 
+    // there might be no results
+    if (!data.searchResults) return aggregations;
+
     for (let i=0; i<data.searchResults.length; i++) {
       const result = data.searchResults[i].result;
+      const uri = `http://www.nederlandsesoorten.nl/nsr/concept/${result.associatedTaxonReference}/${i}`
+      let culturalObject = this.createCulturalObject(result, uri);
 
-      aggregations[aggregations.length] = new Aggregation(
-        `http://www.nederlandsesoorten.nl/${result.sourceSystemId}/aggregation`,
-        new CulturalObject(`http://www.nederlandsesoorten.nl/${result.sourceSystemId}`),
+      let aggregation = new Aggregation(
+        `${uri}/aggregation`,
+        culturalObject,
         new WebResource(result.serviceAccessPoints.MEDIUM_QUALITY.accessUri, IMAGE)
       );
+
+      if (result.copyrightText) aggregation.addLicense(result.copyrightText);
+      aggregations.push(aggregation);
     }
 
+
     return aggregations;
+  },
+  createCulturalObject: function(result, uri) {
+    // create a new object, minimum info is url
+    let object = new CulturalObject(uri);
+
+    // extend information object when possible
+    if (result.creator) object.addCreator(result.creator);
+
+    if (result.identifications &&
+        result.identifications[0].vernacularNames &&
+        result.identifications[0].vernacularNames[1] &&
+        result.identifications[0].vernacularNames[1].name) {
+      object.addTitle(result.identifications[0].vernacularNames[1].name);
+    }
+
+    if (result.gatheringEvents && result.gatheringEvents[0].dateTimeBegin) {
+      const date = new Date(result.gatheringEvents[0].dateTimeBegin);
+      const dateString = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+      if (!isNaN(date)) object.addTemporal(dateString);
+    }
+
+    if (result.gatheringEvents && result.gatheringEvents[0].localityText) {
+      object.addSpatial(result.gatheringEvents[0].localityText);
+    }
+
+    return object;
+  },
+  metadataOptions: function() {
+    const url = platforms.platform("soortenregister").statistics_endpoint_location;
+
+    return { "url":url };
+  },
+  processMetadata: function(data) {
+    const metadata = JSON.parse(data);
+
+    return [
+      {
+        "type": 'Species',
+        "value": metadata.all_established
+      },
+      {
+        "type": 'Species with image',
+        "value": metadata.statistics.species_with_image.count
+      },
+      {
+        "type": 'Images',
+        "value": metadata.statistics.images.count
+      },
+      {
+        "type": 'Contributors',
+        "value": metadata.statistics.photographer.count
+      }
+    ];
   }
 }

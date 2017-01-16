@@ -56,12 +56,19 @@ module.exports = {
 
     for (let i=0; i<data.recordings.length; i++) {
       const result = data.recordings[i];
+      const embedUrl = `${result.url}/embed`;
+      let culturalObject = this.createCulturalObject(result);
+      let webResource = new WebResource(result.file, SOUND);
 
-      aggregations[aggregations.length] = new Aggregation(
+      let aggregation = new Aggregation(
         `${result.url}/aggregation`,
-        new CulturalObject(result.url),
-        new WebResource(result.file, SOUND)
+        culturalObject,
+        webResource
       );
+
+      aggregation.addLicense(result.lic);
+      aggregation.addView(new WebResource(embedUrl, SOUND));
+      aggregations[aggregations.length] = aggregation;
     }
 
     return aggregations;
@@ -71,6 +78,17 @@ module.exports = {
   },
   testAsyncVal() {
     return Promise.resolve('bla');
+  },
+  createCulturalObject: function(result) {
+    // create a new object, minimum info is url
+    let object = new CulturalObject(result.url);
+    // extend information object when possible
+    if (result.rec) object.addCreator(result.rec);
+    if (result.type) object.addType(result.type);
+    if (result.loc) object.addSpatial(result.cnt);
+    if (result.date) object.addTemporal(result.date);
+
+    return object;
   },
   metadataOptions: function() {
     const url = platforms.platform("xeno-canto").endpoint_location;

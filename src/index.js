@@ -26,16 +26,17 @@ setInterval(function() {
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not found');
-    err.status = 404;
-    winston.log('error', err);
     res.status(404).send('Not found');
 });
 
 // error handlers
 app.use(function(err, req, res, next) {
     winston.log('error', err);
-    res.status(500).send('Internal server error');
+    if (res.headersSent) {
+      winston.log('error', 'Caught an error, but headers already sent. Might be an issue we need to resolve');
+    } else {
+      res.status(500).send('Internal server error');
+    }
 });
 
 

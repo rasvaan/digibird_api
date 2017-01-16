@@ -1,6 +1,7 @@
 var winston = require('winston');
 var blogUtils = require('../helpers/blog');
 var platformStatistics = require('../helpers/statistics');
+var platformAnnotations = require('../helpers/annotations');
 var platforms = require('../helpers/platforms');
 var objects = require('../helpers/objects');
 var interpret = require('../helpers/request_interpretation');
@@ -10,26 +11,57 @@ var Results = require('../classes/Results');
 module.exports.set = function(app) {
 
   app.get('/objects', function(req, res) {
-    const parameters = interpret.objectParameters(req.query, res);
+    interpret.objectParameters(req.query, res).then(
+      parameters => {
+        objects.get(parameters).then(
+        resultsArray => {
+          let mergedResults = new Results();
+
+          // simple merge of results
+          resultsArray.forEach((results) => {
+            mergedResults.addAggregations(results.results);
+            mergedResults.addPlatform(results.platforms[0]);
+          });
+
+          // convert to json-ld and output
+          let jsonLd = mergedResults.toJSONLD();
+          // reply results according to request header
+          output.contentNegotiation(res, jsonLd);
+        });
+      },
+      error => {
+        res.status(400).send('Could not process request for objects.');
+      }
+    );
+  });
+
+  app.get('/annotations', function(req, res) {
+    const parameters = interpret.annotationParameters(req.query, res);
 
     if (parameters) {
-      objects.get(parameters)
-      .then(function(resultsArray) {
-        let mergedResults = new Results();
+      if (parameters.date) {
+        parameters.request = 'annotations_since';
 
-        // simple merge of results
-        resultsArray.forEach((results) => {
-          mergedResults.addAggregations(results.results);
-          mergedResults.addPlatform(results.platforms[0]);
+        platformAnnotations.since(parameters)
+        .then(function(results) {
+          let jsonLd = results.toJSONLD();
+          // reply results according to request header
+          output.contentNegotiation(res, jsonLd);
+        }, function(error) {
+          res.status(404).send(error.message);
         });
+      } else {
+        parameters.request = 'annotations';
 
-        // convert to json-ld and output
-        let jsonLd = mergedResults.toJSONLD();
-        // reply results according to request header
-        output.contentNegotiation(res, jsonLd);
-      }, function(error) {
-        res.status(400).send(error.message);
-      });
+        platformAnnotations.get(parameters)
+        .then(function(results) {
+          let jsonLd = results.toJSONLD();
+          // reply results according to request header
+          output.contentNegotiation(res, jsonLd);
+        }, function(error) {
+          res.status(404).send(error.message);
+        });
+      }
     }
   });
 
@@ -40,9 +72,9 @@ module.exports.set = function(app) {
     if (platformId) {
       platformStatistics.get(platformId)
       .then(function(statistics) {
-          res.json({ "platform": platform.name, "statistics": statistics });
+        res.json({ "platform": platform.name, "statistics": statistics });
       }, function(error) {
-          res.status(404).send(`Statistics for ${platform.name} are not available at this moment`);
+        res.status(404).send(`Statistics for ${platform.name} are not available at this moment`);
       });
     }
   });
@@ -58,4 +90,5 @@ module.exports.set = function(app) {
     // send the blog posts to the client 'blog' page
     res.json({ posts: blogPosts });
   });
+
 };

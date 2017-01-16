@@ -5,6 +5,9 @@ var platforms = require('./platforms');
 var request = require('request-promise-native');
 var winston = require('winston');
 var xenoCanto = require('../middlewares/xeno-canto-api');
+var soortenRegister = require('../middlewares/soorten-register');
+var waisda = require('../middlewares/waisda');
+var natuurbeelden = require('../middlewares/natuurbeelden');
 var tripleStore = require('../middlewares/triple-store');
 
 module.exports = {
@@ -13,7 +16,7 @@ module.exports = {
     const platform = platforms.platform(platformId);
 
     switch(platform.endpoint_type) {
-      case 'json-api': return this.statisticsApi(platform.id);
+      case 'json-api': return this.statisticsApi(platform);
       case 'sparql': {
         let promises = [];
 
@@ -37,12 +40,21 @@ module.exports = {
       }
     }
   },
-  statisticsApi: function(platformId) {
+  statisticsApi: function(platform) {
     let parameters = { "request": 'metadata' };
 
-    switch(platformId) {
+    switch(platform.id) {
       case 'xeno-canto': {
         return xenoCanto.request(parameters);
+      }
+      case 'soortenregister': {
+        return soortenRegister.request(parameters);
+      }
+      case 'waisda': {
+        return waisda.request(parameters);
+      }
+      case 'natuurbeelden': {
+        return natuurbeelden.request(parameters);
       }
       default: {
         // stub for not yet added apis
