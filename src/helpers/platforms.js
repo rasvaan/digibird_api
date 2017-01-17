@@ -22,9 +22,13 @@ module.exports = {
     return parsed;
   },
   platform: function(id) {
-    return this.platforms().find(function(platform) {
+    const platform = this.platforms().find(platform => {
       return platform.id === id;
     });
+
+    if (!platform) throw new Error(`${id} does not exist`);
+
+    return platform;
   },
   platformIds: function() {
     return this.platforms().map(platform => platform.id);
