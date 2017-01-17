@@ -71,9 +71,9 @@ module.exports.set = function(app) {
 
     if (platformId) {
       platformStatistics.get(platformId)
-      .then(function(statistics) {
+      .then(statistics => {
         res.json({ "platform": platform.name, "statistics": statistics });
-      }, function(error) {
+      }, error => {
         res.status(404).send(`Statistics for ${platform.name} are not available at this moment`);
       });
     }

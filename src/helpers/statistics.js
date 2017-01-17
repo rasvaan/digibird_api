@@ -20,6 +20,7 @@ module.exports = {
       case 'sparql': {
         let promises = [];
 
+        // create query promise for every statistic
         for (let i=0; i<platform.statistics.length; i++) {
           promises[i] = this.statisticsTripleStore(
             platform,
@@ -27,13 +28,11 @@ module.exports = {
           );
         }
 
-        return Promise.all(promises)
-        .then(function(statistics) {
-          return statistics;
-        });
+        // wait for all queries to finish before returning a statistics array
+        return Promise.all(promises);
       }
       default: {
-        // stub for not yet added platforms
+        // stub for not yet added endpoint
         return new Promise(function(resolve, reject) {
             resolve([{ "type": "Not yet available", "value": ""}]);
         });
@@ -43,6 +42,7 @@ module.exports = {
   statisticsApi: function(platform) {
     let parameters = { "request": 'metadata' };
 
+    // identify the platform to retrieve statistics from and return promise
     switch(platform.id) {
       case 'xeno-canto': {
         return xenoCanto.request(parameters);
@@ -68,8 +68,8 @@ module.exports = {
     const query = this.sparqlStatisticsQueries()[statistic];
 
     return tripleStore.countQuery(platform, query.query)
-    .then(function(value) {
-      return { "type": query.name, "value": value };
+    .then(value => {
+      return { "type": query.name, "value": value }
     });
   },
   sparqlStatisticsQueries: function() {
@@ -95,7 +95,7 @@ module.exports = {
                 "?annotation oa:hasTarget ?work . " +
                 "?annotation oa:annotatedBy ?user . " +
               "}",
-            "name": "total contributors"
+            "name":"users"
           },
       "users_birds":
           {
