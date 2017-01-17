@@ -1,5 +1,5 @@
 var winston = require('winston');
-var blogUtils = require('../helpers/blog');
+var blog = require('../middlewares/blog');
 var platformStatistics = require('../helpers/statistics');
 var platformAnnotations = require('../helpers/annotations');
 var platforms = require('../helpers/platforms');
@@ -84,11 +84,16 @@ module.exports.set = function(app) {
   });
 
   app.get('/blog', function(req, res) {
-    //   get cached blog posts
-    const blogPosts = blogUtils.readCacheJson();
-    const filteredPosts = blogUtils.filter(blogPosts);
-    // send the blog posts to the client 'blog' page
-    res.json({ posts: blogPosts });
+    // get cached blog posts
+    try {
+      const blogPosts = blog.readCacheJson();
+      const filteredPosts = blog.filterTextPosts(blogPosts);
+      // send the blog posts to the client 'blog' page
+      res.json({ posts: blogPosts });
+    } catch (error) {
+      winston.log('error', error);
+      res.status(500).send('Unable to retrieve blog posts.');
+    }
   });
 
 };

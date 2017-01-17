@@ -3,7 +3,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var winston = require('winston');
-
 var blog = require('./middlewares/blog');
 var routes = require('./routes');
 
