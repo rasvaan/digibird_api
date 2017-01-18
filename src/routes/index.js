@@ -65,14 +65,10 @@ module.exports.set = function(app) {
     const platformId = interpret.platformParameter(req.query);
     const platform = platforms.platform(platformId);
 
-    if (platformId) {
-      platformStatistics.get(platformId)
-      .then(statistics => {
-        res.json({ "platform": platform.name, "statistics": statistics });
-      }, error => {
-        res.status(404).send(`Statistics for ${platform.name} are not available at this moment`);
-      });
-    }
+    platformStatistics.get(platformId)
+    .then(statistics => {
+      res.json({ "platform": platform.name, "statistics": statistics });
+    });
   });
 
   app.get('/platforms', function(req, res) {

@@ -145,7 +145,7 @@ module.exports = {
      */
     let parameter = query.platform;
 
-    if (!parameter) throw new InterpretError('No platfom parameter provided', 400);
+    if (!parameter) throw new InterpretError('No platfom parameter provided.', 400);
 
     if (platforms.exists(parameter)) {
       return parameter;
