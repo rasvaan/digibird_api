@@ -2,7 +2,7 @@ var expect = require('chai').expect;
 var interpret = require('../request_interpretation');
 var { InterpretError } = require('../../classes/Errors');
 
-describe.only('request interpretation', function() {
+describe('request interpretation', function() {
   it('annotation parameters', function() {
     const query = { "platform": 'accurator', "since": '2017-01-18T11:55:01.010Z' };
     const emptyQuery = { };

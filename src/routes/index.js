@@ -11,32 +11,28 @@ var Results = require('../classes/Results');
 module.exports.set = function(app) {
 
   app.get('/objects', function(req, res) {
-    interpret.objectParameters(req.query, res).then(
-      parameters => {
-        objects.get(parameters).then(
-        resultsArray => {
-          let mergedResults = new Results();
+    interpret.objectParameters(req.query)
+    .then(parameters => {
+      objects.get(parameters)
+      .then(resultsArray => {
+        let mergedResults = new Results();
 
-          // simple merge of results
-          resultsArray.forEach((results) => {
-            mergedResults.addAggregations(results.results);
-            mergedResults.addPlatform(results.platforms[0]);
-          });
-
-          // convert to json-ld and output
-          let jsonLd = mergedResults.toJSONLD();
-          // reply results according to request header
-          output.contentNegotiation(res, jsonLd);
+        // simple merge of results
+        resultsArray.forEach((results) => {
+          mergedResults.addAggregations(results.results);
+          mergedResults.addPlatform(results.platforms[0]);
         });
-      },
-      error => {
-        res.status(400).send('Could not process request for objects.');
-      }
-    );
+
+        // convert to json-ld and output
+        let jsonLd = mergedResults.toJSONLD();
+        // reply results according to request header
+        output.contentNegotiation(res, jsonLd);
+      });
+    });
   });
 
   app.get('/annotations', function(req, res) {
-    const parameters = interpret.annotationParameters(req.query, res);
+    const parameters = interpret.annotationParameters(req.query);
 
     if (parameters) {
       if (parameters.date) {
@@ -66,7 +62,7 @@ module.exports.set = function(app) {
   });
 
   app.get('/statistics', function(req, res) {
-    const platformId = interpret.statisticsParameters(req.query, res);
+    const platformId = interpret.platformParameter(req.query);
     const platform = platforms.platform(platformId);
 
     if (platformId) {
@@ -85,15 +81,11 @@ module.exports.set = function(app) {
 
   app.get('/blog', function(req, res) {
     // get cached blog posts
-    try {
-      const blogPosts = blog.readCacheJson();
-      const filteredPosts = blog.filterTextPosts(blogPosts);
-      // send the blog posts to the client 'blog' page
-      res.json({ posts: blogPosts });
-    } catch (error) {
-      winston.log('error', error);
-      res.status(500).send('Unable to retrieve blog posts.');
-    }
+    const blogPosts = blog.readCacheJson();
+    const filteredPosts = blog.filterTextPosts(blogPosts);
+
+    // send the blog posts to the client 'blog' page
+    res.json({ posts: blogPosts });
   });
 
 };
