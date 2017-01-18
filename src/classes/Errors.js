@@ -1,4 +1,12 @@
-class MyError extends Error {
+class DigiBirdError extends Error {
+  constructor(message, statusCode) {
+    super();
+    this.message = message;
+    this.statusCode = statusCode;
+  }
+}
+
+class InterpretError extends DigiBirdError {
   constructor(message, statusCode) {
     super();
     this.message = message;
@@ -7,5 +15,6 @@ class MyError extends Error {
 }
 
 module.exports = {
-  Error: MyError
+  Error: DigiBirdError,
+  InterpretError: InterpretError
 }

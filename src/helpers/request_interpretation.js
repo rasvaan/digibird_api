@@ -7,6 +7,7 @@ request.
 let request = require('request-promise-native');
 let platforms = require('../helpers/platforms');
 let winston = require('winston');
+var { InterpretError } = require('../classes/Errors');
 
 module.exports = {
   objectParameters: function(query, res) {
@@ -16,15 +17,22 @@ module.exports = {
       return parameters;
     });
   },
-  statisticsParameters: function(query, res) {
-    // retrieve one platform
-    const platformParameter = this.platformParameter(query, res);
+  platformParameter: function(query) {
+    /* Return platform string based on url parameter
+     *
+     *  Three situations to handle:
+     *  1. No parameter given -> return null
+     *  2. Correct platform parameter -> return input
+     *  3. Platform does not exist -> 404 response & return false
+     */
+    let parameter = query.platform;
 
-    if (platformParameter === null) {
-      res.status(400).send('No platfom parameter provided');
-      return false;
+    if (!parameter) throw new InterpretError('No platfom parameter provided', 400);
+
+    if (platforms.exists(parameter)) {
+      return parameter;
     } else {
-      return platformParameter;
+      throw new InterpretError(`${parameter} platform parameter is unknown.`, 404);
     }
   },
   annotationParameters: function(query, res) {
@@ -121,25 +129,6 @@ module.exports = {
     }
 
     return date;
-  },
-  platformParameter: function(query, res) {
-    /* Return platform string based on url parameter
-     *
-     *  Three situations to handle:
-     *  1. No parameter given -> return null
-     *  2. Correct platform parameter -> return input
-     *  3. Platform does not exist -> 404 response & return false
-     */
-    const platformInput = query.platform;
-
-    if(!platformInput) return null;
-
-    if (platforms.exists(platformInput)) {
-        return platformInput;
-    } else {
-        res.status(404).send(`${platformInput} platform parameter is unknown.`);
-        return false;
-    }
   },
   platformParameters: function(query, res) {
     /* Return array of platform strings based on url parameters
