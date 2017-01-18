@@ -10,11 +10,12 @@ var Results = require('../classes/Results');
 
 module.exports.set = function(app) {
 
-  app.get('/objects', function(req, res) {
+  app.get('/objects', function(req, res, next) {
     interpret.objectParameters(req.query)
     .then(parameters => {
-      objects.get(parameters)
-      .then(resultsArray => {
+      return objects.get(parameters)
+    })
+    .then(resultsArray => {
         let mergedResults = new Results();
 
         // simple merge of results
@@ -27,8 +28,8 @@ module.exports.set = function(app) {
         let jsonLd = mergedResults.toJSONLD();
         // reply results according to request header
         output.contentNegotiation(res, jsonLd);
-      });
-    });
+    })
+    .catch(error => { next(error); });
   });
 
   app.get('/annotations', function(req, res) {
@@ -61,14 +62,15 @@ module.exports.set = function(app) {
     }
   });
 
-  app.get('/statistics', function(req, res) {
+  app.get('/statistics', function(req, res, next) {
     const platformId = interpret.platformParameter(req.query);
     const platform = platforms.platform(platformId);
 
     platformStatistics.get(platformId)
     .then(statistics => {
       res.json({ "platform": platform.name, "statistics": statistics });
-    });
+    })
+    .catch(error => { next(error); });
   });
 
   app.get('/platforms', function(req, res) {

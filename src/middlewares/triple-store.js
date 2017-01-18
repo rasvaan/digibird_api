@@ -34,7 +34,8 @@ module.exports = {
       body: query
     };
 
-    return request(options).then(response => {
+    return request(options)
+    .then(response => {
       // not completely generic since the value id is dependending on how the query is formulated
       return JSON.parse(response).results.bindings[0].result.value;
     });
