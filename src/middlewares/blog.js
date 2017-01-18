@@ -18,7 +18,8 @@ module.exports = {
   getPosts: function() {
     const _this = this;
 
-    this.getWordpressPosts().then(posts => {
+    this.getWordpressPosts()
+    .then(posts => {
       const digibirdPosts = _this.filterDigibirdPosts(posts);
 
       // write digibird blog posts to cache file
@@ -27,7 +28,7 @@ module.exports = {
       } else {
         winston.log('warning', "No posts found with DigBird tag.");
       }
-    }, function(error) {
+    }, error => {
       winston.log('error', "Error retrieving posts.");
     });
   },
