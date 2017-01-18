@@ -6,6 +6,7 @@ var winston = require('winston');
 var blog = require('./middlewares/blog');
 var routes = require('./routes');
 var Errors = require('./classes/Errors')
+var RequestErrors = require('request-promise-native/errors');
 var app = express();
 
 routes.set(app);
@@ -25,22 +26,24 @@ setInterval(function() {
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  winston.log('error', `404 location ${req.url} not found`);
   res.status(404).send('Not found');
 });
 
 // error handlers
 app.use(function(err, req, res, next) {
-  winston.log('error', err);
-  if (res.headersSent) {
-    winston.log('error', 'Caught an error, but headers already sent. Might be an issue we need to resolve');
+  if (err instanceof Errors.Error) {
+    const status = err.statusCode || 500;
+    const message = err.message || 'Internal server error';
+
+    winston.log('error', `${status} ${message}`);
+    res.status(status).send(message);
+  } else if (err instanceof RequestErrors.RequestError) {
+    winston.log('error', `500 ${err.error.message}`);
+    res.status(500).send('Internal server error');
   } else {
-    if (err instanceof Errors.Error) {
-      const status = err.statusCode || 500;
-      const message = err.message || 'Internal server error';
-      res.status(status).send(message);
-    } else {
-      res.status(500).send('Internal server error');
-    }
+    winston.log('error', err);
+    res.status(500).send('Internal server error');
   }
 });
 
