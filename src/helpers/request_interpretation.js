@@ -13,27 +13,9 @@ module.exports = {
   objectParameters: function(query, res) {
     // retrieve information about the requested bird and platforms
     return this.birdParameters(query, res).then(parameters => {
-      parameters.platforms = this.platformParameters(query, res);
+      parameters.platforms = this.platformArrayParameter(query);
       return parameters;
     });
-  },
-  platformParameter: function(query) {
-    /* Return platform string based on url parameter
-     *
-     *  Three situations to handle:
-     *  1. No parameter given -> return null
-     *  2. Correct platform parameter -> return input
-     *  3. Platform does not exist -> 404 response & return false
-     */
-    let parameter = query.platform;
-
-    if (!parameter) throw new InterpretError('No platfom parameter provided', 400);
-
-    if (platforms.exists(parameter)) {
-      return parameter;
-    } else {
-      throw new InterpretError(`${parameter} platform parameter is unknown.`, 404);
-    }
   },
   annotationParameters: function(query, res) {
     // retrieve one platform
@@ -130,7 +112,7 @@ module.exports = {
 
     return date;
   },
-  platformParameters: function(query, res) {
+  platformArrayParameter: function(query) {
     /* Return array of platform strings based on url parameters
     *
     *  Three situations to handle:
@@ -151,12 +133,29 @@ module.exports = {
       if (platforms.exists(input[i])) {
         platformParameters.push(input[i]);
       } else {
-        res.status(404).send(`${input[i]} platform parameter is unknown.`);
-        return false;
+        throw new InterpretError(`${input[i]} platform parameter is unknown.`, 404);
       }
     }
 
     return platformParameters;
+  },
+  platformParameter: function(query) {
+    /* Return platform string based on url parameter
+     *
+     *  Three situations to handle:
+     *  1. No parameter given -> return null
+     *  2. Correct platform parameter -> return input
+     *  3. Platform does not exist -> 404 response & return false
+     */
+    let parameter = query.platform;
+
+    if (!parameter) throw new InterpretError('No platfom parameter provided', 400);
+
+    if (platforms.exists(parameter)) {
+      return parameter;
+    } else {
+      throw new InterpretError(`${parameter} platform parameter is unknown.`, 404);
+    }
   },
   verifyGenus: function(genus) {
     const url = `${platforms.platform('ioc').endpoint_location}/verify`;

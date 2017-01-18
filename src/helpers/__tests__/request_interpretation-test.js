@@ -20,6 +20,33 @@ describe.only('request interpretation', function() {
       function(){interpret.platformParameter(wrongQuery)}
     ).to.throw(InterpretError);
   });
+  it('platform array parameter', function() {
+    const emptyQuery = { };
+    const query = { "platform": 'soortenregister' };
+    const multipleQuery = { "platform": ['rijksmuseum', 'accurator'] };
+    const wrongQuery = { "platform": 'museum' };
+    const multipleWrongQuery = { "platform": ['museum', 'accurator'] };
+
+    expect(
+      interpret.platformArrayParameter(emptyQuery)
+    ).to.be.an('array');
+
+    expect(
+      interpret.platformArrayParameter(query)
+    ).to.deep.equal(['soortenregister']);
+
+    expect(
+      interpret.platformArrayParameter(multipleQuery)
+    ).to.deep.equal(['rijksmuseum', 'accurator']);
+
+    expect(
+      function(){interpret.platformArrayParameter(wrongQuery)}
+    ).to.throw(InterpretError);
+
+    expect(
+      function(){interpret.platformArrayParameter(multipleWrongQuery)}
+    ).to.throw(InterpretError);
+  });
   // it('object parameters', function() {
   //   let query = { "platform": 'soortenregister', "common_name": 'Rifleman' }
   //
