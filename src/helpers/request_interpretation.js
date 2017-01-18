@@ -18,23 +18,16 @@ module.exports = {
     });
   },
   annotationParameters: function(query) {
-    // retrieve one platform
+    // return parameters object containging platform or date and platform
     const platformId = this.platformParameter(query);
     const date = this.dateParser(query.since);
 
-    if (platformId === null) {
-      // bad request, no platform
-      res.status(400).send('No platfom parameter provided');
-      return false;
-    } else if (date === false) {
-      // bad request, invalid date
-      return false;
-    } else if (platformId && !date) {
+    if (platformId && !date) {
       // proper request, platform but no date
       const platform = platforms.platform(platformId);
       return { "platform": platform };
     } else if (platformId && date) {
-      // al good
+      // all good
       const platform = platforms.platform(platformId);
       return { "platform": platform, "date": date };
     }
@@ -102,9 +95,14 @@ module.exports = {
   dateParser: function(dateString) {
     /* Date parameters are expected to be provided in ISO-8601 format.
      * example: 2011-10-10T14:48:00
+     *
+     * Three situations to handle:
+     * 1. DateString is undefined -> return null
+     * 2. DateString is valid -> return date
+     * 3. DateString is invalid -> throw error
      */
     const date = dateString ? new Date(dateString) : null;
-    console.log(date);
+
     if (date && isNaN(date.getTime()))
       throw new InterpretError(`${dateString} is not a valid date.`, 400);
 

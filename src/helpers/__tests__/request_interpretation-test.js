@@ -3,7 +3,16 @@ var interpret = require('../request_interpretation');
 var { InterpretError } = require('../../classes/Errors');
 
 describe('request interpretation', function() {
-  it.only('parse date', function() {
+  it.only('annotation parameters', function() {
+    const query = { "platform": 'accurator', "since": '2017-01-18T11:55:01.010Z' };
+    const emptyQuery = { };
+
+    expect(interpret.annotationParameters(query)).to.be.an('object');
+    expect(
+      function(){interpret.annotationParameters(emptyQuery)}
+    ).to.throw(InterpretError);
+  });
+  it('parse date', function() {
     const dateString = "2017-01-18T11:55:01.010Z";
     const dateUndefined = undefined;
     const incorrectDateString = "aa17-01-18T11:55:01.010Z";
