@@ -10,9 +10,9 @@ let winston = require('winston');
 var { InterpretError } = require('../classes/Errors');
 
 module.exports = {
-  objectParameters: function(query, res) {
+  objectParameters: function(query) {
     // retrieve information about the requested bird and platforms
-    return this.birdParameters(query, res).then(parameters => {
+    return this.birdParameters(query).then(parameters => {
       parameters.platforms = this.platformArrayParameter(query);
       return parameters;
     });
@@ -32,7 +32,7 @@ module.exports = {
       return { "platform": platform, "date": date };
     }
   },
-  birdParameters: function(query, res) {
+  birdParameters: function(query) {
     /* Return parameters object containging type of request and bird species
     *  This function interprets the type of object requested:
     *  1. Common name -> send request for additional information and add to parameters
@@ -60,7 +60,7 @@ module.exports = {
           return parameters;
         },
         error => {
-          res.status(400).send(`Common name ${parameters.common_name} is unknown.`);
+          throw new InterpretError(`Common name ${parameters.common_name} is unknown.`, 400);
         }
       );
     } else if (genusInput && !speciesInput) {
@@ -69,7 +69,7 @@ module.exports = {
 
       return this.verifyGenus(parameters.genus).then(
         () => parameters,
-        error => { res.status(400).send(`Genus ${parameters.genus} is unknown.`); }
+        error => { throw new InterpretError(`Genus ${parameters.genus} is unknown.`, 400); }
       );
     } else if (genusInput && speciesInput) {
       parameters.genus = genusInput.toLowerCase();
@@ -85,11 +85,11 @@ module.exports = {
           return parameters;
         },
         error => {
-          res.status(400).send(`Species ${parameters.genus} ${parameters.species} is unknown.`);
+          throw new InterpretError(`Species ${parameters.genus} ${parameters.species} is unknown.`, 400);
         }
       );
     } else {
-      res.status(400).send('Missing object parameter.');
+      throw new InterpretError(`Missing object parameter.`, 400);
     }
   },
   dateParser: function(dateString) {
