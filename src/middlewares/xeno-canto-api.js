@@ -73,12 +73,6 @@ module.exports = {
 
     return aggregations;
   },
-  testAsyncReject() {
-    return Promise.reject();
-  },
-  testAsyncVal() {
-    return Promise.resolve('bla');
-  },
   createCulturalObject: function(result) {
     // create a new object, minimum info is url
     let object = new CulturalObject(result.url);
