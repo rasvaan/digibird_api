@@ -2,7 +2,18 @@ var expect = require('chai').expect;
 var interpret = require('../request_interpretation');
 var { InterpretError } = require('../../classes/Errors');
 
-describe.only('request interpretation', function() {
+describe('request interpretation', function() {
+  it.only('parse date', function() {
+    const dateString = "2017-01-18T11:55:01.010Z";
+    const dateUndefined = undefined;
+    const incorrectDateString = "aa17-01-18T11:55:01.010Z";
+
+    expect(interpret.dateParser(dateString)).to.be.a('date');
+    expect(interpret.dateParser(dateUndefined)).to.equal(null);
+    expect(
+      function(){interpret.dateParser(incorrectDateString)}
+    ).to.throw(InterpretError);
+  });
   it('platform parameter', function() {
     const emptyQuery = { };
     const query = { "platform": 'soortenregister' };

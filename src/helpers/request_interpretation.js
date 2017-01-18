@@ -17,10 +17,10 @@ module.exports = {
       return parameters;
     });
   },
-  annotationParameters: function(query, res) {
+  annotationParameters: function(query) {
     // retrieve one platform
-    const platformId = this.platformParameter(query, res);
-    const date = this.dateParameter(query.since, res);
+    const platformId = this.platformParameter(query);
+    const date = this.dateParser(query.since);
 
     if (platformId === null) {
       // bad request, no platform
@@ -99,16 +99,14 @@ module.exports = {
       res.status(400).send('Missing object parameter.');
     }
   },
-  dateParameter: function(dateString, res) {
+  dateParser: function(dateString) {
     /* Date parameters are expected to be provided in ISO-8601 format.
      * example: 2011-10-10T14:48:00
      */
     const date = dateString ? new Date(dateString) : null;
-
-    if (date && isNaN(date.getTime())) {
-      res.status(400).send(`${dateString} is not a valid date.`);
-      return false;
-    }
+    console.log(date);
+    if (date && isNaN(date.getTime()))
+      throw new InterpretError(`${dateString} is not a valid date.`, 400);
 
     return date;
   },
