@@ -32,33 +32,29 @@ module.exports.set = function(app) {
     .catch(error => { next(error); });
   });
 
-  app.get('/annotations', function(req, res) {
+  app.get('/annotations', function(req, res, next) {
     const parameters = interpret.annotationParameters(req.query);
 
-    if (parameters) {
-      if (parameters.date) {
-        parameters.request = 'annotations_since';
+    if (parameters.date) {
+      parameters.request = 'annotations_since';
 
-        platformAnnotations.since(parameters)
-        .then(function(results) {
-          let jsonLd = results.toJSONLD();
-          // reply results according to request header
-          output.contentNegotiation(res, jsonLd);
-        }, function(error) {
-          res.status(404).send(error.message);
-        });
-      } else {
-        parameters.request = 'annotations';
+      platformAnnotations.since(parameters)
+      .then(function(results) {
+        let jsonLd = results.toJSONLD();
+        // reply results according to request header
+        output.contentNegotiation(res, jsonLd);
+      })
+      .catch(error => { next(error); });
+    } else {
+      parameters.request = 'annotations';
 
-        platformAnnotations.get(parameters)
-        .then(function(results) {
-          let jsonLd = results.toJSONLD();
-          // reply results according to request header
-          output.contentNegotiation(res, jsonLd);
-        }, function(error) {
-          res.status(404).send(error.message);
-        });
-      }
+      platformAnnotations.get(parameters)
+      .then(function(results) {
+        let jsonLd = results.toJSONLD();
+        // reply results according to request header
+        output.contentNegotiation(res, jsonLd);
+      })
+      .catch(error => { next(error); });
     }
   });
 

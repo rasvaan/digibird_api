@@ -18,7 +18,8 @@ module.exports = {
       body: query
     };
 
-    return request(options).then(response => {
+    return request(options)
+    .then(response => {
       return JSON.parse(response).results.bindings;
     });
   },
