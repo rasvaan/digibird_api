@@ -55,7 +55,7 @@ You can use the following parameters for media:
 ### Platform
 The platform you would like to get media from. Supported platforms right now:
 
-* Xeno-canto (id: xenon-canto) - Bird sounds
+* Xeno-canto (id: xeno-canto) - Bird sounds
 * Rijksmuseum (id: rijksmuseum) - Artworks, substring matching only
 * Accurator (id: accurator) - Rijksmuseum artworks annotated with scientific names
 * Nederlands Soorten Register (id: soortenregister) - Images of birds
