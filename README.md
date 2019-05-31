@@ -1,5 +1,7 @@
 # DigiBird API: on the fly collection integration
-[DigiBird](http://www.digibird.org) is a system that integrates cultural heritage data on the fly. Check out the website: [www.digibird.org](http://www.digibird.org). This repository contains code for the API code, code for the client can found in another [repository](https://github.com/rasvaan/digibird_client).
+*Note:* this project is no longer in active development and the repository has been archived. The results of the DigiBird project have been documented in the paper: [DigiBird: On The Fly Collection Integration Supported By The Crowd](https://mw17.mwconf.org/paper/digibird-on-the-fly-collection-integration-supported-by-the-crowd/).
+
+[DigiBird](http://www.digibird.org) is a system that integrates cultural heritage data on the fly. This repository contains code for the API code, code for the client can found in another [repository](https://github.com/rasvaan/digibird_client).
 
 ## Example API call
 Quick example querying for sounds of a Magpie from Xeno-canto:
